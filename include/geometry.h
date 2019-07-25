@@ -1,8 +1,9 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <cmath>
 #include "common.h"
+#include "utils.h"
+#include "geom_include.h"
 
 /*************************************************************** 
  * class: Geometry
@@ -14,8 +15,17 @@
  * class or by reading from a file.
 ***************************************************************/
 
+// --------> this will only be a managing/serving class, make read
+// and write a separate class, like geom_io or something, but not
+// accessible to the user
+
 class Geometry{
 public:
+
+	//
+	// Constructors and copy/move operators
+	//
+
 	/** 
 	* \brief Creates a geometry object with nodes \f$N_x\times N_y\f$ nodes
 	* \details Underlying array is initialized to 0
@@ -50,15 +60,35 @@ public:
 	 *	@param rhs [in] - object to move from
 	 */
 	Geometry& operator=(Geometry&& rhs);
+
+	//
+	// Walls
+	//
+
 	/** 
 	 * \brief Create a segment of solid walls
 	 *
 	 * @param dH [in] - wall thickness, @param where [in] - wall direction
 	 */ 	
 	void add_walls(const size_t dH=1, const std::string where ="y");
+
+	//
 	// Objects
-	void add_rectangle(const std::vector<size_t>);
+	//
+
+	/** 
+	* \brief Create a single rectangle
+    * 
+	* @param Lx [in] - number nodes in x direction
+    * @param Ly [in] - number of nodes in y direction
+    * @param xc [in] - center x coordinate
+    * @param yc [in] - center y coordinate
+	*/
+	void add_rectangle(const size_t Lx, const size_t Ly, 
+						const size_t xc, const size_t yc);
+	void add_square(const std::vector<size_t>);
 	void add_ellipse(const std::vector<size_t>);
+	void add_circle(const std::vector<size_t>);
 	// Arrays of objects 
 	void add_array(const std::vector<size_t>, const std::vector<size_t>, 
 					const std::string, const size_t alpha=0);

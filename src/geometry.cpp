@@ -10,6 +10,10 @@
  * class or by reading from a file.
 ***************************************************************/
 
+//
+// Constructors and copy/move assignment
+//
+
 // Copy constructor
 Geometry::Geometry(const Geometry& gm)
 { 
@@ -56,4 +60,17 @@ Geometry& Geometry::operator=(Geometry&& rhs)
 		}
 	}
 	return *this;	
+}
+
+// 
+// Contruction of individual objects
+//
+
+// Rectangle
+void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
+                        const size_t xc, const size_t yc)
+{
+	std::vector<size_t> obj;
+	Rectangle rect(Lx, Ly, xc, yc);
+	obj = rect.get_nodes();			
 }

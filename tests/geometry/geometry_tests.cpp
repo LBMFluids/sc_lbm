@@ -1,5 +1,9 @@
 #include "geometry_tests.h"
 
+/*************************************************************** 
+ * Common functions for testing Geometry class 
+***************************************************************/
+
 bool check_geom_obj(const Geometry& geom, const size_t Nx, const size_t Ny)
 {
 	const bool* raw_ptr = geom.get_geom();
