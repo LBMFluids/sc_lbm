@@ -70,7 +70,9 @@ Geometry& Geometry::operator=(Geometry&& rhs)
 void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
                         const size_t xc, const size_t yc)
 {
-	std::vector<size_t> obj;
+	std::vector<std::vector<size_t>> obj;
 	Rectangle rect(Lx, Ly, xc, yc);
-	obj = rect.get_nodes();			
+	obj = rect.get_nodes();
+	for (auto ix : obj)
+		std::cout << "x: " << ix[0] << " y: " << ix[1] << std::endl;
 }

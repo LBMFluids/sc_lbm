@@ -21,5 +21,5 @@ void Rectangle::find_nodes()
 	size_t xf = ctr[0] + _Lx/2, yf = ctr[1] + _Ly/2;
 	for (size_t ix = x0; ix <= xf; ix++)
 		for (size_t iy = y0; iy <= yf; iy++)
-			obj_nodes.push_back({ix, iy});
+			object_nodes.push_back({ix, iy});
 }

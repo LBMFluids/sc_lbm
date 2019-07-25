@@ -1,7 +1,7 @@
 #ifndef GEOM_OBJECT_H
 #define GEOM_OBJECT_H
 
-#include "common.h"
+#include "../common.h"
 
 /*************************************************************** 
  * class: geom_object
@@ -32,17 +32,17 @@ class geom_object
 {
 public:
 	/// \brief Return indices/nodes that the object occupies 
-	std::vector<size_t> get_nodes() const { return object_nodes; }
+	std::vector<std::vector<size_t>> get_nodes() const { return object_nodes; }
 protected:
 	/// \brief Specifies the begining node of the object
 	/// \details Constructor explicitly available to derived 
 	///		classes. No need for users to access it directly.
 	geom_object() = default;
-	geom_object(x0, y0) : xc(x0), yc(y0) { }
+	geom_object(size_t x0, size_t y0) : xc(x0), yc(y0) { }
 	/// \brief Return origin of the object
-	std::vector<size_t> get_pos() const { return std::vector({xc, yc}); } 
+	std::vector<size_t> get_pos() const { return std::vector<size_t>({xc, yc}); } 
 	/// \brief Nodes/indices occupied by the object
-	std::vector<std::vector<size_t>> obj_nodes = {};
+	std::vector<std::vector<size_t>> object_nodes = {};
 	/// \brief Finds/computes the nodes occupied by an object
 	virtual void find_nodes() = 0;  
 private:

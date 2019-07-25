@@ -10,6 +10,6 @@
 // Objects
 //
 
-#include "../geom_object/rectangle.h"
+#include "geom_object/rectangle.h"
 
 #endif

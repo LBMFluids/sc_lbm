@@ -8,7 +8,9 @@
  * Common functions for testing Geometry class 
 ***************************************************************/
 
-/** \brief Checks Geometry object dimensions and geom array size 
+/** \brief Verifies basic Geometry object properties
+ * 	\details Checks if dimensions in x and y are as specified
+ * 		and if all entries are 0
  *  @param geom - Geometry object to check
  *  @param Nx - correct size in x
  *  @param Ny - correct size in y
