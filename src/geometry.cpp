@@ -70,9 +70,14 @@ Geometry& Geometry::operator=(Geometry&& rhs)
 void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
                         const size_t xc, const size_t yc)
 {
-	std::vector<std::vector<size_t>> obj;
+	// size_t is unsigned (always >= 0), need to compare only with its
+	// upper numeric limit
+	size_t max_st = std::numeric_limits<std::size_t>::max(); 
+	if (Lx > max_st || Ly > max_st || xc > max_st || yc > max_st)
+		throw std::runtime_error("Rectangle dimensions or position larger than numeric limit of size_t");
+	std::vector<size_t> obj;
 	Rectangle rect(Lx, Ly, xc, yc);
-	obj = rect.get_nodes();
-	for (auto ix : obj)
-		std::cout << "x: " << ix[0] << " y: " << ix[1] << std::endl;
+	obj = sub2ind<size_t>(rect.get_nodes(), _Ny);
+	for (auto node : obj)
+		geom[node] = false;
 }

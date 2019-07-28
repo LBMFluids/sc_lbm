@@ -1,12 +1,12 @@
 # Compile tests for Geometry class
-vpath %.h ../common ../../include
-vpath %.cpp ../common ../../src
+vpath %.h ../common ../../include #../../include/geom_object
+vpath %.cpp ../common ../../src #../../src/geom_object
 
 CXX=g++
 CXXFLAGS=-std=c++11
 TARGET=geom_tests
 
-OBJS= geometry_tests.o test_utils.o geometry.o 
+OBJS= geometry_tests.o test_utils.o geometry.o
 
 $(TARGET) : $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) r5_test.cpp $(OBJS)

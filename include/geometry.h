@@ -1,6 +1,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+#include <limits>
 #include "common.h"
 #include "utils.h"
 #include "geom_include.h"
@@ -19,6 +20,9 @@
 // and write a separate class, like geom_io or something, but not
 // accessible to the user
 
+// Row-major order of the actual array geom [ row1 | row2 | ... | row_Nx ]
+// where row represents x direction, i.e. _Ny nodes in x direction
+
 class Geometry{
 public:
 
@@ -27,13 +31,13 @@ public:
 	//
 
 	/** 
-	* \brief Creates a geometry object with nodes \f$N_x\times N_y\f$ nodes
-	* \details Underlying array is initialized to 0
-	* @param Nx - number of nodes in x direction
-	* @param Ny - number of nodes in y direction
+	 * \brief Creates a geometry object with nodes \f$N_x\times N_y\f$ nodes
+	 * \details Underlying array is initialized to 0
+	 * @param Nx [in] - number of nodes in x direction
+	 * @param Ny [in] - number of nodes in y direction
 	*/
 	Geometry(const size_t Nx, const size_t Ny) : _Nx(Nx), _Ny(Ny) 
-				{ geom = new bool[_Nx*_Ny](); }
+				{ geom = new bool[_Nx*_Ny](); std::fill(geom, geom + _Nx*_Ny, true); }
 	/** \brief Copy constructor
 	 *	\details Creates a new Geometry object through a deep copy 
 	 *		of another Geometry object

@@ -1,6 +1,8 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H 
 
+#include "geom_object.h"
+
 /*************************************************************** 
  * class: rectangle
  *
