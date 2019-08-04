@@ -14,14 +14,14 @@
  * Geometry consists of solid nodes (0s) and fluid nodes (1s). 
  * It can be created directly through various functions in this 
  * class or by reading from a file.
+ *
+ * Row-major order of the actual array geom [ row1 | row2 | ... | row_Nx ]
+ * where row represents x direction, i.e. _Ny nodes in x direction.
 ***************************************************************/
 
 // --------> this will only be a managing/serving class, make read
 // and write a separate class, like geom_io or something, but not
 // accessible to the user
-
-// Row-major order of the actual array geom [ row1 | row2 | ... | row_Nx ]
-// where row represents x direction, i.e. _Ny nodes in x direction
 
 class Geometry{
 public:
@@ -31,8 +31,9 @@ public:
 	//
 
 	/** 
-	 * \brief Creates a geometry object with nodes \f$N_x\times N_y\f$ nodes
-	 * \details Underlying array is initialized to 0
+	 * \brief Creates a Geometry object with nodes \f$N_x\times N_y\f$ nodes
+	 * \details Underlying array is initialized to 1 i.e. it is filled with
+	 * 		fluid
 	 * @param Nx [in] - number of nodes in x direction
 	 * @param Ny [in] - number of nodes in y direction
 	*/

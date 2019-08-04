@@ -25,7 +25,7 @@ std::vector<T> sub2ind(std::vector<std::vector<T>>&& subs, const size_t Ny)
 {
 	size_t i = 0;
 	std::vector<T> lin(subs.size());
-	for (auto sb : subs)
+	for (const auto& sb : subs)
 		lin.at(i++) = sb.at(0)*Ny + sb.at(1);	
 	return lin;
 }
@@ -35,7 +35,7 @@ std::vector<T> sub2ind(std::vector<std::vector<T>>& subs, const size_t Ny)
 {
 	size_t i = 0;
 	std::vector<T> lin(subs.size());
-	for (auto sb : subs)
+	for (const auto& sb : subs)
 		lin.at(i++) = sb.at(0)*Ny + sb.at(1);	
 	return lin;
 }

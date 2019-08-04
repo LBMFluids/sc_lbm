@@ -1,7 +1,5 @@
 #include "test_utils.h"
 
-// Wrapper for exception handling in testing
-
 // Prints message test name tname with color that depends on val being
 // true or false
 void tst_pass(bool val, const std::string tname)
