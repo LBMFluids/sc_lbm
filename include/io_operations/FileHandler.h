@@ -24,16 +24,17 @@ public:
 	/** 
 	 * \brief Creates a FileHandler object in a custom open mode
 	 * @param name - name of the file
-	 * @param opmode - open mode type (read, write, append, truncate), https://en.cppreference.com/w/cpp/io/ios_base/openmode 
+	 * @param opmode - open mode type (read, write, append, truncate, ...), https://en.cppreference.com/w/cpp/io/ios_base/openmode 
 	*/
 	FileHandler(const std::string name, std::ios_base::openmode opmode) : fname(name), mode(opmode) 
 		{ open_file(); }
 	/** 
-	 * \brief Creates a FileHandler object in a default (read, write, truncate) open mode
+	 * \brief Creates a FileHandler object in a default (read, write) open mode
+	 * \details It is an error if the file doesn't exist
 	 * @param name - name of the file
 	*/
 	FileHandler(const std::string name) : 
-		FileHandler(name, std::ios_base::in | std::ios_base::out | std::ios_base::trunc) { }	
+		FileHandler(name, std::ios_base::in | std::ios_base::out) { }	
 
 	//
 	// Getters/setters

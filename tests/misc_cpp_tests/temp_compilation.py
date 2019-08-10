@@ -38,3 +38,12 @@ spec_files = 'file_handler_tests.cpp'
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files, gobj_files])
 subprocess.call([compile_com], shell=True)
 
+# lbm_io.h tests
+# Name of the executable
+exe_name = 'lbm_io_tests'
+# Files needed only for this build
+src_files += ' ' + path + 'io_operations/lbm_io.cpp'
+spec_files = 'lbm_io_tests.cpp'
+compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files, gobj_files])
+subprocess.call([compile_com], shell=True)
+
