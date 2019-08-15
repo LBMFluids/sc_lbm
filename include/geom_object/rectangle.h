@@ -3,6 +3,8 @@
 
 #include "geom_object.h"
 
+class geom_object;
+
 /*************************************************************** 
  * class: rectangle
  *

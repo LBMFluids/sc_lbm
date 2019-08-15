@@ -23,6 +23,7 @@ public:
 	
 	/**
 	 * \brief Default constructor - sets file names and writing mode to single file
+	 * \details File will be located in the current working directory
 	 */ 
 	LbmIO() = default;
 	/** 
