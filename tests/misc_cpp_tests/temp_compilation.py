@@ -43,6 +43,7 @@ subprocess.call([compile_com], shell=True)
 f_path = './test_data/'
 files_rm = ['wr_bool.txt', 'wr_int.txt', 'wr_string.txt', 'wr_double.txt']
 files_rm = [f_path + x for x in files_rm]
+files_rm.append('./dflt_lbm_io_file.txt')
 for frm in files_rm:
 	if os.path.exists(frm): 
 		os.remove(frm)
