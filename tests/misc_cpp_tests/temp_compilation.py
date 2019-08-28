@@ -39,11 +39,17 @@ compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src
 subprocess.call([compile_com], shell=True)
 
 # lbm_io.h tests
+# Remove these files if exist
+f_path = './test_data/'
+files_rm = ['wr_bool.txt', 'wr_int.txt', 'wr_string.txt', 'wr_double.txt']
+files_rm = [f_path + x for x in files_rm]
+for frm in files_rm:
+	if os.path.exists(frm): 
+		os.remove(frm)
 # Name of the executable
 exe_name = 'lbm_io_tests'
 # Files needed only for this build
-src_files += ' ' + path + 'io_operations/lbm_io.cpp'
 spec_files = 'lbm_io_tests.cpp'
-compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files, gobj_files])
+compile_com = ' '.join([cx, std, opt, '-o', exe_name, tst_files, src_files, spec_files, gobj_files])
 subprocess.call([compile_com], shell=True)
 

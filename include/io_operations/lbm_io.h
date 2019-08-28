@@ -47,7 +47,8 @@ public:
 	 * @returns std::vector of vectors of std::string with the data in each vector being
 	 * 		one line of the file with elements as extracted based on the delimiter
 	 */
-	std::vector<std::vector<std::string>> read_vector() const;
+	template<typename T>
+	std::vector<std::vector<T>> read_vector() const;
 	
 	//
 	// Writing functionality 
@@ -73,6 +74,29 @@ private:
 };
 
 //
+// Reading functionality 
+//
+
+template<typename T>
+std::vector<std::vector<T>> LbmIO::read_vector() const
+{
+	FileHandler file(fname);
+	std::fstream &in = file.get_stream();
+	std::string line;
+   	T elem;
+	std::vector<std::vector<T>> output;
+
+	while (std::getline(in, line)){
+		std::istringstream data_row(line);
+		std::vector<T> temp;
+		while (data_row >> elem)
+			temp.push_back(elem);
+		output.push_back(temp);
+	}
+	return output;
+}
+
+//
 // Writing functionality 
 //
 
@@ -85,7 +109,7 @@ void LbmIO::write_vector(const std::vector<std::vector<T>>& data) const
 	size_t nrows = data.size();
 	size_t ncols = data.at(0).size();
 	for (int i = 0; i<nrows; i++){
-		std::copy(data.at(i).begin(), data.at(i).end(),	std::ostream_iterator<std::string>(out, delim.c_str()));
+		std::copy(data.at(i).begin(), data.at(i).end(),	std::ostream_iterator<T>(out, delim.c_str()));
 		out << '\n';
 	}	
 }		
