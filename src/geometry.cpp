@@ -81,3 +81,48 @@ void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
 	for (auto node : obj)
 		geom[node] = false;
 }
+
+//
+// I/O
+//
+
+// Load a geometry from file
+void Geometry::read(const std::string fname)
+{
+	// LbmIO settings
+	std::string delim(" ");
+	bool sflag = true;
+	std::vector<size_t> dims = {0,0,0};
+
+	// Intermediate 2D vector
+	std::vector<std::vector<bool>> geom_vec_2D;
+
+	// Read as a 2D vector and collect the dimensions
+	LbmIO geom_io(fname, delim, sflag, dims);
+	geom_vec_2D = geom_io.read_vector<bool>();
+	_Nx = geom_vec_2D.at(0).size();
+	_Ny = geom_vec_2D.size();
+	// Initialize the geom array and convert the vector 
+	// to it
+	geom = new bool[_Nx*_Ny]; 
+	vector_2D_2_flat_array(geom_vec_2D, _Nx*_Ny, geom);
+}
+
+// Save geometry to file
+void Geometry::write(const std::string fname) const
+{
+	// LbmIO settings
+	std::string delim(" ");
+	bool sflag = true;
+	std::vector<size_t> dims = {0,0,0};
+
+	// Intermediate 2D vector
+	std::vector<std::vector<bool>> geom_vec_2D;
+
+	// Convert geom array to a 2D vector
+	geom_vec_2D = flat_array_2_vector_2D(_Ny, _Nx, geom);
+
+	// Write the 2D vector to file 
+	LbmIO geom_io(fname, delim, sflag, dims);
+	geom_io.write_vector<bool>(geom_vec_2D);
+}

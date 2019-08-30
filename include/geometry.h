@@ -5,6 +5,7 @@
 #include "common.h"
 #include "utils.h"
 #include "geom_include.h"
+#include "./io_operations/lbm_io.h"
 
 /*************************************************************** 
  * class: Geometry
@@ -30,6 +31,12 @@ public:
 	// Constructors and copy/move operators
 	//
 
+	/** 
+	 * \brief Creates a Geometry object with default properties
+	 * \details This constructor should be used when reading a geometry from a file 
+	 * 		fluid
+	*/
+	Geometry() = default; 
 	/** 
 	 * \brief Creates a Geometry object with nodes \f$N_x\times N_y\f$ nodes
 	 * \details Underlying array is initialized to 1 i.e. it is filled with
@@ -97,11 +104,25 @@ public:
 	// Arrays of objects 
 	void add_array(const std::vector<size_t>, const std::vector<size_t>, 
 					const std::string, const size_t alpha=0);
+	// 
+	// I/O
+	//
+
+	/** 
+	* \brief Read geometry from file 
+    * 
+	* @param fname [in] - file name 
+	*/
+	void read(const std::string fname);
+	/** 
+	* \brief Save geometry to file 
+    * 
+	* @param fname [in] - file name 
+	*/
+	void write(const std::string fname) const;
+
 	// Indexing
 	//const bool operator()(const size_t i, const size_t j) const { return geom[i][j]; } 	
-	// I/O
-	void write(const std::string) const;
-	void read(const std::string);
 	// Getters
 	/// \brief Get pointer to constant geom object (can't change it!)
 	const bool* get_geom() const { return geom; }
