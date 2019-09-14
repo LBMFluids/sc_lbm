@@ -62,6 +62,45 @@ Geometry& Geometry::operator=(Geometry&& rhs)
 	return *this;	
 }
 
+//
+// Walls
+//
+
+// Pair of walls in x or y direction
+void Geometry::add_walls(const size_t dH, const std::string where)
+{
+	// Convert the flat array to a 2D vector
+	std::vector<std::vector<bool>> geom_vec_2D;
+	geom_vec_2D = flat_array_2_vector_2D(_Ny, _Nx, geom);
+
+	// Walls in y or x direction with thickness dH
+	// spanning the entire height/width
+	if (where == "y"){
+		if (dH > _Nx) 
+			throw std::runtime_error("Wall thickness larger than domain width (x)");
+		for (size_t irow=0; irow<_Ny; irow++){
+			for (size_t icol=0; icol<dH; icol++){
+				geom_vec_2D[irow][icol] = 0;
+				geom_vec_2D[irow][(_Nx-1)-icol] = 0;
+			}
+		}
+	}else if (where == "x"){
+		if (dH > _Ny)
+			throw std::runtime_error("Wall thickness larger than domain height (y)");
+		size_t top = 0;
+		for (size_t irow=0; irow<dH; irow++){
+			std::fill(geom_vec_2D[irow].begin(), geom_vec_2D[irow].end(), 0);
+			top = _Ny - 1 - irow;
+			std::fill(geom_vec_2D[top].begin(), geom_vec_2D[top].end(), 0);
+		}
+	}else{
+		throw std::invalid_argument( "No options for position argument: " + where);
+	}
+
+	// Convert back to flat array
+	vector_2D_2_flat_array(geom_vec_2D, _Nx*_Ny, geom);
+}
+
 // 
 // Contruction of individual objects
 //

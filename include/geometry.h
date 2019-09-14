@@ -78,11 +78,12 @@ public:
 	//
 
 	/** 
-	 * \brief Create a segment of solid walls
-	 *
-	 * @param dH [in] - wall thickness, @param where [in] - wall direction
+	 * \brief Create a pair of solid walls
+	 * \details Create parallel walls in x or y directions at first/outmost nodes
+	 * @param dH [in] - wall thickness, default 1 node
+	 * @param where [in] - wall direction, "x" or "y", default "y"
 	 */ 	
-	void add_walls(const size_t dH=1, const std::string where ="y");
+	void add_walls(const size_t dH = 1, const std::string where = "y");
 
 	//
 	// Objects

@@ -13,6 +13,7 @@ std = '-std=c++11'
 opt = '-O0'
 # Common source files
 src_files = path + 'geometry.cpp' + ' ' + path + 'misc_checks.cpp'
+src_files += ' ' + path + 'io_operations/FileHandler.cpp'
 gobj_files = path + 'geom_object/rectangle.cpp'
 tst_files = '../common/test_utils.cpp'
 
@@ -33,7 +34,6 @@ if os.path.exists(f_app):
 # Name of the executable
 exe_name = 'file_hdl_tests'
 # Files needed only for this build
-src_files += ' ' + path + 'io_operations/FileHandler.cpp'
 spec_files = 'file_handler_tests.cpp'
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files, gobj_files])
 subprocess.call([compile_com], shell=True)
