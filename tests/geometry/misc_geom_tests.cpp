@@ -9,6 +9,8 @@ void read_and_write_test();
 void x_wall_test_suite();
 void y_wall_test_suite();
 void wall_exception_suite();
+bool indexing_test();
+bool changing_individual_nodes_test();
 
 // Supporting functions
 void make_walls(const size_t, const size_t, const size_t, const std::string);
@@ -28,7 +30,9 @@ int main()
 	read_and_write_test();
 	x_wall_test_suite();
 	y_wall_test_suite();
-	wall_exception_suite();	
+	wall_exception_suite();
+	tst_pass(indexing_test(), "Indexing");	
+	tst_pass(changing_individual_nodes_test(), "Changing individual nodes");
 }
 
 /// \brief Reads a geometry file, then writes it to a separate file
@@ -85,6 +89,67 @@ void wall_exception_suite()
 	tst_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Nx + 10, std::string("y")), "y wall to thick");
 	tst_pass(exception_test(verbose, &argerr, make_walls, Nx, Ny, Nx - 5, std::string("xyz")), "Wrong direction option");
 }
+
+/// \brief Simple indexing test, checks if all indices accessible
+bool indexing_test()
+{
+	size_t Nx = 10, Ny = 50;
+	Geometry geom(Nx,Ny);
+	for (size_t xi = 0; xi<Nx; xi++)
+		for (size_t yi = 0; yi<Ny; yi++)
+			if (geom(xi,yi) != 1)
+				return false;
+	return true;
+}
+
+/// \brief Checks individual node manipulation 
+/// \details Creates a geometry without solid
+/// 	nodes, changes select nodes to solid,
+///		examines the change then changes them back
+///		to fluid and re-examines
+bool changing_individual_nodes_test()
+{
+	// Geometry setup
+	size_t Nx = 20, Ny = 500;
+	Geometry geom(Nx,Ny);
+	// Coordinates of nodes to manipulate
+	std::vector<std::pair<size_t, size_t>> coordinates 
+			= {{0,0}, {0,2}, {2,0}, {Nx-1,0}, {Nx-1,5}, {Nx-1, Ny-1}, 
+			   {5,2}, {0,Ny-1}, {3,Ny-1}};
+
+	// Change select nodes to solid 
+	for (const auto xy : coordinates)
+		geom.set_node_solid(xy.first, xy.second);
+	// Verify if properly changed
+	for (size_t xi = 0; xi<Nx; xi++){
+		for (size_t yi = 0; yi<Ny; yi++){
+			// Lambda for coordinates search
+			auto find_coordinates = [=](const std::pair<size_t, size_t> node)
+				{ return ((node.first == xi) && (node.second == yi)); };
+			// Find if coordinates were supposed to be set to 0	
+			auto iter = std::find_if(coordinates.begin(), coordinates.end(), find_coordinates);
+			// If a match, node needs to be 0 (solid)
+			if ((iter != coordinates.end()) && (geom(xi, yi) != 0))
+				return false;
+		 	// If no match, node needs to be 1 (fluid)
+			if ((iter == coordinates.end()) && (geom(xi, yi) != 1))
+				return false;
+		}
+	}
+	
+	// Change back to fluid
+	for (const auto xy : coordinates)
+		geom.set_node_fluid(xy.first, xy.second);	
+	// Check if all nodes equal 1 (fluid)
+	const bool* geom_array = geom.get_geom();
+	auto iter = std::find_if(geom_array, geom_array + Nx*Ny, 
+					[](const bool node){ return node != 1; });	
+	if (iter != geom_array + Nx*Ny)
+		return false;
+
+	// All as expected
+	return true;
+}		
 
 /**
  * \brief Create a geometry object with walls

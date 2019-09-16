@@ -105,6 +105,28 @@ public:
 	// Arrays of objects 
 	void add_array(const std::vector<size_t>, const std::vector<size_t>, 
 					const std::string, const size_t alpha=0);
+
+	//
+	// Change individual nodes
+	//
+	
+	/** 
+	* \brief Set geometry node to 1 (fluid node)
+    * 
+	* @param xi [in] - x coordinate 
+	* @param yi [in] - y coordinate
+	*/
+	void set_node_fluid(const size_t xi, const size_t yi)
+		{ geom[yi*_Nx + xi] = 1; }
+	/** 
+	* \brief Set geometry node to 0 (solid node) 
+    * 
+	* @param xi [in] - x coordinate 
+	* @param yi [in] - y coordinate
+	*/
+	void set_node_solid(const size_t xi, const size_t yi)
+		{ geom[yi*_Nx + xi] = 0; }
+
 	// 
 	// I/O
 	//
@@ -122,8 +144,18 @@ public:
 	*/
 	void write(const std::string fname) const;
 
+	//
 	// Indexing
-	//const bool operator()(const size_t i, const size_t j) const { return geom[i][j]; } 	
+	//
+
+	/** 
+	* \brief Returns geometry value at a node 
+    * 
+	* @param xi [in] - x coordinate 
+	* @param yi [in] - y coordinate
+	*/
+	const bool operator()(const size_t xi, const size_t yi) const { return geom[yi*_Nx + xi]; } 	
+	
 	// Getters
 	/// \brief Get pointer to constant geom object (can't change it!)
 	const bool* get_geom() const { return geom; }
