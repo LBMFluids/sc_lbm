@@ -49,22 +49,22 @@ void vector_2D_2_flat_array(std::vector<std::vector<T>> vec2D, const size_t Nele
 //
 
 template<typename T>
-std::vector<T> sub2ind(std::vector<std::vector<T>>&& subs, const size_t Ny)
+std::vector<T> sub2ind(std::vector<std::vector<T>>&& subs, const size_t Nx)
 {
 	size_t i = 0;
 	std::vector<T> lin(subs.size());
 	for (const auto& sb : subs)
-		lin.at(i++) = sb.at(0)*Ny + sb.at(1);	
+		lin.at(i++) = sb.at(1)*Nx + sb.at(0);	
 	return lin;
 }
 
 template<typename T>
-std::vector<T> sub2ind(std::vector<std::vector<T>>& subs, const size_t Ny)
+std::vector<T> sub2ind(std::vector<std::vector<T>>& subs, const size_t Nx)
 {
 	size_t i = 0;
 	std::vector<T> lin(subs.size());
 	for (const auto& sb : subs)
-		lin.at(i++) = sb.at(0)*Ny + sb.at(1);	
+		lin.at(i++) = sb.at(1)*Nx + sb.at(0);	
 	return lin;
 }
 

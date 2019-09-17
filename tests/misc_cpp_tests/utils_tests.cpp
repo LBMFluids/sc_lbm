@@ -49,14 +49,14 @@ bool sub2ind_test(const size_t Nx, const size_t Ny)
 	std::vector<std::vector<size_t>> sub_vec(Nx*Ny, std::vector<size_t>(2));	
 	std::vector<size_t> lin_vec;
 	size_t ik = 0;
-	for (size_t ii=0; ii<Nx; ii++){
-		for (size_t ij=0; ij<Ny; ij++){
-			sub_vec.at(ik).at(0) = ii; 
-			sub_vec.at(ik).at(1) = ij;
+	for (size_t ii=0; ii<Ny; ii++){
+		for (size_t ij=0; ij<Nx; ij++){
+			sub_vec.at(ik).at(0) = ij; 
+			sub_vec.at(ik).at(1) = ii;
 			ik++;
 		}
 	}	
-	lin_vec = sub2ind<size_t>(sub_vec, Ny);
+	lin_vec = sub2ind<size_t>(sub_vec, Nx);
 	for (size_t ii=0; ii < Nx*Ny; ii++)
 		if (lin_vec.at(ii) != ii)
 			return false;

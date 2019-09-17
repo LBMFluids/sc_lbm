@@ -116,7 +116,7 @@ void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
 		throw std::runtime_error("Rectangle dimensions or position larger than numeric limit of size_t");
 	std::vector<size_t> obj;
 	Rectangle rect(Lx, Ly, xc, yc);
-	obj = sub2ind<size_t>(rect.get_nodes(), _Ny);
+	obj = sub2ind<size_t>(rect.get_nodes(), _Nx);
 	for (auto node : obj)
 		geom[node] = false;
 }

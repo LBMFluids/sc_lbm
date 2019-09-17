@@ -12,10 +12,12 @@
 void Rectangle::find_nodes()
 {
 	std::vector<size_t> ctr = get_pos();
-	std::vector<bool> node_chk = check_is_even_num_nodes(_Lx, _Ly);
-	if (node_chk[0])
+	// If number of nodes is even in any direction, decrease by 1
+	// so the rectangle can be built evenly from the center
+	std::vector<bool> node_check = check_is_even_num_nodes(_Lx, _Ly);
+	if (node_check[0])
 		_Lx--;
-	if (node_chk[1])
+	if (node_check[1])
 		_Ly--;
 	size_t x0 = ctr[0] - _Lx/2, y0 = ctr[1] - _Ly/2; 
 	size_t xf = ctr[0] + _Lx/2, yf = ctr[1] + _Ly/2;
