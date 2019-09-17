@@ -28,7 +28,10 @@ pass_clr = " "
 # Compiles all tests in geom section for now
 subprocess.call("./temp_compilation.py", shell=True)
 
+#
 # Remove files
+#
+
 # Test 2
 x_wall_files = glob.glob(fpath + 'x_wall_dH_' + '*.txt')
 for file_rm in x_wall_files:
@@ -39,10 +42,24 @@ y_wall_files = glob.glob(fpath + 'y_wall_dH_' + '*.txt')
 for file_rm in y_wall_files:
 	if os.path.exists(file_rm):
 		os.remove(file_rm)
+# Test 4
+rectangle_files = glob.glob(fpath + 'rectangle_' + '*.txt')
+for file_rm in rectangle_files:
+	if os.path.exists(file_rm):
+		os.remove(file_rm)
 
+#
 # Run executables
+#
+
 # For tests 1 - 3
 subprocess.call("./misc_geom_tests", shell=True)
+# For tests 4 - 
+subprocess.call("./add_objects_test", shell=True)
+
+#
+# Python tests
+#
 
 # Test 1 - read/write test
 # Load and check if  both files are equal
@@ -53,7 +70,6 @@ geom_2 = np.loadtxt(fwrt)
 test_pass(np.array_equal(geom_1, geom_2), 'Read/write')
 
 # Test 2 - x walls
-# Compare with expected for each file
 for fxwall in x_wall_files:
 	# Thickness
 	dh = fxwall.split('_')[-1].split('.')[0]
@@ -63,7 +79,6 @@ for fxwall in x_wall_files:
 	test_pass(wall_x.correct(geom), 'x wall test, wall thickness ' + str(dh))
 
 # Test 3 - y walls
-# Compare with expected for each file
 for fywall in y_wall_files:
 	# Thickness
 	dh = fywall.split('_')[-1].split('.')[0]
@@ -72,6 +87,13 @@ for fywall in y_wall_files:
 	geom = np.loadtxt(fywall)
 	test_pass(wall_y.correct(geom), 'y wall test, wall thickness ' + str(dh))
 
-# Test 4 - add nodes
+# Test 4 - rectangles
+for frec in rectangle_files:
+	# Rectangle properties
+	props = [int(s) for s in frec.split('_') if s.isdigit()]
+	props.append(frec.split('_')[-1].split('.')[0])
+	# Test object
+	rec = rectangle(props[0], props[1], props[2], props[3])
+	geom = np.loadtxt(frec)
+	test_pass(rec.correct(geom), 'Rectangle test for ' + frec)
 
-# Test 5 - remove nodes - do them in C++ no need for python

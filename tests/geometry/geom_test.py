@@ -13,10 +13,10 @@ import numpy as np
 class rectangle:
 	''' Class for defining correctness of a rectangular object '''
 	def __init__(self, dx, dy, x0, y0):
-		self.dx = dx
-		self.dy = dy
-		self.x0 = x0
-		self.y0 = y0
+		self.dx = np.int_(dx)
+		self.dy = np.int_(dy)
+		self.x0 = np.int_(x0)
+		self.y0 = np.int_(y0)
 
 	def tri_area(self, x1, y1, x2, y2, x3, y3):
 	    return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
@@ -33,8 +33,8 @@ class rectangle:
 		# Measures the sum of areas of each triangle created
 		# between point ix, iy and the object edge
 		# Ref: https://martin-thoma.com/how-to-check-if-a-point-is-inside-a-rectangle/ 
-		for ix, iy in np.ndindex(geom.shape):
-			if geom[ix,iy] == 0:
+		for iy, ix in np.ndindex(geom.shape):
+			if geom[iy,ix] == 0:
 				A1 = self.tri_area(x0-dx/2.0, y0-dy/2.0, x0-dx/2.0, y0+dy/2.0, ix, iy )	
 				A2 = self.tri_area(ix, iy, x0-dx/2.0, y0+dy/2.0, x0+dx/2.0, y0+dy/2.0)
 				A3 = self.tri_area(ix, iy, x0+dx/2.0, y0-dy/2.0, x0+dx/2.0, y0+dy/2.0)

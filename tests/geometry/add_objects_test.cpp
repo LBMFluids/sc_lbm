@@ -4,8 +4,14 @@
  * Suite for testing object creation for Geometry class 
 ***************************************************************/
 
+// Aliases
+// Pointer to Geometry member function that
+// takes 4 size_ts and returns void
+//using geom_fun_st4 = void(Geometry::*)(size_t, size_t, size_t, size_t);
+
 // Tests
 void rectangle_test_suite();
+void objects_exception_test_suite();
 
 // Supporting functions
 void make_and_save_rectangle(const size_t, const size_t, 
@@ -19,6 +25,7 @@ void make_and_save_rectangle(const size_t, const size_t,
 int main()
 {
 	rectangle_test_suite();
+ 	objects_exception_test_suite();
 }
 
 ///\brief Test various rectangle objects for correctness
@@ -43,6 +50,24 @@ void rectangle_test_suite()
 		make_and_save_rectangle(Nx, Ny, props.at(0), props.at(1), 
 								props.at(2), props.at(3), fname.str());
 	}
+}
+
+/// \brief Tests correct exception behavior in object adding code
+void objects_exception_test_suite()
+{
+	// Exception tests settings
+	bool verbose = true;
+	const std::runtime_error rtime("Run time error");
+	// Geometry properties
+	size_t Nx = 100, Ny = 300;
+	Geometry geom(Nx, Ny);
+	// Rectangle - dimensions outside, center inside
+	size_t Rx = 5, Ry = 10, xc = 0, yc =50;
+	//tst_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, Rx, Ry, xc, yc), "Rectangle too large");
+	// Rectangle - dimensions ok, center outside
+	xc = 50; 
+	yc =500;
+	//tst_pass(exception_test(verbose, &rtime, make_and_save_rectangle, Nx, Ny, Rx, Ry, xc, yc), "Rectangle center outside the domain");
 }
 
 /** 

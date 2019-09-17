@@ -109,14 +109,14 @@ void Geometry::add_walls(const size_t dH, const std::string where)
 void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
                         const size_t xc, const size_t yc)
 {
-	// size_t is unsigned (always >= 0), need to compare only with its
-	// upper numeric limit
-	size_t max_st = std::numeric_limits<std::size_t>::max(); 
-	if (Lx > max_st || Ly > max_st || xc > max_st || yc > max_st)
-		throw std::runtime_error("Rectangle dimensions or position larger than numeric limit of size_t");
 	std::vector<size_t> obj;
 	Rectangle rect(Lx, Ly, xc, yc);
 	obj = sub2ind<size_t>(rect.get_nodes(), _Nx);
+	// Check if within bounds 
+	auto iter = std::max_element(obj.begin(), obj.end());
+	if ((iter != obj.end()) && (*iter >= _Nx*_Ny))
+		throw std::runtime_error("Rectangle does not fit the domain.");
+	// Include in the geometry array
 	for (auto node : obj)
 		geom[node] = false;
 }
