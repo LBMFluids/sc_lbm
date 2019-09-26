@@ -2,6 +2,7 @@
 #define TEST_UTILS_H
 
 #include <typeinfo>
+#include <type_traits>
 #include <functional>
 #include "../../include/common.h"
 
@@ -9,9 +10,8 @@
  * General testing utility functions
 ***************************************************************/
 
-/** \file */
 /**
- * \brief Print message in specified color
+ * \brief Print a message 
  * @param [in] msg - content to print
  */
 const auto print_msg = [](const std::string msg)
@@ -24,6 +24,7 @@ const auto print_msg = [](const std::string msg)
  * @param tname [in] - test name
  */
 void tst_pass(const bool val, const std::string msg);
+
 /**
  * \brief Wrapper for testing if a function correctly raises exceptions
  * \details Executes given functions and returns true if the target exception happened and false 
@@ -32,13 +33,21 @@ void tst_pass(const bool val, const std::string msg);
  * 		handled.
  * 	@param verbose [in] - prints exception messages
  * 	@param expected [in] - expected exception type or nullptr for no exception 	
- * 	@param fun [in] - std::function object to be called by the wrapper
+ * 	@param fun [in] - function object (pointer, lambda) to be called by the wrapper
  * 	@param args [in] - arguments to the function as a parameter pack 
  * 	@return True or fals if test passed/failed under given conditions
 */
-template<typename R, typename... Args>
+template<typename Functor, typename... Args>
 bool exception_test(bool verbose, const std::exception* expected, 
-				std::function<R(Args...)>fun, Args... args);
+				Functor fun, Args&&... args);
+/// Overload for free functions and lambdas
+/// This is used just for the calling part
+template<typename Functor, typename... Args >
+void exception_test_helper(std::false_type, Functor fun, Args&&... args);
+/// Overload for member functions
+/// More here: https://stackoverflow.com/a/22972231
+template<typename Functor, typename Arg0, typename... Args >
+void exception_test_helper(std::true_type, Functor fun, Arg0&& arg0, Args&&... args);
 
 //
 // Comparisons
@@ -84,16 +93,16 @@ template <typename T>
 bool float_equality(T, T, T);
 
 // True if correct exception behavior for a function call with arguments args
-template<typename R, typename... Args>
+// Currently uses tag dispatch to accomodate both free and member function calls
+template<typename Functor, typename... Args>
 bool exception_test(bool verbose, const std::exception* expected, 
-				std::function<R(Args...)>fun, Args... args)
+				Functor fun, Args&&... args)
 {
 	try {
-		fun(args...);
+		exception_test_helper(typename std::is_member_pointer<Functor>::type(), fun, std::forward<Args>(args)...);
 		if (verbose)
 			print_msg("No exception occurred");
-		if (expected != nullptr)
-			return false;
+		return false;
 	} catch (const std::exception& e){
 		if (verbose)
 			print_msg(e.what());
@@ -103,12 +112,16 @@ bool exception_test(bool verbose, const std::exception* expected,
 	return true;
 }
 
-//template<typename R, typename>
-//bool exception_test_helper
-//{
-//	
-//
-//}
+template<typename Functor, typename... Args >
+void exception_test_helper(std::false_type, Functor fun, Args&&... args)
+{	
+	fun(std::forward<Args>(args)...);
+}
+template <class Functor, class Arg0, class... Args>
+void exception_test_helper(std::true_type, Functor fun, Arg0&& arg0, Args&&... args)
+{
+    (std::forward<Arg0>(arg0).*fun)(std::forward<Args>(args)...);
+}
 
 // Direct comparison of two 2D vectors
 template <typename T>

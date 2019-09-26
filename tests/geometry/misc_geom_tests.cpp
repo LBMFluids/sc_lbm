@@ -79,7 +79,7 @@ void y_wall_test_suite()
 /// \brief Tests correct exception behavior in wall adding code
 void wall_exception_suite()
 {
-	// Exception tests
+	// Exception tests settings
 	bool verbose = true;
 	const std::runtime_error rtime("Run time error");
 	const std::invalid_argument argerr("Wrong argument");
