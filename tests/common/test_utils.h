@@ -2,6 +2,7 @@
 #define TEST_UTILS_H
 
 #include <typeinfo>
+#include <functional>
 #include "../../include/common.h"
 
 /*************************************************************** 
@@ -31,12 +32,13 @@ void tst_pass(const bool val, const std::string msg);
  * 		handled.
  * 	@param verbose [in] - prints exception messages
  * 	@param expected [in] - expected exception type or nullptr for no exception 	
- * 	@param function [in] - function to be called by the wrapper
- * 	@param args [in] - arguments to that function as a parameter pack 
+ * 	@param fun [in] - std::function object to be called by the wrapper
+ * 	@param args [in] - arguments to the function as a parameter pack 
  * 	@return True or fals if test passed/failed under given conditions
 */
 template<typename R, typename... Args>
-bool exception_test(bool verbose, const std::exception* expected, R(*function)(Args...), Args... args);
+bool exception_test(bool verbose, const std::exception* expected, 
+				std::function<R(Args...)>fun, Args... args);
 
 //
 // Comparisons
@@ -83,10 +85,11 @@ bool float_equality(T, T, T);
 
 // True if correct exception behavior for a function call with arguments args
 template<typename R, typename... Args>
-bool exception_test(bool verbose, const std::exception* expected, R(*function)(Args...), Args... args)
+bool exception_test(bool verbose, const std::exception* expected, 
+				std::function<R(Args...)>fun, Args... args)
 {
 	try {
-		function(args...);
+		fun(args...);
 		if (verbose)
 			print_msg("No exception occurred");
 		if (expected != nullptr)
@@ -99,6 +102,13 @@ bool exception_test(bool verbose, const std::exception* expected, R(*function)(A
 	}
 	return true;
 }
+
+//template<typename R, typename>
+//bool exception_test_helper
+//{
+//	
+//
+//}
 
 // Direct comparison of two 2D vectors
 template <typename T>

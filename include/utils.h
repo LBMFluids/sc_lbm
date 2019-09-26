@@ -11,7 +11,7 @@
  * \brief Convert from subscript (i,j) to linear index
  * @param subs [in] - vector of subscripts, each inner vector is a 
  * 		pair of x and y direction indices/subscripts
- * @param Ny [in] - total number of nodes in y direction 
+ * @param Nx [in] - total number of nodes in x direction 
  * @return - vector of linear indices 
 */
 template<typename T>
