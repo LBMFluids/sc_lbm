@@ -109,13 +109,23 @@ void Geometry::add_walls(const size_t dH, const std::string where)
 void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
                         const size_t xc, const size_t yc)
 {
+	// Check lower bounds - all sizes are unsigned
+	// This assumes that when Lx/Ly is even, it is shortened by 1 to retain
+	// symmetry
+	if ((((int)xc - (int)Lx/2) < 0) || (((int)yc - (int)Ly/2) < 0))
+		throw std::runtime_error("Rectangle lower bounds do not fit the domain.");
+
+	// Rectangle object and indices
 	std::vector<size_t> obj;
 	Rectangle rect(Lx, Ly, xc, yc);
 	obj = sub2ind<size_t>(rect.get_nodes(), _Nx);
-	// Check if within bounds 
+
+	// Check upper bounds
+	// Check if max index smaller than domain size 
 	auto iter = std::max_element(obj.begin(), obj.end());
 	if ((iter != obj.end()) && (*iter >= _Nx*_Ny))
-		throw std::runtime_error("Rectangle does not fit the domain.");
+		throw std::runtime_error("Rectangle upper bounds do not fit the domain.");
+
 	// Include in the geometry array
 	for (auto node : obj)
 		geom[node] = false;
