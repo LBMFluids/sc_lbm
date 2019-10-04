@@ -92,19 +92,51 @@ public:
 	/** 
 	* \brief Create a single rectangle
     * 
-	* @param Lx [in] - number nodes in x direction
+	  * @param Lx [in] - number of nodes in x direction
     * @param Ly [in] - number of nodes in y direction
     * @param xc [in] - center x coordinate
     * @param yc [in] - center y coordinate
 	*/
 	void add_rectangle(const size_t Lx, const size_t Ly, 
 						const size_t xc, const size_t yc);
-	void add_square(const std::vector<size_t>);
+	/** 
+	* \brief Create a single square 
+    * 
+	  * @param Ls [in] - number of nodes in x/y direction
+    * @param xc [in] - center x coordinate
+    * @param yc [in] - center y coordinate
+	*/
+	void add_square(const size_t Ls, const size_t xc, const size_t yc);	
+
 	void add_ellipse(const std::vector<size_t>);
 	void add_circle(const std::vector<size_t>);
 	// Arrays of objects 
 	void add_array(const std::vector<size_t>, const std::vector<size_t>, 
 					const std::string, const size_t alpha=0);
+
+	/** 
+	  * \brief Verify if the upper and lower bounds of an object to be cobnstructed are inside the domain 
+    * 
+	  * @param Lx [in] - number of nodes in x direction
+    * @param Ly [in] - number of nodes in y direction
+    * @param xc [in] - center x coordinate
+    * @param yc [in] - center y coordinate
+		* @param name [in] - object name for the error message
+	*/
+	void check_object_bounds(const size_t Lx, const size_t Ly, 
+				                           const size_t xc, const size_t yc, const std::string name);
+
+	/** 
+	  * \brief Verify if the object is not constructed outside the domain's upper bounds
+		* 
+		* \details This actually checks the nodes returned to the Geometry object by the 
+		* 	program that constructs the object, specifically if the max node returned by the 
+		* 	construction program doesn't exceed total size of geom array - 1.  
+    * 
+	  * @param obj [in] - vector of nodes that are considered an object 
+		* @param name [in] - object name for the error message
+	*/
+	void check_constructed_object(const std::vector<size_t> obj, const std::string name);
 
 	//
 	// Change individual nodes
@@ -155,14 +187,22 @@ public:
 	* @param yi [in] - y coordinate
 	*/
 	const bool operator()(const size_t xi, const size_t yi) const { return geom[yi*_Nx + xi]; } 	
-	
+
+	//	
 	// Getters
+	//
+	
 	/// \brief Get pointer to constant geom object (can't change it!)
 	const bool* get_geom() const { return geom; }
 	/// \brief Get number of nodes in x (horizontal) direction
 	size_t Nx() const { return _Nx; }
 	/// \brief Get number of nodes in y (vertical) direction
 	size_t Ny() const { return _Ny; }
+	
+	//
+	// Misc
+	//
+	
 	/// \brief Destructor
 	~Geometry() { delete[] geom; }
 private:

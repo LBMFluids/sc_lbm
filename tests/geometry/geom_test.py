@@ -10,13 +10,15 @@ sys.path.insert(0, py_src_path)
 from utils import *
 import numpy as np
 
-class rectangle:
+# ------> This needs some comparison with expected number of nodes
+class rectangle(object):
 	''' Class for defining correctness of a rectangular object '''
 	def __init__(self, dx, dy, x0, y0):
-		self.dx = np.int_(dx)
-		self.dy = np.int_(dy)
-		self.x0 = np.int_(x0)
-		self.y0 = np.int_(y0)
+		self.dx = np.double(dx)
+		self.dy = np.double(dy)
+		self.x0 = np.double(x0)
+		self.y0 = np.double(y0)
+                self.name = 'rectangle'
 
 	def tri_area(self, x1, y1, x2, y2, x3, y3):
 	    return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
@@ -32,17 +34,30 @@ class rectangle:
 		dy = self.dy
 		# Measures the sum of areas of each triangle created
 		# between point ix, iy and the object edge
-		# Ref: https://martin-thoma.com/how-to-check-if-a-point-is-inside-a-rectangle/ 
+		# Ref: https://martin-thoma.com/how-to-check-if-a-point-is-inside-a-rectangle/
+                count = 0 
 		for iy, ix in np.ndindex(geom.shape):
-			if geom[iy,ix] == 0:
+			if np.int_(geom[iy,ix]) == 0:
 				A1 = self.tri_area(x0-dx/2.0, y0-dy/2.0, x0-dx/2.0, y0+dy/2.0, ix, iy )	
 				A2 = self.tri_area(ix, iy, x0-dx/2.0, y0+dy/2.0, x0+dx/2.0, y0+dy/2.0)
 				A3 = self.tri_area(ix, iy, x0+dx/2.0, y0-dy/2.0, x0+dx/2.0, y0+dy/2.0)
 				A4 = self.tri_area(ix, iy, x0-dx/2.0, y0-dy/2.0, x0+dx/2.0, y0-dy/2.0)
+                                count += 1
 				if not np.isclose((A1 + A2 + A3 + A4), A_obj):
-					msg('Rectangle - solid point outside the object area', MAGENTA)
+					msg(self.name + ' - solid point outside the object area', MAGENTA)
 					return False
-		return True	
+        	# Compare the node count to expected
+		if (count == 0) and ((np.int_(self.dx) != 0) or (np.int_(self.dy) != 0)):
+			msg('No ' + self.name + ' at all!', MAGENTA)
+			return False		
+    	        return True	
+
+class square(rectangle):
+	''' Class for defining correctness of a square object '''
+	def __init__(self, ds, x0, y0):
+	    super(square, self).__init__(ds, ds, x0, y0)
+            # Overwrite the name 
+            self.name = 'square'
 
 class ellipse:
 	''' Class for defining correctness of an elliptical object '''

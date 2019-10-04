@@ -4,7 +4,7 @@
 /*************************************************************** 
  * class: rectangle
  *
- * Drived from geom_object, defines a rectangle by computing
+ * Derived from geom_object, defines a rectangle by computing
  * the nodes it should occupy from given dimensions and 
  * center.  
 ***************************************************************/

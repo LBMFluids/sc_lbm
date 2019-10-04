@@ -11,5 +11,6 @@
 //
 
 #include "geom_object/rectangle.h"
+#include "geom_object/square.h"
 
 #endif

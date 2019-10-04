@@ -11,7 +11,7 @@ std::vector<bool> check_is_even_num_nodes(const size_t Nx, const size_t Ny)
 {
 	std::vector<bool> is_even = {false, false};
 	if (!(Nx%2)){
-		std::cout << "\033[1m\033[35m" << "*** WARNING ***\n"
+		std::cout << "\033[1m\033[36m" << "*** WARNING ***\n"
 			      << "Number of nodes in x direction is EVEN. Using it will result "
 			  	  << "in an object that is not symmetric." 
 				  << " Reducing number of nodes by 1." 
@@ -19,7 +19,7 @@ std::vector<bool> check_is_even_num_nodes(const size_t Nx, const size_t Ny)
   		is_even[0] = true;		
 	}
 	if (!(Ny%2)){
-		std::cout << "\033[1m\033[35m" << "*** WARNING ***\n"
+		std::cout << "\033[1m\033[36m" << "*** WARNING ***\n"
 			      << "Number of nodes in y direction is EVEN. Using it will result "
 			  	  << "in an object that is not symmetric." 
 				  << " Reducing number of nodes by 1." 

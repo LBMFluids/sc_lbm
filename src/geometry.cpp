@@ -109,26 +109,58 @@ void Geometry::add_walls(const size_t dH, const std::string where)
 void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
                         const size_t xc, const size_t yc)
 {
-	// Check lower bounds - all sizes are unsigned
-	// This assumes that when Lx/Ly is even, it is shortened by 1 to retain
-	// symmetry
-	if ((((int)xc - (int)Lx/2) < 0) || (((int)yc - (int)Ly/2) < 0))
-		throw std::runtime_error("Rectangle lower bounds do not fit the domain.");
+	check_object_bounds(Lx, Ly, xc, yc, "Rectangle");
 
 	// Rectangle object and indices
 	std::vector<size_t> obj;
 	Rectangle rect(Lx, Ly, xc, yc);
 	obj = sub2ind<size_t>(rect.get_nodes(), _Nx);
 
-	// Check upper bounds
-	// Check if max index smaller than domain size 
-	auto iter = std::max_element(obj.begin(), obj.end());
-	if ((iter != obj.end()) && (*iter >= _Nx*_Ny))
-		throw std::runtime_error("Rectangle upper bounds do not fit the domain.");
+	check_constructed_object(obj, "rectangle");
 
 	// Include in the geometry array
 	for (auto node : obj)
 		geom[node] = false;
+}
+
+// Square
+void Geometry::add_square(const size_t Ls, const size_t xc, const size_t yc)
+{
+	check_object_bounds(Ls, Ls, xc, yc, "Square");
+
+	// Rectangle object and indices
+	std::vector<size_t> obj;
+	Square square(Ls, xc, yc);
+	obj = sub2ind<size_t>(square.get_nodes(), _Nx);
+
+	check_constructed_object(obj, "square");
+
+	// Include in the geometry array
+	for (auto node : obj)
+		geom[node] = false;
+}
+
+// Nominal object bounds check
+void Geometry::check_object_bounds(const size_t Lx, const size_t Ly, 
+				                     const size_t xc, const size_t yc, const std::string name)
+{
+	// This assumes that when Ls is even, it is shortened by 1 to retain
+	// symmetry
+	if ((((int)xc - (int)Lx/2) < 0) || (((int)yc - (int)Ly/2) < 0))
+		throw std::runtime_error(name +  " lower bounds do not fit the domain.");
+	if (((xc + Lx/2) >= _Nx) || ((yc + Ly/2) >= _Ny))
+		throw std::runtime_error(name +  " upper bounds do not fit the domain.");
+}
+
+// Verification of a constructed object
+// Tested "manually" - currently no permanent test, first bound check captures any incorrect 
+// input and this one really checks if the object creation program is wrong
+void Geometry::check_constructed_object(const std::vector<size_t> obj, const std::string name)
+{
+	// Check if max index smaller than domain size 
+	auto iter = std::max_element(obj.begin(), obj.end());
+	if ((!obj.empty()) && (*iter >= _Nx*_Ny))
+		throw std::runtime_error("Constructed " + name + " upper bounds do not fit the domain.");
 }
 
 //
