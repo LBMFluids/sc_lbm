@@ -43,25 +43,25 @@ msg('Test 4 - correct:', RED)
 print S1.correct(geom)
 
 ### Ellipse
-## Test 3
-#E1 = ellipse(dx, dy, xc, yc)
-#msg('Test 3 - error:', RED)
-#print E1.correct(geom)	
-## Test 4 - new geom 
-#for ix, iy in np.ndindex(geom.shape):
-#	ir = (ix - xc)*(ix - xc)*dy*dy + \
-#		  (iy - yc)*(iy - yc)*dx*dx
-#	if ir <= dx*dx*dy*dy:
-#		geom[ix,iy] = 0.0
-#	else:
-#		geom[ix,iy] = 1.0
-#msg('Test 4 - correct:', RED)
-#print E1.correct(geom)
-#print [geom[14,30], geom[15,30]]
-## Test 5 - add an error
-#msg('Test 5 - error:', RED)
-#geom[15,30] = 0
-#print E1.correct(geom)
+## Test 5 - new geom
+geom = np.ones((20,50))
+dx = 8
+dy = 5
+E1 = ellipse(dx,dy,xc,yc)
+for ix, iy in np.ndindex(geom.shape):
+	ir = (ix - xc)*(ix - xc)*dy*dy + \
+		  (iy - yc)*(iy - yc)*dx*dx
+	if ir <= dx*dx*dy*dy:
+		geom[ix,iy] = 0.0
+	else:
+		geom[ix,iy] = 1.0
+geom = geom.transpose()
+msg('Test 5 - correct:', RED)
+print E1.correct(geom)
+## Test 6 - add an error
+msg('Test 7 - error:', RED)
+geom[0,1] = 0
+print E1.correct(geom)
 
 ## Empty geom
 # Test 6

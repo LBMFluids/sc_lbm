@@ -54,13 +54,19 @@ for file_rm in square_files:
 	if os.path.exists(file_rm):
 		os.remove(file_rm)
 
+# Test 6
+ellipse_files = glob.glob(fpath + 'ellipse_' + '*.txt')
+for file_rm in ellipse_files:
+	if os.path.exists(file_rm):
+		os.remove(file_rm)
+
 #
 # Run executables
 #
 
 # For tests 1 - 3
 subprocess.call("./misc_geom_tests", shell=True)
-# For tests 4 - 5
+# For tests 4 - 6
 subprocess.call("./add_objects_test", shell=True)
 
 #
@@ -112,3 +118,14 @@ for fsqr in square_files:
 	sqr = square(props[0], props[1], props[2])
 	geom = np.loadtxt(fsqr)
 	test_pass(sqr.correct(geom), 'Square test for ' + fsqr)
+
+# Test 6 - ellipses 
+for fell in ellipse_files:
+	# Square properties
+	props = [int(s) for s in fell.split('_') if s.isdigit()]
+	props.append(fell.split('_')[-1].split('.')[0])
+	# Test object
+	ell = ellipse(props[0], props[1], props[2], props[3])
+	geom = np.loadtxt(fell)
+	test_pass(ell.correct(geom), 'Ellipsee test for ' + fell)
+

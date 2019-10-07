@@ -32,17 +32,17 @@ public:
 	//
 
 	/** 
-	 * \brief Creates a Geometry object with default properties
-	 * \details This constructor should be used when reading a geometry from a file 
-	 * 		fluid
+	* \brief Creates a Geometry object with default properties
+	* \details This constructor should be used when reading a geometry from a file 
+	* 		fluid
 	*/
 	Geometry() = default; 
 	/** 
-	 * \brief Creates a Geometry object with nodes \f$N_x\times N_y\f$ nodes
-	 * \details Underlying array is initialized to 1 i.e. it is filled with
-	 * 		fluid
-	 * @param Nx [in] - number of nodes in x direction
-	 * @param Ny [in] - number of nodes in y direction
+	* \brief Creates a Geometry object with nodes \f$N_x\times N_y\f$ nodes
+	* \details Underlying array is initialized to 1 i.e. it is filled with
+	* 		fluid
+	* @param Nx [in] - number of nodes in x direction
+	* @param Ny [in] - number of nodes in y direction
 	*/
 	Geometry(const size_t Nx, const size_t Ny) : _Nx(Nx), _Ny(Ny) 
 				{ geom = new bool[_Nx*_Ny](); std::fill(geom, geom + _Nx*_Ny, true); }
@@ -92,7 +92,7 @@ public:
 	/** 
 	* \brief Create a single rectangle
     * 
-	  * @param Lx [in] - number of nodes in x direction
+	* @param Lx [in] - number of nodes in x direction
     * @param Ly [in] - number of nodes in y direction
     * @param xc [in] - center x coordinate
     * @param yc [in] - center y coordinate
@@ -102,39 +102,49 @@ public:
 	/** 
 	* \brief Create a single square 
     * 
-	  * @param Ls [in] - number of nodes in x/y direction
+	* @param Ls [in] - number of nodes in x/y direction
     * @param xc [in] - center x coordinate
     * @param yc [in] - center y coordinate
 	*/
 	void add_square(const size_t Ls, const size_t xc, const size_t yc);	
 
-	void add_ellipse(const std::vector<size_t>);
+	/** 
+	* \brief Create a single ellipse 
+    * 
+	* @param Lx [in] - number of nodes in x direction axis
+    * @param Ly [in] - number of nodes in y direction axis
+    * @param xc [in] - center x coordinate
+    * @param yc [in] - center y coordinate
+	*/
+	void add_ellipse(const size_t Lx, const size_t Ly, 
+						const size_t xc, const size_t yc);
+
 	void add_circle(const std::vector<size_t>);
 	// Arrays of objects 
 	void add_array(const std::vector<size_t>, const std::vector<size_t>, 
 					const std::string, const size_t alpha=0);
 
 	/** 
-	  * \brief Verify if the upper and lower bounds of an object to be cobnstructed are inside the domain 
+	* \brief Verify if the upper and lower bounds of an object to be cobnstructed are inside the domain 
     * 
-	  * @param Lx [in] - number of nodes in x direction
+	* @param Lx [in] - number of nodes in x direction
     * @param Ly [in] - number of nodes in y direction
     * @param xc [in] - center x coordinate
     * @param yc [in] - center y coordinate
-		* @param name [in] - object name for the error message
+	* @param name [in] - object name for the error message
 	*/
 	void check_object_bounds(const size_t Lx, const size_t Ly, 
 				                           const size_t xc, const size_t yc, const std::string name);
 
 	/** 
-	  * \brief Verify if the object is not constructed outside the domain's upper bounds
-		* 
-		* \details This actually checks the nodes returned to the Geometry object by the 
-		* 	program that constructs the object, specifically if the max node returned by the 
-		* 	construction program doesn't exceed total size of geom array - 1.  
-    * 
-	  * @param obj [in] - vector of nodes that are considered an object 
-		* @param name [in] - object name for the error message
+ 	* \brief Verify if the object is not constructed outside the domain's upper bounds
+   	* 
+   	* \details This actually checks the nodes returned to the Geometry object by the 
+   	* 	program that constructs the object, specifically if the max node returned by the 
+   	* 	construction program doesn't exceed total size of geom array - 1.  
+   	* 
+	* @param obj [in] - vector of nodes that are considered an object 
+	* @param name [in] - object name for the error message
 	*/
 	void check_constructed_object(const std::vector<size_t> obj, const std::string name);
 

@@ -128,12 +128,30 @@ void Geometry::add_square(const size_t Ls, const size_t xc, const size_t yc)
 {
 	check_object_bounds(Ls, Ls, xc, yc, "Square");
 
-	// Rectangle object and indices
+	// Square object and indices
 	std::vector<size_t> obj;
 	Square square(Ls, xc, yc);
 	obj = sub2ind<size_t>(square.get_nodes(), _Nx);
 
 	check_constructed_object(obj, "square");
+
+	// Include in the geometry array
+	for (auto node : obj)
+		geom[node] = false;
+}
+
+// Ellipse
+void Geometry::add_ellipse(const size_t Lx, const size_t Ly,
+                        const size_t xc, const size_t yc)
+{
+	check_object_bounds(Lx, Ly, xc, yc, "Ellipse");
+
+	// Ellipse object and indices
+	std::vector<size_t> obj;
+	Ellipse ellipse(Lx, Ly, xc, yc);
+	obj = sub2ind<size_t>(ellipse.get_nodes(), _Nx);
+
+	check_constructed_object(obj, "ellipse");
 
 	// Include in the geometry array
 	for (auto node : obj)

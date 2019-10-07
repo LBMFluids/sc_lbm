@@ -9,6 +9,8 @@ void rectangle_test_suite();
 void rectangle_exception_test_suite();
 void square_test_suite();
 void square_exception_test_suite();
+void ellipse_test_suite();
+void ellipse_exception_test_suite();
 
 // Supporting functions
 void make_and_save_rectangle(const size_t, const size_t, 
@@ -18,10 +20,15 @@ void make_and_save_rectangle(const size_t, const size_t,
 void make_and_save_square(const size_t, const size_t, 
 							 const size_t, const size_t,
 							 const size_t, const std::string);
+void make_and_save_ellipse(const size_t, const size_t, 
+							 const size_t, const size_t,
+							 const size_t, const size_t,
+							 const std::string);
 
 // Files for removal (to prevent biased tests)
 // ./test_data/rectangle_test_#.txt
 // ./test_data/square_test_#.txt
+// ./test_data/ellipse_test_#.txt
 
 int main()
 {
@@ -29,6 +36,8 @@ int main()
  	rectangle_exception_test_suite();
 	square_test_suite();
 	square_exception_test_suite();
+	ellipse_test_suite();
+	ellipse_exception_test_suite();
 }
 
 ///\brief Test various rectangle objects for correctness
@@ -128,6 +137,56 @@ void square_exception_test_suite()
 	tst_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square y center outside the domain");
 }
 
+///\brief Test various ellipse objects for correctness
+void ellipse_test_suite()
+{
+	// Geometry width and height
+	size_t Nx = 500, Ny = 200;
+	// Properties of test ellipses (Ex, Ey, xc, yc)
+	std::vector<std::string> prop_names = {"Ex", "Ey", "xc", "yc"};
+	std::vector<std::vector<size_t>> test_ellipses = 
+		{{9, 5, 41, 3}, {1, 5, 1, 5}, {1, 1, 0, 0}, {7, 1, 30, 2}, 
+	  	 {8, 5, 37, 3}, {9, 4, 22, 3}, {100, 50, 250, 100}};
+	// Create and save geometries with all tested ellipses 
+	for (const auto props : test_ellipses){
+		// Makes a name out of all target properties
+		std::ostringstream fname("./test_data/ellipse_test", std::ios_base::ate);
+		size_t iprop = 0;
+		for (const auto pname : prop_names)
+			fname << "_" << pname << "_" << props.at(iprop++);
+		fname << ".txt";
+		// 
+		make_and_save_ellipse(Nx, Ny, props.at(0), props.at(1), 
+								props.at(2), props.at(3), fname.str());
+	}
+}
+
+/// \brief Tests correct exception behavior in ellipse adding code
+void ellipse_exception_test_suite()
+{
+	// Exception tests settings
+	bool verbose = true;
+	const std::runtime_error rtime("Runtime error");
+	// Geometry properties
+	size_t Nx = 100, Ny = 300;
+	Geometry geom(Nx, Ny);
+	// Ellipse - dimensions outside x, center inside
+	size_t Ex = 5, Ey = 10, xc = 0, yc =50;
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse too large in x");
+	// Ellipse - dimensions outside y, center inside
+	Ey = 1000;
+	xc = 30;
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse too large in y");
+	// Ellipse - dimensions ok, x center outside
+	Ey = 10;
+	xc = 1050; 
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse x center outside the domain");
+	// Ellipse - dimensions ok, y center outside
+	xc = 50; 
+	yc = 500;
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse y center outside the domain");
+}
+
 /** 
  * \brief Creates and saves a geometry with a rectangle
  * @param Nx [in] - number of nodes in x direction
@@ -163,5 +222,25 @@ void make_and_save_square(const size_t Nx, const size_t Ny,
 {
 	Geometry geom(Nx, Ny);
 	geom.add_square(Ls, xc, yc);
+	geom.write(fname);
+}
+
+/** 
+ * \brief Creates and saves a geometry with an ellipse 
+ * @param Nx [in] - number of nodes in x direction
+ * @param Ny [in] - number of nodes in y direction
+ * @param Ex [in] - number of nodes in ellipse width (x)
+ * @param Ey [in] - number of nodes in ellipse height (y)
+ * @param xc [in] - ellipse center, x coordinate
+ * @param yc [in] - ellipse center, y coordinate
+ * @param fname [in] - name of the file to save the geometry to
+ */
+void make_and_save_ellipse(const size_t Nx, const size_t Ny, 
+							 const size_t Ex, const size_t Ey,
+							 const size_t xc, const size_t yc,
+							 const std::string fname)
+{
+	Geometry geom(Nx, Ny);
+	geom.add_ellipse(Ex, Ey, xc, yc);
 	geom.write(fname);
 }

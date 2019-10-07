@@ -35,18 +35,18 @@ class rectangle(object):
 		# Measures the sum of areas of each triangle created
 		# between point ix, iy and the object edge
 		# Ref: https://martin-thoma.com/how-to-check-if-a-point-is-inside-a-rectangle/
-                count = 0 
+		count = 0 
 		for iy, ix in np.ndindex(geom.shape):
 			if np.int_(geom[iy,ix]) == 0:
 				A1 = self.tri_area(x0-dx/2.0, y0-dy/2.0, x0-dx/2.0, y0+dy/2.0, ix, iy )	
 				A2 = self.tri_area(ix, iy, x0-dx/2.0, y0+dy/2.0, x0+dx/2.0, y0+dy/2.0)
 				A3 = self.tri_area(ix, iy, x0+dx/2.0, y0-dy/2.0, x0+dx/2.0, y0+dy/2.0)
 				A4 = self.tri_area(ix, iy, x0-dx/2.0, y0-dy/2.0, x0+dx/2.0, y0-dy/2.0)
-                                count += 1
+				count += 1
 				if not np.isclose((A1 + A2 + A3 + A4), A_obj):
 					msg(self.name + ' - solid point outside the object area', MAGENTA)
 					return False
-        	# Compare the node count to expected
+        # Compare the node count to expected
 		if (count == 0) and ((np.int_(self.dx) != 0) or (np.int_(self.dy) != 0)):
 			msg('No ' + self.name + ' at all!', MAGENTA)
 			return False		
@@ -60,21 +60,28 @@ class square(rectangle):
             self.name = 'square'
 
 class ellipse:
-	''' Class for defining correctness of an elliptical object '''
+	''' Class for defining correctness of an ellipse '''
 	def __init__(self, dx, dy, x0, y0):
-		self.dx = dx	
-		self.dy = dy
-		self.x0 = x0
-		self.y0 = y0
+		self.dx = np.double(dx)	
+		self.dy = np.double(dy)
+		self.x0 = np.double(x0)
+		self.y0 = np.double(y0)
+		self.name = 'ellipse'
 				
 	def correct(self, geom):
-		for ix, iy in np.ndindex(geom.shape):
-			if geom[ix,iy] == 0:
+		count = 0
+		for iy, ix in np.ndindex(geom.shape):
+			if np.int_(geom[iy,ix]) == 0:
 				ir = (ix - self.x0)*(ix - self.x0)*self.dy*self.dy + \
 				        (iy - self.y0)*(iy - self.y0)*self.dx*self.dx
+				count += 1
 				if ir > self.dx*self.dx*self.dy*self.dy:
 					msg('Ellipse - solid point outside the object area', MAGENTA)
 					return False
+		# Compare the node count to expected
+		if (count == 0) and ((np.int_(self.dx) != 0) or (np.int_(self.dy) != 0)):
+			msg('No ' + self.name + ' at all!', MAGENTA)
+			return False
 		return True
 
 class walls:
