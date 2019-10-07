@@ -119,7 +119,15 @@ public:
 	void add_ellipse(const size_t Lx, const size_t Ly, 
 						const size_t xc, const size_t yc);
 
-	void add_circle(const std::vector<size_t>);
+	/** 
+	* \brief Create a single circle 
+    * 
+	* @param D [in] - number of nodes in x/y direction (diameter)
+    * @param xc [in] - center x coordinate
+    * @param yc [in] - center y coordinate
+	*/
+	void add_circle(const size_t D, const size_t xc, const size_t yc);	
+
 	// Arrays of objects 
 	void add_array(const std::vector<size_t>, const std::vector<size_t>, 
 					const std::string, const size_t alpha=0);

@@ -11,6 +11,8 @@ void square_test_suite();
 void square_exception_test_suite();
 void ellipse_test_suite();
 void ellipse_exception_test_suite();
+void circle_test_suite();
+void circle_exception_test_suite();
 
 // Supporting functions
 void make_and_save_rectangle(const size_t, const size_t, 
@@ -24,11 +26,15 @@ void make_and_save_ellipse(const size_t, const size_t,
 							 const size_t, const size_t,
 							 const size_t, const size_t,
 							 const std::string);
+void make_and_save_circle(const size_t, const size_t, 
+							 const size_t, const size_t,
+							 const size_t, const std::string);
 
 // Files for removal (to prevent biased tests)
 // ./test_data/rectangle_test_#.txt
 // ./test_data/square_test_#.txt
 // ./test_data/ellipse_test_#.txt
+// ./test_data/circle_test_#.txt
 
 int main()
 {
@@ -38,6 +44,8 @@ int main()
 	square_exception_test_suite();
 	ellipse_test_suite();
 	ellipse_exception_test_suite();
+	circle_test_suite();
+	circle_exception_test_suite();
 }
 
 ///\brief Test various rectangle objects for correctness
@@ -187,6 +195,58 @@ void ellipse_exception_test_suite()
 	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse y center outside the domain");
 }
 
+///\brief Test various circle objects for correctness
+void circle_test_suite()
+{
+	// Geometry width and height
+	size_t Nx = 500, Ny = 200;
+	// Properties of test circles (R, xc, yc)
+	std::vector<std::string> prop_names = {"D", "xc", "yc"};
+	std::vector<std::vector<size_t>> test_circles = 
+		{{9, 41, 30}, {1, 1, 5}, {1, 1, 1}, {7, 30, 4}, 
+	  	 {5, 37, 3}, {4, 22, 3}, {100, 250, 100}};
+	// Create and save geometries with all tested circles 
+	for (const auto props : test_circles){
+		// Makes a name out of all target properties
+		std::ostringstream fname("./test_data/circle_test", std::ios_base::ate);
+		size_t iprop = 0;
+		for (const auto pname : prop_names)
+			fname << "_" << pname << "_" << props.at(iprop++);
+		fname << ".txt";
+		// 
+		make_and_save_circle(Nx, Ny, props.at(0), props.at(1), 
+								props.at(2), fname.str());
+	}
+}
+
+/// \brief Tests correct exception behavior in circle adding code
+void circle_exception_test_suite()
+{
+	// Exception tests settings
+	bool verbose = true;
+	const std::runtime_error rtime("Runtime error");
+	// Geometry properties
+	size_t Nx = 100, Ny = 300;
+	Geometry geom(Nx, Ny);
+	// Circle - dimensions outside x, center inside
+	size_t D = 10, xc = 0, yc =50;
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle too large in x");
+	// Circle - dimensions outside y, center inside
+	D = 10;
+	xc = 30;
+	yc = 299;
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle too large in y");
+	// Circle - dimensions ok, x center outside
+	D = 10;
+	yc = 200;
+	xc = 1050; 
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle x center outside the domain");
+	// Circle - dimensions ok, y center outside
+	xc = 50; 
+	yc = 5000;
+	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle y center outside the domain");
+}
+
 /** 
  * \brief Creates and saves a geometry with a rectangle
  * @param Nx [in] - number of nodes in x direction
@@ -242,5 +302,23 @@ void make_and_save_ellipse(const size_t Nx, const size_t Ny,
 {
 	Geometry geom(Nx, Ny);
 	geom.add_ellipse(Ex, Ey, xc, yc);
+	geom.write(fname);
+}
+
+/** 
+ * \brief Creates and saves a geometry with an circle 
+ * @param Nx [in] - number of nodes in x direction
+ * @param Ny [in] - number of nodes in y direction
+ * @param D [in] - number of nodes in circle diameter 
+ * @param xc [in] - ellipse center, x coordinate
+ * @param yc [in] - ellipse center, y coordinate
+ * @param fname [in] - name of the file to save the geometry to
+ */
+void make_and_save_circle(const size_t Nx, const size_t Ny, 
+							 const size_t D, const size_t xc,
+							 const size_t yc, const std::string fname)
+{
+	Geometry geom(Nx, Ny);
+	geom.add_circle(D, xc, yc);
 	geom.write(fname);
 }

@@ -158,6 +158,23 @@ void Geometry::add_ellipse(const size_t Lx, const size_t Ly,
 		geom[node] = false;
 }
 
+// Circle
+void Geometry::add_circle(const size_t D, const size_t xc, const size_t yc)
+{
+	check_object_bounds(D, D, xc, yc, "Circle");
+
+	// Circle object and indices
+	std::vector<size_t> obj;
+	Circle circle(D, xc, yc);
+	obj = sub2ind<size_t>(circle.get_nodes(), _Nx);
+
+	check_constructed_object(obj, "circle");
+
+	// Include in the geometry array
+	for (auto node : obj)
+		geom[node] = false;
+}
+
 // Nominal object bounds check
 void Geometry::check_object_bounds(const size_t Lx, const size_t Ly, 
 				                     const size_t xc, const size_t yc, const std::string name)

@@ -60,13 +60,19 @@ for file_rm in ellipse_files:
 	if os.path.exists(file_rm):
 		os.remove(file_rm)
 
+# Test 7
+circle_files = glob.glob(fpath + 'circle_' + '*.txt')
+for file_rm in circle_files:
+	if os.path.exists(file_rm):
+		os.remove(file_rm)
+
 #
 # Run executables
 #
 
 # For tests 1 - 3
 subprocess.call("./misc_geom_tests", shell=True)
-# For tests 4 - 6
+# For tests 4 - 7
 subprocess.call("./add_objects_test", shell=True)
 
 #
@@ -127,5 +133,16 @@ for fell in ellipse_files:
 	# Test object
 	ell = ellipse(props[0], props[1], props[2], props[3])
 	geom = np.loadtxt(fell)
-	test_pass(ell.correct(geom), 'Ellipsee test for ' + fell)
+	test_pass(ell.correct(geom), 'Ellipse test for ' + fell)
+
+# Test 7 - circle 
+for fcirc in circle_files:
+	# Square properties
+	props = [int(s) for s in fcirc.split('_') if s.isdigit()]
+	props.append(fcirc.split('_')[-1].split('.')[0])
+	# Test object
+	circ = circle(props[0], props[1], props[2])
+	geom = np.loadtxt(fcirc)
+	test_pass(circ.correct(geom), 'Circle test for ' + fcirc)
+
 

@@ -18,7 +18,7 @@ class rectangle(object):
 		self.dy = np.double(dy)
 		self.x0 = np.double(x0)
 		self.y0 = np.double(y0)
-                self.name = 'rectangle'
+		self.name = 'rectangle'
 
 	def tri_area(self, x1, y1, x2, y2, x3, y3):
 	    return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
@@ -55,11 +55,11 @@ class rectangle(object):
 class square(rectangle):
 	''' Class for defining correctness of a square object '''
 	def __init__(self, ds, x0, y0):
-	    super(square, self).__init__(ds, ds, x0, y0)
-            # Overwrite the name 
-            self.name = 'square'
+		super(square, self).__init__(ds, ds, x0, y0)
+		# Overwrite the name 
+		self.name = 'square'
 
-class ellipse:
+class ellipse(object):
 	''' Class for defining correctness of an ellipse '''
 	def __init__(self, dx, dy, x0, y0):
 		self.dx = np.double(dx)	
@@ -72,17 +72,24 @@ class ellipse:
 		count = 0
 		for iy, ix in np.ndindex(geom.shape):
 			if np.int_(geom[iy,ix]) == 0:
-				ir = (ix - self.x0)*(ix - self.x0)*self.dy*self.dy + \
-				        (iy - self.y0)*(iy - self.y0)*self.dx*self.dx
+				ir = (ix - self.x0)*(ix - self.x0)*self.dy*self.dy/4.0 + \
+				        (iy - self.y0)*(iy - self.y0)*self.dx*self.dx/4.0
 				count += 1
-				if ir > self.dx*self.dx*self.dy*self.dy:
-					msg('Ellipse - solid point outside the object area', MAGENTA)
+				if ir > self.dx*self.dx*self.dy*self.dy/16.0:
+					msg(self.name + ' - solid point outside the object area', MAGENTA)
 					return False
 		# Compare the node count to expected
 		if (count == 0) and ((np.int_(self.dx) != 0) or (np.int_(self.dy) != 0)):
 			msg('No ' + self.name + ' at all!', MAGENTA)
 			return False
 		return True
+
+class circle(ellipse):
+	''' Class for defining correctness of a circle object '''
+	def __init__(self, D, x0, y0):
+		super(circle, self).__init__(D, D, x0, y0)
+		# Overwrite the name 
+		self.name = 'circle'
 
 class walls:
 	''' Class for defining correctness of single pair of walls '''

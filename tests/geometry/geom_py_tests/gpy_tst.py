@@ -49,9 +49,9 @@ dx = 8
 dy = 5
 E1 = ellipse(dx,dy,xc,yc)
 for ix, iy in np.ndindex(geom.shape):
-	ir = (ix - xc)*(ix - xc)*dy*dy + \
-		  (iy - yc)*(iy - yc)*dx*dx
-	if ir <= dx*dx*dy*dy:
+	ir = (ix - xc)*(ix - xc)*dy*dy/4.0 + \
+		  (iy - yc)*(iy - yc)*dx*dx/4.0
+	if ir <= dx*dx*dy*dy/16.0:
 		geom[ix,iy] = 0.0
 	else:
 		geom[ix,iy] = 1.0
@@ -59,9 +59,31 @@ geom = geom.transpose()
 msg('Test 5 - correct:', RED)
 print E1.correct(geom)
 ## Test 6 - add an error
-msg('Test 7 - error:', RED)
+msg('Test 6 - error:', RED)
 geom[0,1] = 0
 print E1.correct(geom)
+
+## Circle
+# Test 7
+C1 = circle(dx, xc, yc)
+msg('Test 7 - error:', RED)
+print C1.correct(geom)
+# Test 8
+geom = np.ones((20,50))
+xc = 10
+yc = 30
+Dc = 18
+C1 = circle(Dc, xc, yc)
+for ix, iy in np.ndindex(geom.shape):
+	ir = (ix - xc)*(ix - xc)*Dc*Dc/4.0 + \
+		  (iy - yc)*(iy - yc)*Dc*Dc/4.0
+	if ir <= Dc*Dc*Dc*Dc/16.0:
+		geom[ix,iy] = 0.0
+	else:
+		geom[ix,iy] = 1.0
+geom = geom.transpose()
+msg('Test 8 - correct:', RED)
+print C1.correct(geom)
 
 ## Empty geom
 # Test 6

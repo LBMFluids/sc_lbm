@@ -13,5 +13,6 @@
 #include "geom_object/rectangle.h"
 #include "geom_object/square.h"
 #include "geom_object/ellipse.h"
+#include "geom_object/circle.h"
 
 #endif
