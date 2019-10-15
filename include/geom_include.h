@@ -15,4 +15,8 @@
 #include "geom_object/ellipse.h"
 #include "geom_object/circle.h"
 
+//
+// Arrays
+//
+
 #endif
