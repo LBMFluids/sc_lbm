@@ -43,6 +43,12 @@ std::vector<std::vector<T>> flat_array_2_vector_2D(const size_t Nrow, const size
 template<typename T>
 void vector_2D_2_flat_array(std::vector<std::vector<T>> vec2D, const size_t Nelem, T* flat_arr);
 
+/**
+ * \brief Convert a string to all lower case
+ * \details From https://en.cppreference.com/w/cpp/string/byte/tolower
+ * @param [in] s - string which will be converted to all lower case
+ */
+std::string str_to_lower(std::string s); 
 
 //
 // Implementation - templates

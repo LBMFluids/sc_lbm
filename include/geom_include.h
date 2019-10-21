@@ -16,7 +16,9 @@
 #include "geom_object/circle.h"
 
 //
-// Arrays
+// Arrays of objects
 //
+
+#include "arrays/regular_array.h"
 
 #endif

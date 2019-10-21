@@ -128,10 +128,6 @@ public:
 	*/
 	void add_circle(const size_t D, const size_t xc, const size_t yc);	
 
-	// Arrays of objects 
-	void add_array(const std::vector<size_t>, const std::vector<size_t>, 
-					const std::string, const size_t alpha=0);
-
 	/** 
 	* \brief Verify if the upper and lower bounds of an object to be cobnstructed are inside the domain 
     * 
@@ -155,6 +151,53 @@ public:
 	* @param name [in] - object name for the error message
 	*/
 	void check_constructed_object(const std::vector<size_t> obj, const std::string name);
+
+	// 
+	// Arrays of objects
+	//
+	
+	/**
+	 * \brief Create an array of built in objects given displacements
+	 * @param [in] object_properties - vector with object parameters;
+	 * 									parameters appear in the same
+	 * 									order as in the add_ function
+	 * 									normally used to construct
+	 * 									that object 
+	 * @param [in] array_bounds - nested vector with lower and upper outer bounds 
+	 * 								of the array in following order: 
+	 * 								[[lower x, upper x], [lower y, upper y]]
+	 * @param [in] dx - displacement in x - difference between outermost
+	 * 						bounds of the object in x; this is in number
+	 * 						of nodes
+	 * @param [in] dy - displacement in y - difference between outermost
+	 * 						bounds of the object in y; this is in number
+	 * 						of nodes
+	 * @param [in] object_type - built in object type, case insensitive
+	 * @param [in] alpha - staggering angle, default 0 (regular array)
+	 */
+	void add_array(const std::vector<size_t> object_properties,
+					const std::vector<std::vector<size_t>> array_bounds, 
+					const size_t dx, const size_t dy, 
+					const std::string object_type, const size_t alpha=0);
+	
+	/**
+	 * \brief Create an array of built in objects given object numbers
+	 * @param [in] object_properties - vector with object parameters;
+	 * 									parameters appear in the same
+	 * 									order as in the add_ function
+	 * 									normally used to construct
+	 * 									that object 
+	 * @param [in] array_bounds - nested vector with lower and upper outer bounds 
+	 * 								of the array in following order: 
+	 * 								[[lower x, upper x], [lower y, upper y]]
+	 * @param [in] object_numbers - vector with numbers of objects in x and y 
+	 * @param [in] object_type - built in object type, case insensitive
+	 * @param [in] alpha - staggering angle, default 0 (regular array)
+	 */
+	void add_array(const std::vector<size_t> object_properties,
+					const std::vector<std::vector<size_t>> array_bounds, 
+					const std::vector<size_t> object_numbers,
+					const std::string object_type, const size_t alpha=0);
 
 	//
 	// Change individual nodes
@@ -230,6 +273,17 @@ private:
 	size_t _Nx = 0, _Ny = 0;
 	// Pi
 	const double pi = std::acos(-1);
+	/** 
+	 * \brief Generate nodes of an object for array creation
+	 * \details Can construct any object already defined in 
+	 * 				the Geometry class (rectangle, ellipse, etc.)
+	 * @param [in] type - object type, case insensitive
+	 * @param [in] p - vector of parameters for construction
+	 * 					of the object
+	 * @return Linear indices of the object 
+	 */
+	std::vector<std::vector<size_t>> create_built_in_object(std::string type, 
+						const std::vector<size_t> p);
 };
 
 #endif

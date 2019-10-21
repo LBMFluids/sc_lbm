@@ -199,6 +199,69 @@ void Geometry::check_constructed_object(const std::vector<size_t> obj, const std
 }
 
 //
+// Arrays of objects
+//
+
+// Create an array of built in objects given displacements
+void Geometry::add_array(const std::vector<size_t> object_properties,
+					const std::vector<std::vector<size_t>> array_bounds, 
+					const size_t dx, const size_t dy, 
+					const std::string object_type, const size_t alpha)
+{
+	std::vector<size_t> array_nodes;
+	const std::vector<std::vector<size_t>> object_nodes = 
+			create_built_in_object(object_type, object_properties);
+
+	RegularArray array(object_nodes, array_bounds, dx, dy);
+	array_nodes = sub2ind<size_t>(array.get_nodes(), _Nx);
+
+	// Include in the geometry
+	for (auto node : array_nodes)
+		geom[node] = false;
+}	
+
+// Create an array of built in objects given object numbers
+void Geometry::add_array(const std::vector<size_t> object_properties,
+					const std::vector<std::vector<size_t>> array_bounds,
+					const std::vector<size_t> object_numbers,
+					const std::string object_type, const size_t alpha)
+{
+	std::vector<size_t> array_nodes;
+	const std::vector<std::vector<size_t>> object_nodes = 
+			create_built_in_object(object_type, object_properties);
+
+	RegularArray array(object_nodes, array_bounds, object_numbers);
+	array_nodes = sub2ind<size_t>(array.get_nodes(), _Nx);
+
+	// Include in the geometry
+	for (auto node : array_nodes)
+		geom[node] = false;
+}
+
+// Create a built in object and return its nodes
+std::vector<std::vector<size_t>> Geometry::create_built_in_object
+						(std::string object_type, 
+						const std::vector<size_t> p)
+{
+	auto get_object_nodes = [](geom_object&& obj){ return obj.get_nodes(); };
+	std::string vtypes("rectangle, square, ellipse, and circle.");
+
+	// Retrieve the nodes of a build in object with a given type
+	std::string type = str_to_lower(object_type);
+	if (type == "rectangle"){
+		return get_object_nodes(Rectangle(p[0], p[1], p[2], p[3]));
+	} else if (type == "square"){
+		return get_object_nodes(Square(p[0], p[1], p[2]));
+	} else if (type == "ellipse"){
+		return get_object_nodes(Ellipse(p[0], p[1], p[2], p[3]));
+	} else if (type == "circle"){
+		return get_object_nodes(Circle(p[0], p[1], p[2]));
+	} else {
+		throw std::invalid_argument("Non-existing object type. Valid types are: " + vtypes);
+	}
+}
+
+//
 // I/O
 //
 

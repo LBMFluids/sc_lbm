@@ -11,5 +11,6 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <cctype>
 
 #endif

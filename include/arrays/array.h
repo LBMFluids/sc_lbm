@@ -43,14 +43,14 @@ protected:
 	 * 								lower x, upper x, lower y, upper y
 	 */ 
 	Array(const std::vector<std::vector<size_t>> nodes, 
-			const std::vector<size_t> array_outer_bounds) : 
+			const std::vector<std::vector<size_t>> array_outer_bounds) : 
 			input_object(nodes), array_bounds(array_outer_bounds){ }
 	/// \brief Nodes/indices occupied by the array
 	std::vector<std::vector<size_t>> array_nodes = {};
 	/// \brief Return nodes of the input object
-	const std::vector<std::vector<size_t>> get_input_nodes() const { return input_object; }
+	std::vector<std::vector<size_t>> get_input_nodes() const { return input_object; }
 	/// \brief Return array bounds
-	const std::vectorstd::vector<size_t> get_array_bounds() const { return array_bounds; }
+	std::vector<std::vector<size_t>> get_array_bounds() const { return array_bounds; }
 	/// \brief Finds/computes the nodes occupied by an array
 	virtual void find_nodes() = 0;
 private:
@@ -61,7 +61,7 @@ private:
 	std::vector<std::vector<size_t>> input_object = {};
 	// Outer bounds of the array
 	std::vector<std::vector<size_t>> array_bounds = {};
-}
+};
 
 #endif
 
