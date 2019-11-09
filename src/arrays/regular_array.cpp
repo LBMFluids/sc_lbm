@@ -56,8 +56,8 @@ void RegularArray::compute_displacements()
 	std::vector<size_t> array_dim = 
 				compute_array_dimensions(obj_size.at(0), obj_size.at(1));
 	// Displacements
-	dx = array_dim.at(0)/(Nx - 1) - obj_size.at(0);
-	dy = array_dim.at(1)/(Ny - 1) - obj_size.at(1);
+	dx = (array_dim.at(0) + obj_size.at(0))/(Nx - 1) - obj_size.at(0);
+	dy = (array_dim.at(1) + obj_size.at(1))/(Ny - 1) - obj_size.at(1);
 }
 
 // Compute and store object size in x and y 
@@ -94,8 +94,8 @@ void RegularArray::find_nodes()
 	
 	// Shift every node in each direction and store resulting cordinates 
 	// Shifts valid for all nodes
-	size_t x_shift = obj_bounds.at(0).at(1) + dx + 1; 
-	size_t y_shift = obj_bounds.at(1).at(1) + dy + 1;
+	size_t x_shift = obj_bounds.at(0).at(1) - obj_bounds.at(0).at(0) + dx + 1; 
+	size_t y_shift = obj_bounds.at(1).at(1) - obj_bounds.at(1).at(0) + dy + 1;
 
 	size_t xpos = 0, ypos = 0;
 	for (const auto& node : input_nodes){	
@@ -108,7 +108,3 @@ void RegularArray::find_nodes()
 		}
 	}
 }
-
-
-
-

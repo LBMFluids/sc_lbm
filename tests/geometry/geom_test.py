@@ -137,71 +137,65 @@ class walls:
 class obj_array:
 	''' Class for determining correctness of an array 
 			of objects '''
-	# Array of objects has to be represented as 0 points
-	# instead of whole objects (object correctness is checked elsewhere)
-	def __init__(self, a, b, x0, xf, y0, yf, dx, dy):
-		self.a = a
-		self.b = b
-		self.x0 = x0
-		self.xf = xf
-		self.y0 = y0
-		self.yf = yf
-		self.dx = dx
-		self.dy = dy
-		# Expected number of objects in x and y
-		self.Nx = (xf-x0-a-dx)/(a+dx) + 2;
-		self.Ny = (yf-y0-b-dy)/(b+dy) + 2;
+	def __init__(self, **kwargs):
+		# --- > follow the sme convention in file nmes
+		# then just extrct the dt nd make kwargs on the go
+		# File with the object
+		self.obj_file = kwargs['obj_file']
+		# Object dimensions
+		self.obj_x = kwargs['x']
+		self.obj_y = kwargs['y']
+		# Domain dimensions
+		self.arr_x = kwargs['arr_x']
+		self.arr_y = kwargs['arr_y']
+		# Array bounds
+		self.x0 = kwargs['x0']
+		self.xf = kwargs['xf']
+		self.y0 = kwargs['y0']
+		self.yf = kwargs['yf']
+		# Displacements and number of objects
+		if kwargs['Nx'] == None:
+			self.dx = kwargs['dx']
+			self.dy = kwargs['dy']
+			# Expected number of objects in x and y
+			self.Nx = (self.xf-self.x0+1)/(self.dx + self.obj_x) + 1
+			self.Ny = (self.yf-self.y0+1)/(self.dy + self.obj_y) + 1
+		else:
+			self.Nx = kwargs['Nx']
+			self.Ny = kwargs['Ny']
+			# Expected displacements 
+			self.dx = (self.xf-self.x0+1)/(self.Nx - 1) - self.obj_x
+			self.dy = (self.yf-self.y0+1)/(self.Ny - 1) - self.obj_y
 
 	def correct(self, geom):
-		if (geom.size - np.count_nonzero(geom)) != self.Nx*self.Ny: 
-			msg('Wrong number of objects present', MAGENTA)			
-			return False
-		yi = self.y0
-		for ig in range(0, self.Ny):
-			xi = self.x0
-			for jg in range(0, self.Nx):
-				if geom[yi,xi] != 0:
-					msg('Object center at a wrong place', MAGENTA)			
-					return False
-				xi += self.a + self.dx
-			yi += self.b + self.dy
-		return True
+		# Load a single object that was replicated
+		# and find its' bounds
+		obj = np.loadtxt(self.obj_file)
+		bounds = np.nonzero(obj == 0)	
+		obj_x0 = np.min(bounds[1])
+		obj_xf = np.max(bounds[1])
+		obj_y0 = np.min(bounds[0])
+		obj_yf = np.max(bounds[0])
+		#
+		# Recreates the array and compares
+		# directly, something better in the future
+		x_shift = obj_xf - obj_x0 + self.dx + 1
+		y_shift = obj_yf - obj_y0 + self.dy + 1
+		
+		new_geom = np.ones((self.arr_y, self.arr_x))
 
-class stag_array(obj_array):
-	''' Class for determining correctness of an array 
-			of objects '''
-	# Array of objects has to be represented as 0 points
-	# instead of whole objects (object correctness is checked elsewhere)
-	def __init__(self, a, b, x0, xf, y0, yf, dx, dy, alpha):
-		obj_array.__init__(self, a, b, x0, xf, y0, yf, dx, dy)
-		self.alpha = alpha
-		# Expected number and initial position of objects in x and y with staggering
-		self.alpha_rad = alpha*np.pi/180.0;
-		self.beta_rad = (180.0-2.0*alpha)*np.pi/180.0;
-		self.dx_alpha = np.sin(self.alpha_rad)/np.sin(self.beta_rad)*(dx + a);
-		self.dxs = int((dx+a)/2)
-		self.dys = int(np.sqrt(self.dx_alpha*self.dx_alpha - self.dxs*self.dxs));
-		self.xs0 = x0 + self.dxs
-		self.xsf = xf - self.dxs
-		self.Ny = int(yf-y0-b-(self.dys-b))/(b+(self.dys-b)) + 2;
-		self.Nstg = int((self.xsf-self.xs0-a-dx)/(a+dx)) + 2
+		for iy, ix in zip(bounds[0], bounds[1]):
+			for row in range(0,self.Nx):
+				for col in range(0,self.Ny):
+					xs = ix + row*x_shift
+					ys = iy + col*y_shift
+					new_geom[ys,xs] = 0	
 
-	def correct(self, geom):
-		count = 0
-		yi = self.y0
-		for ig in range(0, self.Ny):
-			xi = self.xs0 if ig%2 else self.x0
-			for jg in range(0, self.Nstg if ig%2 else self.Nx):
-				count += 1
-				if geom[yi,xi] != 0:
-					msg('Object center at a wrong place', MAGENTA)			
-					return False
-				xi += self.a + self.dx
-			yi += self.dys
-		if (geom.size - np.count_nonzero(geom)) != count:
-			msg('Wrong number of objects present', MAGENTA)			
+		if np.array_equal(new_geom, geom):
+			return True
+		else:
+			msg('Object array not equal to expected', MAGENTA)
 			return False
-		return True
 
 def empty(geom):
 	''' Checks if geom is empty - no solid nodes '''
