@@ -15,10 +15,10 @@
  * @return - vector of linear indices 
 */
 template<typename T>
-std::vector<T> sub2ind(std::vector<std::vector<T>>&& subs, const size_t Ny);
+std::vector<T> sub2ind(std::vector<std::vector<T>>&& subs, const size_t Nx);
 /// \brief sub2ind overload for lvalue references
 template<typename T>
-std::vector<T> sub2ind(std::vector<std::vector<T>>& subs, const size_t Ny);
+std::vector<T> sub2ind(std::vector<std::vector<T>>& subs, const size_t Nx);
 
 /** 
  * \brief Convert a flat array of type T to nested vector of type T

@@ -11,13 +11,16 @@ void regular_array_test_suite();
 void arrays_for_geom_py_tests();
 
 // Supporting functions
-void make_regular_array(std::string);
 void distance_based_array(std::vector<size_t>, std::vector<size_t>,
 					std::string, std::vector<std::vector<size_t>>, 
 					size_t, size_t, std::string);
 void numbers_based_array(std::vector<size_t>, std::vector<size_t>,
 					std::string, std::vector<std::vector<size_t>>, 
 					size_t, size_t, std::string);
+void make_array_from_file(std::string);
+
+// Required files
+// ./test_data/array_tests_input.txt - inputs for array testing
 
 int main()
 {
@@ -25,12 +28,71 @@ int main()
     arrays_for_geom_py_tests();
 }
 
+// Creates geometries with arrays defined in the property 
+// file - property order in the file is hardcoded:
+// object_type | geom dim x | geom dim y | obj dim x | obj dim y |
+// first object center xc, yc
+// array bounds x0, xf, y0, yf | object distances dx, dy |
+// object numbers Nx, Ny - specify either distances or numbers, leave
+// the other set as 0
 void regular_array_test_suite()
 {
-	Geometry geom(100, 50);
-	geom.add_array({3,5,5,3}, {{20,80},{0,49}}, 5, 10, "rectangle");
-//	geom.add_array({5,5,3}, {{10,90},{0,39}}, {5, 3}, "circle");
-	geom.write("array_test.txt");	
+	// File to read the properties from
+	std::ifstream infile("./test_data/array_tests_input.txt");	
+	std::string line;
+	while (std::getline(infile, line)){
+		make_array_from_file(line);		
+	}
+}
+
+void make_array_from_file(std::string line)
+{
+		std::string object_type;
+		size_t geom_dim_x = 0, geom_dim_y = 0;
+		size_t obj_x = 0, obj_y = 0, xc = 0, yc = 0;
+		size_t x0 = 0, xf = 0, y0 = 0, yf = 0, dx = 0, dy = 0, Nx = 0, Ny =0;
+		
+		// Read property set
+		std::istringstream text(line);
+		text >> object_type;
+		text >> geom_dim_x >> geom_dim_y;
+		text >> obj_x >> obj_y >> xc >> yc;
+		text >> x0 >> xf >> y0 >> yf >> dx >> dy >> Nx >> Ny;	
+
+		// Create the geometry
+		Geometry geom(geom_dim_x, geom_dim_y);
+		if (Nx == 0 || Ny == 0){
+			if (object_type == "rectangle" || object_type == "ellipse"){
+				geom.add_array({obj_x, obj_y, xc, yc}, {{x0, xf},{y0, yf}}, dx, dy, object_type);
+			}else{
+				geom.add_array({obj_x, xc, yc}, {{x0, xf},{y0, yf}}, dx, dy, object_type);
+			}
+		}else if (dx == 0 || dy == 0){
+			if (object_type == "rectangle" || object_type == "ellipse"){
+				geom.add_array({obj_x, obj_y, xc, yc}, {{x0, xf},{y0, yf}}, {Nx, Ny}, object_type);
+			}else{
+				geom.add_array({obj_x, xc, yc}, {{x0, xf},{y0, yf}}, {Nx, Ny}, object_type);
+			}
+		}else
+			std::cout << "Wrong input properties" << std::endl;
+		
+		// Create a file for this specific geometry
+		std::string arr_file("./test_data/array_type_");
+		arr_file += line; 
+		geom.write(arr_file);
+
+		// Create and save just the object
+		Geometry geom_w_obj(geom_dim_x, geom_dim_y);
+		if (object_type == "rectangle")
+			geom_w_obj.add_rectangle(obj_x, obj_y, xc, yc);
+   		if (object_type == "square")
+			geom_w_obj.add_square(obj_x, xc, yc);
+		if (object_type == "ellipse")
+			geom_w_obj.add_ellipse(obj_x, obj_y, xc, yc);
+   		if (object_type == "circle")
+			geom_w_obj.add_circle(obj_x, xc, yc);
+		arr_file += ".object";
+		geom_w_obj.write(arr_file);
 }
 
 // Arrays needed for testing array class in 
@@ -51,7 +113,7 @@ void arrays_for_geom_py_tests()
 	// Rectangles with set object distance
 	distance_based_array({Nx, Ny}, {Lx, Ly, xc, yc}, "rectangle", array, 
 							dx, dy, dist_file);
-	// Proprtis of th llips sm s rtngl 
+	// Properties of the ellipse same as retngle 
 	size_t N_obj_x = 7, N_obj_y = 5;
     numbers_based_array({Nx, Ny}, {Lx, Ly, xc, yc}, "ellipse", array, 
 							N_obj_x, N_obj_y, num_file);
@@ -132,4 +194,5 @@ void numbers_based_array(std::vector<size_t> geom_props,
     fname << ".object";
 	geom_w_rect.write(fname.str());
 }
+
 
