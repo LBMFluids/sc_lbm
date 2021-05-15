@@ -1,5 +1,3 @@
-#!/usr/bin/python2.7
-
 # # # # # # # # # # # # # # # # # #
 # Driver for misc geometry tests
 # # # # # # # # # # # # # # # # # #
@@ -7,7 +5,7 @@
 import numpy as np
 import subprocess, sys, os, glob
 
-py_src_path = '../../python_tools/'
+py_src_path = '../../scripts/'
 sys.path.insert(0, py_src_path)
 
 from utils import * 
@@ -24,9 +22,6 @@ fpath = "./test_data/"
 # Best if the same as C++
 fail_clr = " "
 pass_clr = " "
-# Compile the code
-# Compiles all tests in geom section for now
-subprocess.call("./temp_compilation.py", shell=True)
 # Forms the file with array settings to be tested
 subprocess.call("./arrays_to_test.py", shell=True)
 
@@ -173,7 +168,7 @@ for farr in array_type_files:
 
 	# Make and test an array 		
 	num_array = obj_array(**arr_props_args)
-	geom = np.loadtxt(farr, dtype=np.int32)
+	geom = np.loadtxt(farr, dtype=np.int64)
 	test_pass(num_array.correct(geom), 'Array test for ' + farr)
 	
 	

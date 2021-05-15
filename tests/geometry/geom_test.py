@@ -4,7 +4,7 @@
 # # # # # # # # # # # # # # # # # #
 
 import sys
-py_src_path = '../../python_tools/'
+py_src_path = '../../scripts/'
 sys.path.insert(0, py_src_path)
 
 from utils import *
@@ -21,7 +21,7 @@ class rectangle(object):
 		self.name = 'rectangle'
 
 	def tri_area(self, x1, y1, x2, y2, x3, y3):
-	    return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
+		return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
 
 	def correct(self, geom):
 		# First check if built as expected
@@ -38,7 +38,7 @@ class rectangle(object):
 		count = 0 
 		for iy, ix in np.ndindex(geom.shape):
 			if np.int_(geom[iy,ix]) == 0:
-				A1 = self.tri_area(x0-dx/2.0, y0-dy/2.0, x0-dx/2.0, y0+dy/2.0, ix, iy )	
+				A1 = self.tri_area(x0-dx/2.0, y0-dy/2.0, x0-dx/2.0, y0+dy/2.0, ix, iy ) 
 				A2 = self.tri_area(ix, iy, x0-dx/2.0, y0+dy/2.0, x0+dx/2.0, y0+dy/2.0)
 				A3 = self.tri_area(ix, iy, x0+dx/2.0, y0-dy/2.0, x0+dx/2.0, y0+dy/2.0)
 				A4 = self.tri_area(ix, iy, x0-dx/2.0, y0-dy/2.0, x0+dx/2.0, y0-dy/2.0)
@@ -46,11 +46,11 @@ class rectangle(object):
 				if not np.isclose((A1 + A2 + A3 + A4), A_obj):
 					msg(self.name + ' - solid point outside the object area', MAGENTA)
 					return False
-        # Compare the node count to expected
+		# Compare the node count to expected
 		if (count == 0) and ((np.int_(self.dx) != 0) or (np.int_(self.dy) != 0)):
 			msg('No ' + self.name + ' at all!', MAGENTA)
 			return False		
-    	        return True	
+		return True 
 
 class square(rectangle):
 	''' Class for defining correctness of a square object '''
@@ -62,7 +62,7 @@ class square(rectangle):
 class ellipse(object):
 	''' Class for defining correctness of an ellipse '''
 	def __init__(self, dx, dy, x0, y0):
-		self.dx = np.double(dx)	
+		self.dx = np.double(dx) 
 		self.dy = np.double(dy)
 		self.x0 = np.double(x0)
 		self.y0 = np.double(y0)
@@ -73,7 +73,7 @@ class ellipse(object):
 		for iy, ix in np.ndindex(geom.shape):
 			if np.int_(geom[iy,ix]) == 0:
 				ir = (ix - self.x0)*(ix - self.x0)*self.dy*self.dy/4.0 + \
-				        (iy - self.y0)*(iy - self.y0)*self.dx*self.dx/4.0
+						(iy - self.y0)*(iy - self.y0)*self.dx*self.dx/4.0
 				count += 1
 				if ir > self.dx*self.dx*self.dy*self.dy/16.0:
 					msg(self.name + ' - solid point outside the object area', MAGENTA)
@@ -185,11 +185,11 @@ class obj_array:
 		new_geom = np.ones((self.arr_y, self.arr_x))
 
 		for iy, ix in zip(bounds[0], bounds[1]):
-			for row in range(0,self.Nx):
-				for col in range(0,self.Ny):
+			for row in range(0,int(self.Nx)):
+				for col in range(0,int(self.Ny)):
 					xs = ix + row*x_shift
 					ys = iy + col*y_shift
-					new_geom[ys,xs] = 0	
+					new_geom[ys,xs] = 0 
 
 		if np.array_equal(new_geom, geom):
 			return True

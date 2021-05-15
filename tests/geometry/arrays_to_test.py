@@ -1,5 +1,3 @@
-#!/usr/bin/python2.7
-
 # # # # # # # # # # # # # # # # # #
 # Generates properties of arrays
 # for testing

@@ -1,6 +1,4 @@
-#!/usr/bin/python2.7
-
-# Temporary script for compiling the tests
+# Script for compiling the tests
 
 import subprocess, glob, os
 
