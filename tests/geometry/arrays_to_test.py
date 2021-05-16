@@ -4,7 +4,7 @@
 # # # # # # # # # # # # # # # # # #
 
 # Name of the file with settings for testing
-fname = './test_data/array_tests_input.txt'
+fname = 'test_data/array_tests_input.txt'
 
 # Object types
 objects = ['ellipse', 'rectangle']

@@ -11,19 +11,21 @@ sys.path.insert(0, py_src_path)
 from utils import * 
 from geom_test import *
 
+py_version = 'python3'
+
 #
 # Common part
 #
 
 # Path to files used by tests
-fpath = "./test_data/"
+fpath = "test_data/"
 
 # Colors signifying outcome of the test
 # Best if the same as C++
 fail_clr = " "
 pass_clr = " "
 # Forms the file with array settings to be tested
-subprocess.call("./arrays_to_test.py", shell=True)
+subprocess.call([py_version + ' arrays_to_test.py'], shell=True)
 
 #
 # Remove files
@@ -74,11 +76,11 @@ for file_rm in array_type_files:
 #
 
 # For tests 1 - 3
-subprocess.call("./misc_geom_tests", shell=True)
+subprocess.call(['./misc_geom_tests'], shell=True)
 # For tests 4 - 7
-subprocess.call("./add_objects_test", shell=True)
+subprocess.call( ['./add_objects_test'], shell=True)
 # For tests 8 
-subprocess.call("./make_arrays_test", shell=True)
+subprocess.call(['./make_arrays_test'], shell=True)
 
 #
 # Python tests

@@ -45,7 +45,7 @@ subprocess.call([compile_com], shell=True)
 # Name of the executable
 exe_name = 'misc_geom_tests'
 # Remove the custom mode test file if exists
-f_rm = './test_data/rw_test_geom_out.txt'
+f_rm = 'test_data/rw_test_geom_out.txt'
 if os.path.exists(f_rm): 
 	os.remove(f_rm)
 # Files needed only for this build
