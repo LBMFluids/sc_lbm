@@ -4,7 +4,7 @@
 
 /*************************************************************** 
  * Suite for testing FileHandler class for I/O operations 
-***************************************************************/
+ ***************************************************************/
 
 // Supporting functions
 bool check_file_content(std::fstream&, std::vector<std::string>);

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <ctime>
+#include <iomanip>
 #include "io_operations/FileHandler.h"
 
 /***************************************************** 
@@ -20,11 +21,23 @@ public:
 	//
 
 	/// Default constructor (outputs to std::out)
-	Logger() : sout(true) { }
+	Logger() : sout(true), file_object("tmp.log", std::ios_base::app) { }
 	/// Constructor that takes a filename
 	Logger(const std::string& fname) : 
-		sout(false), FileHandler(fname, std::ios_base::app)
+		sout(false), file_object(fname, std::ios_base::app)
 		{ }
+
+	//
+	// Text colors
+	//
+
+	enum Color
+	{
+		fg_red = 31,
+		fg_yellow = 33
+	};
+
+	const std::string get_color(Color);
 
 	//
 	// Basic functionality
@@ -43,9 +56,9 @@ public:
 	//
 
 	/// Errors
-	void print_error(const std::string& s) { print(s); }
+	void print_error(const std::string& s) { print_color(get_color(fg_red), s); }
 	/// Warnings
-	void print_warning(const std::string& s) { print(s); }
+	void print_warning(const std::string& s) { print_color(get_color(fg_yellow), s); }
 
 	//
 	// Detailed information
@@ -67,6 +80,9 @@ private:
 
 	/// Logs string s
 	void print(const std::string& s);
+
+	/// Logs string s in color cl
+	void print_color(const std::string& cl, const std::string& s);
 
 	// Colors enum
 	// Headers 
