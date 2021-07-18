@@ -20,7 +20,7 @@ public:
 	//
 	// Constructors
 	//
-	FileHandler() = delete;
+	FileHandler() = default;
 	/** 
 	 * \brief Creates a FileHandler object in a custom open mode
 	 * @param name - name of the file
