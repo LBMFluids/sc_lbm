@@ -247,8 +247,14 @@ public:
 	* @param xi [in] - x coordinate 
 	* @param yi [in] - y coordinate
 	*/
-	const bool operator()(const size_t xi, const size_t yi) const { return geom[yi*_Nx + xi]; } 	
-
+	const bool operator()(const size_t xi, const size_t yi) const { return geom[yi*_Nx + xi]; } 
+	/** 
+	* \brief Returns geometry value at a node specified with a flat index 
+    * 
+	* @param ind [in] - position in the geometry array
+	*/
+	const bool operator()(const size_t ind) const { return geom[ind]; }
+	
 	//	
 	// Getters
 	//

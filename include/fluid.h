@@ -2,14 +2,28 @@
 #define FLUID_H
 
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include "logger.h"
 
 /***************************************************** 
  * class: Fluid 
  * 
- * Functionality for logging the runtime information   
- * 
+ * Initializes single fluid, stores its density
+ *	distribution and other properties. Computes 
+ *  macroscopic quantities: density and velocity.
+ *
+ * The arrays are flat STL vectors of dimensions
+ * Nx*Ny (for macroscopic) and Nx*Ny*9 for the 
+ * distribution.
+ *
+ * The order in arrays is row-major, for macroscopic 
+ * 		[ row1 | row2 | ... | row_Nx ] 
+ * and for distributions:
+ *		[Direction 0][Direction 1] ... [Direction 9]
+ * with each direction being
+ * 		[ row1 | row2 | ... | row_Nx ]
+ *  
  ******************************************************/
 
 class Fluid {
@@ -36,8 +50,23 @@ public:
 	// Initialization
 	//
 
-	// Initialization of density distributions
-	//void simple_ini(const Geometry<Lx,Ly>&, double);
+	/// Initialization of density distributions
+	/// @param geom - complete domain geometry
+	/// @param rho_0 - initial density of this fluid, same everywhere
+	void simple_ini(const Geometry& geom, const double rho_0);
+
+	//
+	// Macroscopic properties
+	// 
+	
+	/// Compute macroscopic density
+	void compute_density();
+
+	/// Compute macroscopic velocities
+	void compute_velocities();
+
+	// Compute density and x and y velocity components
+	void compute_macroscopic();
 
 	//
 	// Getters 
@@ -60,6 +89,8 @@ private:
 
 	// Name of the fluid
 	std::string name;
+	// Number of directions
+	const size_t Ndir = 9;
 	// Squared lattice speed
 	double cs2 = 0.0;
 	// Relaxation time 
@@ -76,8 +107,15 @@ private:
 	// Variables
 	//
 
+	// Horizontal and vertical dimensions (number of nodes)
+	size_t Nx = 0, Ny = 0;
+	// Density distribution, flat array of size Nx*Ny*9 
 	std::vector<double> f_dist; 
-
+	// Macroscopic density Nx*Ny
+	std::vector<double> rho;
+	// Macroscopic velocity components
+	std::vector<double> ux;
+	std::vector<double> uy;
 };
 
 #endif
