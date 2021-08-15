@@ -79,7 +79,27 @@ public:
 	//
 	// I/O
 	//
-	
+
+	/// Outputs fluid properties to the screen or a log	
+	//void print_properties() const;
+
+	/// Save macroscopic density to file
+	void write_rho(const std::string fname)
+			{ compute_rho(); write_var(rho, fname); }
+	/// Save macroscopic x velocity component to file
+	void write_ux(const std::string fname)
+			{ compute_velocities(); write_var(ux, fname); }
+	/// Save macroscopic y velocity component to file
+	void write_uy(const std::string fname)
+			{ compute_velocities(); write_var(uy, fname); }
+	/// Save the density distribution to file
+	/// @details This produces a sequence of numbered files fname_dir, where 
+	/// 	dir is an integer that represents the direction (0 to 8)
+	void write_f(const std::string fname) const 
+			{ write_var(f_dist, fname); }
+	/// Save all macroscopic properties at this step to files
+	void save_state(const std::string frho, const std::string fux, 
+						const std::string fuy, const int step);
 
 private:
 
@@ -116,6 +136,14 @@ private:
 	// Macroscopic velocity components
 	std::vector<double> ux;
 	std::vector<double> uy;
+
+	//
+	// Private methods
+	//
+
+	/// Write a 2D variable to file fname
+	void write_var(const std::vector<double>& variable, const std::string& fname);
+
 };
 
 #endif

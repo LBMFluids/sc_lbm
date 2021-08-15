@@ -44,8 +44,8 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 void Fluid::compute_density()
 {
 	std::fill(rho.begin(), rho.end(), 0.0);
-	for (i=0; i<Nx*Ny; ++i) {
-		for (j=0; j<Ndir; ++j) {
+	for (size_t i=0; i<Nx*Ny; ++i) {
+		for (size_t j=0; j<Ndir; ++j) {
 			rho.at(i) += f_dist.at(j*Nx*Ny+i); 
 		}
 	}				
@@ -55,8 +55,8 @@ void Fluid::compute_density()
 void Fluid::compute_velocities()
 {
 	compute_density();
-	for (i=0; i<Nx*Ny; ++i) {
-		for (j=0; j<Ndir; ++j) {
+	for (size_t i=0; i<Nx*Ny; ++i) {
+		for (size_t j=0; j<Ndir; ++j) {
 			ux.at(i) += f_dist.at(j*Nx*Ny+i)*Cx.at(j); 
 			uy.at(i) += f_dist.at(j*Nx*Ny+i)*Cy.at(j);
 		}
@@ -70,4 +70,35 @@ void Fluid::compute_macroscopic()
 {
 	compute_density();
 	compute_velocities();
+}
+
+//
+// I/O
+//
+
+// Save a 2D variable to file
+void Fluid::write_var(const std::vector<double>& variable, const std::string& fname)
+{
+	// Convert to a 2D vector - outer - rows, inner - columns
+	std::vector<std::vector<double>> temp_2D;
+	std::vector<double> one_row.resize(Nx, -1.0);
+	size_t ind = 0;
+	for (size_t i=0; i<Nx*Ny; ++i) {
+		if ((!i%Nx) && (i!=0)) {
+			one_row.at(ind++) = variable.at(i); 
+		} else {
+			ind = 0;
+			temp_2D.push_back(one_row);
+			std::fill(one_row.begin(), one_row.end(), -1.0);
+			one_row.at(ind++) = variable.at(i);
+		}
+	}
+
+	// Write to file
+	std::string delim{" "};
+	bool single_file = true; 
+	std::vector<size_t> dims = {Nx,Ny,0};
+
+	LbmIO lbm_io(fname, delim, single_file, dims);
+	lbm_io.write_vector(temp_2D);
 }
