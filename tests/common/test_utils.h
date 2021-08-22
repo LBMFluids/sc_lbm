@@ -23,7 +23,7 @@ const auto print_msg = [](const std::string msg)
  * @param val [in] - test outcome
  * @param tname [in] - test name
  */
-void tst_pass(const bool val, const std::string msg);
+void test_pass(const bool val, const std::string msg);
 
 /**
  * \brief Wrapper for testing if a function correctly raises exceptions

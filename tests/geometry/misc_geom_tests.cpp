@@ -31,8 +31,8 @@ int main()
 	x_wall_test_suite();
 	y_wall_test_suite();
 	wall_exception_suite();
-	tst_pass(indexing_test(), "Indexing");	
-	tst_pass(changing_individual_nodes_test(), "Changing individual nodes");
+	test_pass(indexing_test(), "Indexing");	
+	test_pass(changing_individual_nodes_test(), "Changing individual nodes");
 }
 
 /// \brief Reads a geometry file, then writes it to a separate file
@@ -85,9 +85,9 @@ void wall_exception_suite()
 	const std::invalid_argument argerr("Wrong argument");
 	// Geometry properties
 	size_t Nx = 10, Ny = 30;
-	tst_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Ny + 10, std::string("x")), "x wall to thick");
-	tst_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Nx + 10, std::string("y")), "y wall to thick");
-	tst_pass(exception_test(verbose, &argerr, make_walls, Nx, Ny, Nx - 5, std::string("xyz")), "Wrong direction option");
+	test_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Ny + 10, std::string("x")), "x wall to thick");
+	test_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Nx + 10, std::string("y")), "y wall to thick");
+	test_pass(exception_test(verbose, &argerr, make_walls, Nx, Ny, Nx - 5, std::string("xyz")), "Wrong direction option");
 }
 
 /// \brief Simple indexing test, checks if all indices accessible

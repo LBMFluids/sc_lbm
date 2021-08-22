@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include "geometry.h"
 #include "logger.h"
 
 /***************************************************** 
@@ -36,15 +37,15 @@ public:
 	/// Custom name, squared lattice speed of sound, and relaxation time
 	Fluid(const std::string& s, const double speed, const double rel) :
 			name(s), cs2(speed), tau(rel)
-		{ omega = 1/tau; nu = cs2*(tau - 0.5); prop_ini(f); }
+		{ omega = 1/tau; nu = cs2*(tau - 0.5); }
 
 	/// Custom name, other parameters default (0.333 and 1.0)
 	Fluid(const std::string& s) : Fluid(s, 1./3, 1.0)
-		{ prop_ini(f); }
+		{ }
 	
 	/// All parameters are defaults ("fluid", 0.333, and 1.0)
 	Fluid() : Fluid("fluid", 1./3, 1.0)
-		{ prop_ini(f); }
+		{ }
 
 	// 
 	// Initialization
@@ -84,22 +85,22 @@ public:
 	//void print_properties() const;
 
 	/// Save macroscopic density to file
-	void write_rho(const std::string fname)
-			{ compute_rho(); write_var(rho, fname); }
+	void write_density(const std::string& fname)
+			{ compute_density(); write_var(rho, fname); }
 	/// Save macroscopic x velocity component to file
-	void write_ux(const std::string fname)
+	void write_ux(const std::string& fname)
 			{ compute_velocities(); write_var(ux, fname); }
 	/// Save macroscopic y velocity component to file
-	void write_uy(const std::string fname)
+	void write_uy(const std::string& fname)
 			{ compute_velocities(); write_var(uy, fname); }
 	/// Save the density distribution to file
 	/// @details This produces a sequence of numbered files fname_dir, where 
 	/// 	dir is an integer that represents the direction (0 to 8)
-	void write_f(const std::string fname) const 
-			{ write_var(f_dist, fname); }
+	void write_f(const std::string& fname) const 
+			{ const bool is_3D = true; write_var(f_dist, fname, is_3D); }
 	/// Save all macroscopic properties at this step to files
-	void save_state(const std::string frho, const std::string fux, 
-						const std::string fuy, const int step);
+	void save_state(const std::string& frho, const std::string& fux, 
+						const std::string& fuy, const int step);
 
 private:
 
@@ -142,8 +143,10 @@ private:
 	//
 
 	/// Write a 2D variable to file fname
-	void write_var(const std::vector<double>& variable, const std::string& fname);
+	void write_var(const std::vector<double>& variable, const std::string& fname) const;
 
+	/// Write a 3D variable to file fname
+	void write_var(const std::vector<double>& variable, const std::string& fname, const bool is_3D) const;
 };
 
 #endif

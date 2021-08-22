@@ -83,19 +83,19 @@ void rectangle_exception_test_suite()
 	Geometry geom(Nx, Ny);
 	// Rectangle - dimensions outside x, center inside
 	size_t Rx = 5, Ry = 10, xc = 0, yc =50;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle too large in x");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle too large in x");
 	// Rectangle - dimensions outside y, center inside
 	Ry = 1000;
 	xc = 30;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle too large in y");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle too large in y");
 	// Rectangle - dimensions ok, x center outside
 	Ry = 10;
 	xc = 1050; 
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle x center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle x center outside the domain");
 	// Rectangle - dimensions ok, y center outside
 	xc = 50; 
 	yc = 500;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle y center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_rectangle, geom, Rx, Ry, xc, yc), "Rectangle y center outside the domain");
 }
 
 ///\brief Test various square objects for correctness
@@ -131,18 +131,18 @@ void square_exception_test_suite()
 	Geometry geom(Nx, Ny);
 	// Square - dimensions outside x, center inside
 	size_t Ls = 5, xc = 0, yc =50;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square too large in x");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square too large in x");
 	// Square - dimensions outside y, center inside
 	xc = 10; 
 	yc =299;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square too large in y");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square too large in y");
 	// Square - dimensions ok, x center outside
 	xc = 150; 
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square x center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square x center outside the domain");
 	// Square - dimensions ok, y center outside
 	xc = 50; 
 	yc =500;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square y center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_square, geom, Ls, xc, yc), "Square y center outside the domain");
 }
 
 ///\brief Test various ellipse objects for correctness
@@ -180,19 +180,19 @@ void ellipse_exception_test_suite()
 	Geometry geom(Nx, Ny);
 	// Ellipse - dimensions outside x, center inside
 	size_t Ex = 5, Ey = 10, xc = 0, yc =50;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse too large in x");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse too large in x");
 	// Ellipse - dimensions outside y, center inside
 	Ey = 1000;
 	xc = 30;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse too large in y");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse too large in y");
 	// Ellipse - dimensions ok, x center outside
 	Ey = 10;
 	xc = 1050; 
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse x center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse x center outside the domain");
 	// Ellipse - dimensions ok, y center outside
 	xc = 50; 
 	yc = 500;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse y center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_ellipse, geom, Ex, Ey, xc, yc), "Ellipse y center outside the domain");
 }
 
 ///\brief Test various circle objects for correctness
@@ -230,21 +230,21 @@ void circle_exception_test_suite()
 	Geometry geom(Nx, Ny);
 	// Circle - dimensions outside x, center inside
 	size_t D = 10, xc = 0, yc =50;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle too large in x");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle too large in x");
 	// Circle - dimensions outside y, center inside
 	D = 10;
 	xc = 30;
 	yc = 299;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle too large in y");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle too large in y");
 	// Circle - dimensions ok, x center outside
 	D = 10;
 	yc = 200;
 	xc = 1050; 
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle x center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle x center outside the domain");
 	// Circle - dimensions ok, y center outside
 	xc = 50; 
 	yc = 5000;
-	tst_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle y center outside the domain");
+	test_pass(exception_test(verbose, &rtime, &Geometry::add_circle, geom, D, xc, yc), "Circle y center outside the domain");
 }
 
 /** 

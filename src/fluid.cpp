@@ -77,11 +77,12 @@ void Fluid::compute_macroscopic()
 //
 
 // Save a 2D variable to file
-void Fluid::write_var(const std::vector<double>& variable, const std::string& fname)
+void Fluid::write_var(const std::vector<double>& variable, const std::string& fname) const
 {
 	// Convert to a 2D vector - outer - rows, inner - columns
 	std::vector<std::vector<double>> temp_2D;
-	std::vector<double> one_row.resize(Nx, -1.0);
+	std::vector<double> one_row;
+	one_row.resize(Nx, -1.0);
 	size_t ind = 0;
 	for (size_t i=0; i<Nx*Ny; ++i) {
 		if ((!i%Nx) && (i!=0)) {
@@ -102,3 +103,16 @@ void Fluid::write_var(const std::vector<double>& variable, const std::string& fn
 	LbmIO lbm_io(fname, delim, single_file, dims);
 	lbm_io.write_vector(temp_2D);
 }
+
+// Save a 3D variable to file
+void Fluid::write_var(const std::vector<double>& variable, const std::string& fname, const bool is_3D) const
+{
+	std::vector<double> temp;
+	for (size_t i=0; i<Ndir; ++i) {
+		std::copy(variable.cbegin() + i*Nx*Ny, variable.cend(), temp.begin());
+		write_var(temp, fname + "_" + std::to_string(i) + ".txt");
+		temp.clear();	
+	}
+}
+
+

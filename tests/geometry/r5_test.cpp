@@ -17,15 +17,15 @@ void mv_op_dim_err();
 int main()
 {
 	// Correctness tests
-	tst_pass(constructor_test(), "Constructor");
-	tst_pass(copy_ctor_test(), "Copy constructor");
-	tst_pass(mv_ctor_test(), "Move constructor");
-	tst_pass(copy_op_test(), "Copy assignment");
-	tst_pass(mv_op_test(), "Move assignment");
+	test_pass(constructor_test(), "Constructor");
+	test_pass(copy_ctor_test(), "Copy constructor");
+	test_pass(mv_ctor_test(), "Move constructor");
+	test_pass(copy_op_test(), "Copy assignment");
+	test_pass(mv_op_test(), "Move assignment");
 	// Exception tests
 	const std::runtime_error rtime("Run time error");
-	tst_pass(exception_test(true, &rtime, copy_op_dim_err), "Copy assignment dimension mismatch");
-	tst_pass(exception_test(true, &rtime, mv_op_dim_err), "Move assignment dimension mismatch");
+	test_pass(exception_test(true, &rtime, copy_op_dim_err), "Copy assignment dimension mismatch");
+	test_pass(exception_test(true, &rtime, mv_op_dim_err), "Move assignment dimension mismatch");
 }
 
 /// \brief Checks if constructor is working correctly 
