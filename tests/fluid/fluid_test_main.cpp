@@ -1,4 +1,3 @@
-#include "../../include/geometry.h"
 #include "../../include/fluid.h"
 #include "../../include/utils.h"
 #include "../common/test_utils.h"
@@ -23,6 +22,24 @@ int main()
 
 bool empty_geom()
 {
+	// No solid nodes
+	size_t Nx = 20, Ny = 10;
+	Geometry geom(Nx, Ny);
+	// All default
+	double rho_0 = 2.0;
+	Fluid water;
+	water.simple_ini(geom, rho_0);
+	// Output files
+	std::string den_file{"test_data/macro_density"};
+	std::string ux_file{"test_data/macro_vel_x"};
+	std::string uy_file{"test_data/macro_vel_y"};
+	std::string den_dist_file{"test_data/den_dist"};
+
+	// The macroscopic density should be 2, velocities 0.0, and 
+	// the distribution function should be 2/9 everywhere
+	water.save_state(den_file, ux_file, uy_file, 10);
+//	water.write_f(den_dist_file);	
+
 	return true;
 }
 

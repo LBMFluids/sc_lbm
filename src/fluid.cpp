@@ -22,16 +22,16 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 	for (size_t i=0; i<Nx; ++i) {
 		for (size_t j=0; j<Ny; ++j) {
 			yi = j;
-			xi = yi*Nx + xi;
+			xi = yi*Nx + i;
 			// If a fluid node, fill out the value in all directions
-			if (geom(xi,yi) == 1) {
+			if (geom(xi,yi) == true) {
 				for (size_t k=0; k<Ndir; ++k) {
 					dir_i = k;
 					yfi = dir_i*Nx*Ny + yi*Nx;
-					ind_fi = yfi + xi;
+					ind_fi = yfi + i;
 					f_dist.at(ind_fi) = rho_0/rho_factor;
 				}			
-			} 
+			} 		
 		}
 	}
 }
@@ -46,7 +46,7 @@ void Fluid::compute_density()
 	std::fill(rho.begin(), rho.end(), 0.0);
 	for (size_t i=0; i<Nx*Ny; ++i) {
 		for (size_t j=0; j<Ndir; ++j) {
-			rho.at(i) += f_dist.at(j*Nx*Ny+i); 
+			rho.at(i) += f_dist.at(j*Nx*Ny+i);
 		}
 	}				
 }
@@ -114,5 +114,25 @@ void Fluid::write_var(const std::vector<double>& variable, const std::string& fn
 		temp.clear();	
 	}
 }
+
+void Fluid::save_state(const std::string& frho, const std::string& fux,
+                        const std::string& fuy, const int step)
+{
+	compute_density(); 
+	write_var(rho, frho + "_" + std::to_string(step) + ".txt");
+	compute_velocities(); 
+	write_var(ux, fux + "_" + std::to_string(step) + ".txt");
+	write_var(ux, fuy + "_" + std::to_string(step) + ".txt");
+}
+
+
+
+
+
+
+
+
+
+
 
 

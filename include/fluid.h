@@ -95,10 +95,12 @@ public:
 			{ compute_velocities(); write_var(uy, fname); }
 	/// Save the density distribution to file
 	/// @details This produces a sequence of numbered files fname_dir, where 
-	/// 	dir is an integer that represents the direction (0 to 8)
+	/// 	dir is an integer that represents the direction (0 to 8);
+	///		this adds a "_" to fname so no need for it
 	void write_f(const std::string& fname) const 
 			{ const bool is_3D = true; write_var(f_dist, fname, is_3D); }
 	/// Save all macroscopic properties at this step to files
+	/// @details Appends the step number and an "_"
 	void save_state(const std::string& frho, const std::string& fux, 
 						const std::string& fuy, const int step);
 
