@@ -18,7 +18,7 @@
  *
  * Row-major order of the actual array geom [ row1 | row2 | ... | row_Nx ]
  * where row represents x direction, i.e. _Ny nodes in x direction.
-***************************************************************/
+ ***************************************************************/
 
 // --------> this will only be a managing/serving class, make read
 // and write a separate class, like geom_io or something, but not

@@ -38,7 +38,7 @@ bool empty_geom()
 	// The macroscopic density should be 2, velocities 0.0, and 
 	// the distribution function should be 2/9 everywhere
 	water.save_state(den_file, ux_file, uy_file, 10);
-//	water.write_f(den_dist_file);	
+	//water.write_f(den_dist_file);	
 
 	return true;
 }

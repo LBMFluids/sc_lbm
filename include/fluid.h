@@ -19,11 +19,14 @@
  * distribution.
  *
  * The order in arrays is row-major, for macroscopic 
- * 		[ row1 | row2 | ... | row_Nx ] 
+ * 		[ row1 | row2 | ... | row_Nx ]
+ * with row_i: [ col1 | col2 | ... | col_Ny] 
+ *
  * and for distributions:
  *		[Direction 0][Direction 1] ... [Direction 9]
  * with each direction being
  * 		[ row1 | row2 | ... | row_Nx ]
+ * and row structure as above
  *  
  ******************************************************/
 
