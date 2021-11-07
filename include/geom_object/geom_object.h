@@ -33,6 +33,9 @@ class geom_object
 public:
 	/// \brief Return indices/nodes that the object occupies 
 	std::vector<std::vector<size_t>> get_nodes() const { return object_nodes; }
+
+	/// Dtor
+	virtual ~geom_object() = default;
 protected:
 	/// \brief Specifies the begining node of the object
 	/// \details Constructor explicitly available to derived 

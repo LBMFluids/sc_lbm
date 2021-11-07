@@ -10,7 +10,7 @@ cx = 'g++'
 std = '-std=c++11'
 opt = '-O0'
 # Common source files
-src_files = path + 'geometry.cpp' + ' ' + path + 'misc_checks.cpp '
+src_files = path + 'raw_ptr_geometry.cpp' + ' ' + path + 'misc_checks.cpp '
 src_files += path + 'geom_object/rectangle.cpp' + ' ' + path + 'geom_object/ellipse.cpp'
 src_files += ' ' + path + 'io_operations/FileHandler.cpp'
 src_files += ' ' + path + 'arrays/regular_array.cpp'

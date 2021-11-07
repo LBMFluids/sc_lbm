@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_TESTS_H
 #define GEOMETRY_TESTS_H
 
-#include "../../include/geometry.h"
+#include "../../include/raw_ptr_geometry.h"
 #include "../common/test_utils.h"
 
 /*************************************************************** 
