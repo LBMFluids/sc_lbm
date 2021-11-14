@@ -8,59 +8,23 @@
  * Geometry consists of solid nodes (0s) and fluid nodes (1s). 
  * It can be created directly through various functions in this 
  * class or by reading from a file.
-***************************************************************/
-
-//
-// Constructors and copy/move assignment
-//
-
-// Copy constructor
-Geometry::Geometry(const Geometry& gm)
-{ 
-	_Nx = gm._Nx; 
-	_Ny = gm._Ny;
-	geom = new bool[_Nx*_Ny];
-	std::copy(gm.geom, gm.geom + _Nx*_Ny, geom); 
-}
-// Copy assignment 
-// Object must have the same dimensions and allocated geom
-Geometry& Geometry::operator=(const Geometry& rhs)
-{ 
-	if (_Nx != rhs._Nx || _Ny != rhs._Ny){ 
-		throw std::runtime_error("Geometry objects must have the same size to be copy-assigned");
-	}else{
-		if (geom == nullptr)
-			throw std::runtime_error("Geometry array not allocated");
-		std::copy(rhs.geom, rhs.geom + _Nx*_Ny, geom);
-	}
-	return *this;	
-}
-
-// Move constructor 
-Geometry::Geometry(Geometry&& gm) noexcept
-{
-	_Nx = gm._Nx;
-	_Ny = gm._Ny;
-	geom = gm.geom;
-	gm.geom = nullptr;
-}
-
-// Move assignment
-// Object must have the same dimensions and allocated geom
-Geometry& Geometry::operator=(Geometry&& rhs)
-{ 
-	if (_Nx != rhs._Nx || _Ny != rhs._Ny){ 
-		throw std::runtime_error("Geometry objects must have the same size to be move-assigned");
-	}else{
-		if (geom == nullptr)
-			throw std::runtime_error("Geometry array not allocated");
-		if (this != &rhs){
-			geom = rhs.geom;
-			rhs.geom = nullptr;
-		}
-	}
-	return *this;	
-}
+ *
+ * Row-major order of the actual array geom 
+ * 	[ row_1 | row_2 | ... | row_Ny ]
+ * 	row_i : [node_1, ..., node_Nx]
+ * There are _Nx nodes in a row and _Ny rows. 
+ * row represents x and a column y direction.
+ *
+ * The user indexing starts with 0 and ends with N_x or N_y -1,
+ * so it is the same as the underlying C++ indexing. To request
+ * the first node, ask for geom(0,0) and last node for 
+ * geom(_Nx-1, _Ny-1). 
+ *
+ * First index is the x direction and second is the y. 
+ * First index is the position within a row, second indicates
+ * which row the user asks for.
+ *
+ ***************************************************************/
 
 //
 // Walls
@@ -69,36 +33,39 @@ Geometry& Geometry::operator=(Geometry&& rhs)
 // Pair of walls in x or y direction
 void Geometry::add_walls(const size_t dH, const std::string where)
 {
-	// Convert the flat array to a 2D vector
-	std::vector<std::vector<bool>> geom_vec_2D;
-	geom_vec_2D = flat_array_2_vector_2D(_Ny, _Nx, geom);
+	// Convert the flat vector to a 2D vector
+	// y - outer, x - inner
+	std::vector<std::vector<int>> geom_vec_2D;
+	geom_vec_2D = flat_vector_2_vector_2D(_Nx, _Ny, geom);
 
 	// Walls in y or x direction with thickness dH
 	// spanning the entire height/width
-	if (where == "y"){
-		if (dH > _Nx) 
-			throw std::runtime_error("Wall thickness larger than domain width (x)");
-		for (size_t irow=0; irow<_Ny; irow++){
-			for (size_t icol=0; icol<dH; icol++){
-				geom_vec_2D[irow][icol] = 0;
-				geom_vec_2D[irow][(_Nx-1)-icol] = 0;
+	if (where == "y") {
+		if (dH > _Nx) { 
+			throw std::invalid_argument("Wall thickness larger than domain width (x)");
+		} 
+		for (size_t iy=0; iy<_Ny; iy++) {
+			for (size_t ix=0; ix<dH; ix++) {
+				geom_vec_2D.at(iy).at(ix) = 0;
+				geom_vec_2D.at(iy).at((_Nx-1)-ix) = 0;
 			}
 		}
-	}else if (where == "x"){
-		if (dH > _Ny)
+	} else if (where == "x") {
+		if (dH > _Ny) {
 			throw std::runtime_error("Wall thickness larger than domain height (y)");
-		size_t top = 0;
-		for (size_t irow=0; irow<dH; irow++){
-			std::fill(geom_vec_2D[irow].begin(), geom_vec_2D[irow].end(), 0);
-			top = _Ny - 1 - irow;
-			std::fill(geom_vec_2D[top].begin(), geom_vec_2D[top].end(), 0);
 		}
-	}else{
+		size_t top = 0;
+		for (size_t iy=0; iy<dH; iy++) {
+			std::fill(geom_vec_2D.at(iy).begin(), geom_vec_2D.at(iy).end(), 0);
+			top = _Ny - 1 - iy;
+			std::fill(geom_vec_2D.at(top).begin(), geom_vec_2D.at(top).end(), 0);
+		}
+	}else {
 		throw std::invalid_argument( "No options for position argument: " + where);
 	}
 
 	// Convert back to flat array
-	vector_2D_2_flat_array(geom_vec_2D, _Nx*_Ny, geom);
+	vector_2D_2_flat_vector(geom_vec_2D, _Nx*_Ny, geom);
 }
 
 // 

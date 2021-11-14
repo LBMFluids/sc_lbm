@@ -16,27 +16,37 @@
  * It can be created directly through various functions in this 
  * class or by reading from a file.
  *
- * Row-major order of the actual array geom [ row1 | row2 | ... | row_Nx ]
- * where row represents x direction, i.e. _Ny nodes in x direction.
+ * Row-major order of the actual array geom 
+ * 	[ row_1 | row_2 | ... | row_Ny ]
+ * 	row_i : [node_1, ..., node_Nx]
+ * There are _Nx nodes in a row and _Ny rows. 
+ * row represents x and a column y direction.
+ *
+ * The user indexing starts with 0 and ends with N_x or N_y -1,
+ * so it is the same as the underlying C++ indexing. To request
+ * the first node, ask for geom(0,0) and last node for 
+ * geom(_Nx-1, _Ny-1). 
+ *
+ * First index is the x direction and second is the y. 
+ * First index is the position within a row, second indicates
+ * which row the user asks for.
+ *
  ***************************************************************/
-
-// --------> this will only be a managing/serving class, make read
-// and write a separate class, like geom_io or something, but not
-// accessible to the user
 
 class Geometry{
 public:
 
 	//
-	// Constructors and copy/move operators
-	//
+	// Constructors 	
+	// 
 
 	/** 
 	* \brief Creates a Geometry object with default properties
 	* \details This constructor should be used when reading a geometry from a file 
 	* 		fluid
 	*/
-	Geometry() = default; 
+	Geometry() = default;
+
 	/** 
 	* \brief Creates a Geometry object with nodes \f$N_x\times N_y\f$ nodes
 	* \details Underlying array is initialized to 1 i.e. it is filled with
@@ -45,34 +55,8 @@ public:
 	* @param Ny [in] - number of nodes in y direction
 	*/
 	Geometry(const size_t Nx, const size_t Ny) : _Nx(Nx), _Ny(Ny) 
-				{ geom = new bool[_Nx*_Ny](); std::fill(geom, geom + _Nx*_Ny, true); }
-	/** \brief Copy constructor
-	 *	\details Creates a new Geometry object through a deep copy 
-	 *		of another Geometry object
-	 *	@param gm [in] - Geometry object to be copy from
-	*/
-	Geometry(const Geometry& gm);
-	/** 
-	 * \brief Copy assignment operator 
-	 * \details Copies the content of a Geometry object to 
-	 *		another geometry object. Objects must have the same dimensions.
-	 * @param rhs [in] - Geometry object to be copied/assigned from 
-	 */
-	Geometry& operator=(const Geometry& rhs);
-	/** \brief Move constructor
-	 *	\details Creates a new Geometry object by direct moving of 
-	 *		another Geometry object
-	 *	@param gm [in] - object to move from
-	*/
-	Geometry(Geometry&& gm) noexcept;
-	/** 
-	 * \brief Move assignment operator 
-	 * \details Moves content of Geometry object rhs to 
-	 *		another geometry object. Objects must have the same dimensions.
-	 *	@param rhs [in] - object to move from
-	 */
-	Geometry& operator=(Geometry&& rhs);
-
+				{ geom.resize(_Nx*_Ny, 1); }
+	
 	//
 	// Walls
 	//
@@ -80,6 +64,7 @@ public:
 	/** 
 	 * \brief Create a pair of solid walls
 	 * \details Create parallel walls in x or y directions at first/outmost nodes
+	 *
 	 * @param dH [in] - wall thickness, default 1 node
 	 * @param where [in] - wall direction, "x" or "y", default "y"
 	 */ 	
@@ -242,39 +227,34 @@ public:
 	//
 
 	/** 
-	* \brief Returns geometry value at a node 
+	* \brief Returns geometry value at a node (xi,yi)
+	* \details Indexing from 0 to _Nx or _Ny -1 
     * 
 	* @param xi [in] - x coordinate 
 	* @param yi [in] - y coordinate
 	*/
-	const bool operator()(const size_t xi, const size_t yi) const { return geom[yi*_Nx + xi]; } 
+	const int operator()(const size_t xi, const size_t yi) const { return geom.at(yi*_Nx + xi); }
+ 
 	/** 
-	* \brief Returns geometry value at a node specified with a flat index 
-    * 
-	* @param ind [in] - position in the geometry array
-	*/
-	const bool operator()(const size_t ind) const { return geom[ind]; }
+	 * \brief Returns geometry value at a node specified with a flat index 
+     * \details Indexing from 0 to _Nx*_Ny-1
+	 *
+	 * @param ind [in] - position in the geometry array
+	 */
+	const int operator()(const size_t ind) const { return geom.at(ind); }
 	
 	//	
 	// Getters
 	//
 	
-	/// \brief Get pointer to constant geom object (can't change it!)
-	const bool* get_geom() const { return geom; }
 	/// \brief Get number of nodes in x (horizontal) direction
 	size_t Nx() const { return _Nx; }
 	/// \brief Get number of nodes in y (vertical) direction
 	size_t Ny() const { return _Ny; }
 	
-	//
-	// Misc
-	//
-	
-	/// \brief Destructor
-	~Geometry() { delete[] geom; }
 private:
 	// Geometric domain
-	bool* geom = nullptr;
+	std::vector<int> geom;
 	// Dimensions of the domain (in number of nodes)
 	size_t _Nx = 0, _Ny = 0;
 	// Pi
