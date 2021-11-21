@@ -4,43 +4,48 @@
 
 /*************************************************************** 
  * Suite for testing utility functions in utility.h 
-***************************************************************/
+ ***************************************************************/
 
 // Supporting functions
 template<typename T>
-bool equal_vec2D_flat_array(const std::vector<std::vector<T>>, const T*, 
-								const size_t, const size_t);
+bool equal_vec2D_flat_vec(const std::vector<std::vector<T>>, 
+								const std::vector<T>>, const size_t, const size_t);
 
 // Tests
 bool sub2ind_test_suite();
 bool sub2ind_test(const size_t Nx, const size_t Ny);
-bool flat2vec_test_suite();
-bool flat2vec_int(const size_t Nrow, const size_t Ncol);
-bool vec2flat_test_suite();
-bool vec2flat_int(const size_t Nrow, const size_t Ncol);
+bool flat2nested_test_suite();
+bool flat2nested_int(const size_t Nrow, const size_t Ncol);
+bool nested2flat_test_suite();
+bool nested2flat_int(const size_t Nrow, const size_t Ncol);
 
 int main()
 {
 	tst_pass(sub2ind_test_suite(), "Subscript to linear index conversion");
-	tst_pass(flat2vec_test_suite(), "Flat array to 2D vector conversion");
-	tst_pass(vec2flat_test_suite(), "2D vector to flat array conversion");
+	tst_pass(flat2nested_test_suite(), "Flat vector to 2D vector conversion");
+	tst_pass(nested2flat_test_suite(), "2D vector to vector array conversion");
 }
 
-///\brief Series of tests for sub to linear index conversion
+/// \brief Series of tests for sub to linear index conversion
 bool sub2ind_test_suite()
 {
-	// Test 1 - both dimensions != 1
-	if (!sub2ind_test(5, 11))
+	if (!sub2ind_test(5, 11)) {
+		std::cout << "Test for " << 5 << "x" << 7 << "vector failed" << std::endl;
 		return false;
-	if (!sub2ind_test(1, 101))
+	}
+	if (!sub2ind_test(1, 101)) {
+		std::cout << "Test for " << 1 << "x" << 101 << "vector failed" << std::endl;
 		return false;
-	if (!sub2ind_test(509, 1))
+	}
+	if (!sub2ind_test(509, 1)) {
+		std::cout << "Test for " << 509 << "x" << 1 << "vector failed" << std::endl;
 		return false;
+	}
 	return true;
 }
 
-///\brief Tests subscript to linear index conversion
-/// Creates a row-major vector of all subscripts, 
+/// \brief Tests subscript to linear index conversion
+/// \details Creates a row-major vector of all subscripts, 
 /// 	computes linear index for each using sub2ind,
 ///		and then compares the result to linearly iterated
 ///		loop variable (should be exactly the same)
@@ -49,45 +54,59 @@ bool sub2ind_test(const size_t Nx, const size_t Ny)
 	std::vector<std::vector<size_t>> sub_vec(Nx*Ny, std::vector<size_t>(2));	
 	std::vector<size_t> lin_vec;
 	size_t ik = 0;
-	for (size_t ii=0; ii<Ny; ii++){
-		for (size_t ij=0; ij<Nx; ij++){
+	for (size_t ii=0; ii<Ny; ii++) {
+		for (size_t ij=0; ij<Nx; ij++) {
 			sub_vec.at(ik).at(0) = ij; 
 			sub_vec.at(ik).at(1) = ii;
 			ik++;
 		}
 	}	
 	lin_vec = sub2ind<size_t>(sub_vec, Nx);
-	for (size_t ii=0; ii < Nx*Ny; ii++)
-		if (lin_vec.at(ii) != ii)
+	for (size_t ii=0; ii < Nx*Ny; ii++) {
+		if (lin_vec.at(ii) != ii) {
+			std::cout << lin_vec.at(ii) << " not matching expected " 
+					  << ii << std::endl; 
 			return false;
+		}
+	}
 	return true;
 }
 
 /**
- * \brief Check conversion from 1D array to a nested vector
+ * \brief Check conversion from a flat to a nested vector
  */
-bool flat2vec_test_suite()
+bool flat2nested_test_suite()
 {
-	if (!flat2vec_int(3,7))
-		return false;	
-	if (!flat2vec_int(1,1))
+	if (!flat2nested_int(3,7)) {
+		std::cout << "Test for " << 3 << "x" << 7 << "vector failed" << std::endl;
 		return false;
-	if (!flat2vec_int(1,5))
+	}	
+	if (!flat2nested_int(1,1)) {
+		std::cout << "Test for " << 1 << "x" << 1 << "vector failed" << std::endl;
 		return false;
-	if (!flat2vec_int(6,1))
+	}
+	if (!flat2nested_int(1,5)) {
+		std::cout << "Test for " << 1 << "x" << 5 << "vector failed" << std::endl;
 		return false;
+	}
+	if (!flat2nested_int(6,1)) {
+		std::cout << "Test for " << 6 << "x" << 1 << "vector failed" << std::endl;
+		return false;
+	}
 	return true;
 }
 
 /** 
- * \brief Actual flat to 2D vector conversion test
- * \details Creates a flat int array, converts it to vector,
+ * \brief Flat to 2D vector conversion test
+ * \details Creates a flat int vector, 
+ *		converts it to a nested vector,
  *		checks if what expected
+ *
  * @param Nrow - number of vector rows
  * @param Ncol - number of vector columns
  * @return true if the vector is as expected, false otherwise
  */ 
-bool flat2vec_int(const size_t Nrow, const size_t Ncol)
+bool flat2nested_int(const size_t Nrow, const size_t Ncol)
 {
 	// Array has size Nrow x Ncol and will has all
 	// elements consecutive ints

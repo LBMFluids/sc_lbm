@@ -9,11 +9,12 @@
 
 /** 
  * \brief Convert from subscript (i,j) to linear index
+ *
  * @param subs [in] - vector of subscripts, each inner vector is a 
  * 		pair of x and y direction indices/subscripts
  * @param Nx [in] - total number of nodes in x direction 
  * @return - vector of linear indices 
-*/
+ */
 template<typename T>
 std::vector<T> sub2ind(std::vector<std::vector<T>>&& subs, const size_t Nx);
 /// \brief sub2ind overload for lvalue references
@@ -23,6 +24,7 @@ std::vector<T> sub2ind(std::vector<std::vector<T>>& subs, const size_t Nx);
 /** 
  * \brief Convert a flat vector of type T to nested vector of type T
  * \details Assumes all inner vectors have the same size. 
+ *
  * @param Nrow [in] - number of columns (elements in the inner vectors)  
  * @param Ncol [in] - number of rows (inner vectors)
  * @param flat_vec [in] - reference to a flat vector of type T
@@ -38,6 +40,7 @@ std::vector<std::vector<T>> flat_vector_2_vector_2D(const size_t Ncol,
  * 		Number of elements in the inner vectors assumed the same across all
  * 		inner vectors and is determined based on the first vector.
  *		Final vector is: [inner_vec_1] ... [last inner vec]
+ *
  * @param vec2D - reference to vector of vectors of type T
  * @param Nelem [in] - number of elements in flat_arr
  * @param flat_vec [in/out] - reference to a flat vector of type T and size Nelem
@@ -49,6 +52,7 @@ void vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D,
 /**
  * \brief Convert a string to all lower case
  * \details From https://en.cppreference.com/w/cpp/string/byte/tolower
+ *
  * @param [in] s - string which will be converted to all lower case
  */
 std::string str_to_lower(std::string s); 
@@ -98,7 +102,7 @@ void vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D,
 {
 	size_t Nrow = vec2D.size(), Ncol = vec2D.at(0).size(), ind = 0;
 	if (Nelem != Nrow*Ncol) {
-		throw std::range_error("Flat array and 2D vector sizes mismatch");
+		throw std::range_error("Flat vector and 2D vector sizes mismatch");
 	}
 	for (auto row : vec2D) {
 		std::copy(row.begin(), row.end(), flat_vec + ind*Ncol);
