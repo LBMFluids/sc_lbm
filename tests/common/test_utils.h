@@ -20,6 +20,7 @@ const auto print_msg = [](const std::string msg)
  * \brief Print if the test passed or failed
  * \details Hardcoded color scheme, depending on val it
  * 		will print a pass/fail notification following the test name
+ *
  * @param val [in] - test outcome
  * @param tname [in] - test name
  */
@@ -31,19 +32,22 @@ void test_pass(const bool val, const std::string msg);
  * 		if a different exception occurred. If nullptr specified instead of exception object, 
  * 		no exception will return true and exception will return false. All exceptions are
  * 		handled.
+ * 
  * 	@param verbose [in] - prints exception messages
  * 	@param expected [in] - expected exception type or nullptr for no exception 	
  * 	@param fun [in] - function object (pointer, lambda) to be called by the wrapper
  * 	@param args [in] - arguments to the function as a parameter pack 
  * 	@return True or fals if test passed/failed under given conditions
-*/
+ */
 template<typename Functor, typename... Args>
 bool exception_test(bool verbose, const std::exception* expected, 
 				Functor fun, Args&&... args);
+
 /// Overload for free functions and lambdas
 /// This is used just for the calling part
 template<typename Functor, typename... Args >
 void exception_test_helper(std::false_type, Functor fun, Args&&... args);
+
 /// Overload for member functions
 /// More here: https://stackoverflow.com/a/22972231
 template<typename Functor, typename Arg0, typename... Args >

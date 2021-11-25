@@ -108,19 +108,18 @@ bool flat2nested_test_suite()
  */ 
 bool flat2nested_int(const size_t Nrow, const size_t Ncol)
 {
-	// Array has size Nrow x Ncol and will has all
+	// Vector has size Nrow x Ncol and will have all
 	// elements consecutive ints
-	int* arr_int = new int[Nrow*Ncol]();
-	std::iota(arr_int, arr_int+Nrow*Ncol, 1);
+	std::vector<int> flat_vec(Nrow*Ncol);
+	std::iota(flat_vec.begin(), flat_vec.end(), 1);
 
 	// Convert to 2D vector
-	std::vector<std::vector<int>> vec2D_int;
-	vec2D_int = flat_array_2_vector_2D<int>(Nrow, Ncol, arr_int);
+	std::vector<std::vector<int>> vec2D;
+	vec2D = flat_vector_2_vector_2D<int>(Nrow, Ncol, flat_vec);
 
 	// Compare by contents and size
-	bool equal = equal_vec2D_flat_array<int>(vec2D_int, arr_int, Nrow, Ncol);
+	bool equal = equal_vec2D_flat_vec<int>(vec2D, flat_vec, Nrow, Ncol);
 
-	delete[] arr_int;
 	return equal;
 }
 
@@ -144,6 +143,7 @@ bool vec2flat_test_suite()
  * \brief Actual 2D vector to 1D array conversion test
  * \details Creates a flat int array, converts it to vector,
  *		checks if what expected
+ * 
  * @param Nrow - number of vector rows
  * @param Ncol - number of vector columns
  * @return true if the vector is as expected, false otherwise
@@ -159,19 +159,21 @@ bool vec2flat_int(const size_t Nrow, const size_t Ncol)
 		iel += Ncol;
 	}
 	// 0 initialized array 
-	int* arr_int = new int[Nrow*Ncol]();
+	std::vector<int> flat_vec(Nrow*Ncol);
 
-	// Convert to 2D vector to array arr_int
-	vector_2D_2_flat_array<int>(vec2D_int, Nrow*Ncol, arr_int);
+	// Convert to 2D vector to a flat vector
+	vector_2D_2_flat_vector<int>(vec2D_int, Nrow*Ncol, arr_int);
 
 	// Compare by contents and size
-	bool equal = equal_vec2D_flat_array<int>(vec2D_int, arr_int, Nrow, Ncol);
+	bool equal = equal_vec2D_flat_vec<int>(vec2D_int, flat_vec, Nrow, Ncol);
 
 	delete[] arr_int;
 	return equal;
 }
+
 /** 
  * \brief Compares content and sizes of a 2D vector and 1D array of types T
+ *
  * @param vec2D - nested vector of type T and dimensions Nrow x Ncol
  * @param flat_arr - 1D array of type T and number of elements Nrow*Ncol, 
  * 						stored with row-major order
