@@ -17,9 +17,9 @@ bool fail_to_open_test();
 
 int main()
 {
-	tst_pass(default_io_test(), "Read and write default mode");
-	tst_pass(custom_io_test(), "Custom modes");
-	tst_pass(fail_to_open_test(), "File opening error");
+	test_pass(default_io_test(), "Read and write default mode");
+	test_pass(custom_io_test(), "Custom modes");
+	test_pass(fail_to_open_test(), "File opening error");
 }
 
 /**

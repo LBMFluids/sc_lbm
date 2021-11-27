@@ -9,7 +9,7 @@
 // Supporting functions
 template<typename T>
 bool equal_vec2D_flat_vec(const std::vector<std::vector<T>>, 
-								const std::vector<T>>, const size_t, const size_t);
+								const std::vector<T>, const size_t, const size_t);
 
 // Tests
 bool sub2ind_test_suite();
@@ -21,9 +21,9 @@ bool nested2flat_int(const size_t Nrow, const size_t Ncol);
 
 int main()
 {
-	tst_pass(sub2ind_test_suite(), "Subscript to linear index conversion");
-	tst_pass(flat2nested_test_suite(), "Flat vector to 2D vector conversion");
-	tst_pass(nested2flat_test_suite(), "2D vector to vector array conversion");
+	test_pass(sub2ind_test_suite(), "Subscript to linear index conversion");
+	test_pass(flat2nested_test_suite(), "Flat vector to 2D vector conversion");
+	test_pass(nested2flat_test_suite(), "2D vector to flat vector conversion");
 }
 
 /// \brief Series of tests for sub to linear index conversion
@@ -126,15 +126,15 @@ bool flat2nested_int(const size_t Nrow, const size_t Ncol)
 /**
  * \brief Check conversion from a nested vector to a 1D array
  */
-bool vec2flat_test_suite()
+bool nested2flat_test_suite()
 {
-	if (!vec2flat_int(3,7))
+	if (!nested2flat_int(3,7))
 		return false;	
-	if (!vec2flat_int(1,1))
+	if (!nested2flat_int(1,1))
 		return false;
-	if (!vec2flat_int(1,5))
+	if (!nested2flat_int(1,5))
 		return false;
-	if (!vec2flat_int(6,1))
+	if (!nested2flat_int(6,1))
 		return false;
 	return true;
 }
@@ -148,7 +148,7 @@ bool vec2flat_test_suite()
  * @param Ncol - number of vector columns
  * @return true if the vector is as expected, false otherwise
  */ 
-bool vec2flat_int(const size_t Nrow, const size_t Ncol)
+bool nested2flat_int(const size_t Nrow, const size_t Ncol)
 {
 	// Create a 2D vector with consecutive integers
 	// as elements
@@ -162,12 +162,10 @@ bool vec2flat_int(const size_t Nrow, const size_t Ncol)
 	std::vector<int> flat_vec(Nrow*Ncol);
 
 	// Convert to 2D vector to a flat vector
-	vector_2D_2_flat_vector<int>(vec2D_int, Nrow*Ncol, arr_int);
+	vector_2D_2_flat_vector<int>(vec2D_int, Nrow*Ncol, flat_vec);
 
 	// Compare by contents and size
 	bool equal = equal_vec2D_flat_vec<int>(vec2D_int, flat_vec, Nrow, Ncol);
-
-	delete[] arr_int;
 	return equal;
 }
 
@@ -182,18 +180,36 @@ bool vec2flat_int(const size_t Nrow, const size_t Ncol)
  * @return true if correct sizes and all elements equal
  */
 template<typename T>
-bool equal_vec2D_flat_array(const std::vector<std::vector<T>> vec2D, const T* flat_arr, 
+bool equal_vec2D_flat_vec(const std::vector<std::vector<T>> vec2D, const std::vector<T> flat_vec, 
 							const size_t Nrow, const size_t Ncol)
 {
 	// Check if sizes match
-	if (vec2D.size()*vec2D.at(0).size() != Nrow*Ncol)
+	if (vec2D.size()*vec2D.at(0).size() != flat_vec.size()) {
+		std::cout << "Number of elements in the vectors is not the same" << std::endl;
 		return false;
-	// Check elements for equality (for floats - add a functor with custom comparison)
+	}
+	// Check elements for equality 
 	size_t ind = 0;
-	for (auto row : vec2D)
-		for (auto elem : row)	
-			if (elem != flat_arr[ind++])
+	for (auto row : vec2D) {
+		for (auto elem : row) {	
+			if (elem != flat_vec.at(ind++)) {
+				std::cout << "Values of elements don't match" << std::endl;
 				return false;
+			}
+		}
+	}
+	// For an extra check
+	for (const auto& row : vec2D) {
+		for (const auto& el : row) {
+			std::cout << el << " ";
+		}
+	}
+	std::cout << std::endl;
+	for (const auto& el : flat_vec) {
+			std::cout << el << " ";
+	}
+	std::cout << std::endl;
+	
 	return true;
 }
 

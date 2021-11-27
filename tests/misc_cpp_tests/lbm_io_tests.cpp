@@ -40,9 +40,9 @@ bool default_test_suite();
 
 int main()
 {
-	tst_pass(read_test_suite(), "LbmIO read only");	
-	tst_pass(custom_test_suite(), "LbmIO write and read custom properties");
-	tst_pass(default_test_suite(), "LbmIO default properties");
+	test_pass(read_test_suite(), "LbmIO read only");	
+	test_pass(custom_test_suite(), "LbmIO write and read custom properties");
+	test_pass(default_test_suite(), "LbmIO default properties");
 }
 
 /**

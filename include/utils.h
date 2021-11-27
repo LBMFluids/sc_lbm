@@ -87,8 +87,8 @@ std::vector<std::vector<T>> flat_vector_2_vector_2D(const size_t Ncol,
 {
 	std::vector<std::vector<T>> vec2D(Nrow, std::vector<T>(Ncol));
 	size_t ind = 0;
-	for (size_t ir=0; ir < Nrow; ir++) {
-		for (size_t icl = 0; icl < Ncol; icl++) {
+	for (size_t ir=0; ir < Nrow; ++ir) {
+		for (size_t icl = 0; icl < Ncol; ++icl) {
 			ind = Ncol*ir + icl;
 			vec2D.at(ir).at(icl) = flat_vec.at(ind);
 		}
@@ -105,8 +105,10 @@ void vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D,
 		throw std::range_error("Flat vector and 2D vector sizes mismatch");
 	}
 	for (auto row : vec2D) {
-		std::copy(row.begin(), row.end(), flat_vec + ind*Ncol);
-		ind++;
+		// Length of one row is Ncol
+		auto it = flat_vec.begin() + ind*Ncol;
+		flat_vec.insert(it, row.begin(), row.end());
+		++ind;
 	}
 }
 
