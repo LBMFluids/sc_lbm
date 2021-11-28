@@ -2,3 +2,4 @@
 *.object
 __pychache__
 tests/geometry/test_data/array_type*
+executables

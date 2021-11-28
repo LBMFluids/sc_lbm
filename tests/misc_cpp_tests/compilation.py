@@ -5,6 +5,8 @@ import subprocess, glob, os
 ### Input 
 # Path to the main directory
 path = '../../src/'
+# Path to executables 
+path_exe = '../../executables/'
 # Compiler options
 cx = 'g++'
 std = '-std=c++11'
@@ -22,8 +24,11 @@ exe_name = 'utils_tests'
 spec_files = 'utils_tests.cpp'
 # Print containers
 verbose = '-DVERBOSE'
+# or overwrite and don't
+verbose = '-UVERBOSE'
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files, verbose])
 subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
 ### Test suite 2
 # FileHandler.h tests
@@ -38,6 +43,7 @@ exe_name = 'file_hdl_tests'
 spec_files = 'file_handler_tests.cpp'
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
 ### Test suite 3
 # lbm_io.h tests
@@ -55,4 +61,4 @@ exe_name = 'lbm_io_tests'
 spec_files = 'lbm_io_tests.cpp'
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, tst_files, src_files, spec_files])
 subprocess.call([compile_com], shell=True)
-
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
