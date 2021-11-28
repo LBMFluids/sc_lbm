@@ -54,15 +54,15 @@ bool sub2ind_test(const size_t Nx, const size_t Ny)
 	std::vector<std::vector<size_t>> sub_vec(Nx*Ny, std::vector<size_t>(2));	
 	std::vector<size_t> lin_vec;
 	size_t ik = 0;
-	for (size_t ii=0; ii<Ny; ii++) {
-		for (size_t ij=0; ij<Nx; ij++) {
+	for (size_t ii=0; ii<Ny; ++ii) {
+		for (size_t ij=0; ij<Nx; ++ij) {
 			sub_vec.at(ik).at(0) = ij; 
 			sub_vec.at(ik).at(1) = ii;
-			ik++;
+			++ik;
 		}
 	}	
 	lin_vec = sub2ind<size_t>(sub_vec, Nx);
-	for (size_t ii=0; ii < Nx*Ny; ii++) {
+	for (size_t ii=0; ii < Nx*Ny; ++ii) {
 		if (lin_vec.at(ii) != ii) {
 			std::cout << lin_vec.at(ii) << " not matching expected " 
 					  << ii << std::endl; 
@@ -128,14 +128,22 @@ bool flat2nested_int(const size_t Nrow, const size_t Ncol)
  */
 bool nested2flat_test_suite()
 {
-	if (!nested2flat_int(3,7))
-		return false;	
-	if (!nested2flat_int(1,1))
+	if (!nested2flat_int(3,7)) {
+		std::cout << "Test for " << 3 << "x" << 7 << "vector failed" << std::endl;
 		return false;
-	if (!nested2flat_int(1,5))
+	}	
+	if (!nested2flat_int(1,1)){
+		std::cout << "Test for " << 1 << "x" << 1 << "vector failed" << std::endl;
 		return false;
-	if (!nested2flat_int(6,1))
+	}
+	if (!nested2flat_int(1,5)){
+		std::cout << "Test for " << 1 << "x" << 5 << "vector failed" << std::endl;
 		return false;
+	}
+	if (!nested2flat_int(6,1)){
+		std::cout << "Test for " << 6 << "x" << 1 << "vector failed" << std::endl;
+		return false;
+	}
 	return true;
 }
 
@@ -159,10 +167,10 @@ bool nested2flat_int(const size_t Nrow, const size_t Ncol)
 		iel += Ncol;
 	}
 	// 0 initialized array 
-	std::vector<int> flat_vec(Nrow*Ncol);
+	std::vector<int> flat_vec;
 
 	// Convert to 2D vector to a flat vector
-	vector_2D_2_flat_vector<int>(vec2D_int, Nrow*Ncol, flat_vec);
+	flat_vec = vector_2D_2_flat_vector<int>(vec2D_int);
 
 	// Compare by contents and size
 	bool equal = equal_vec2D_flat_vec<int>(vec2D_int, flat_vec, Nrow, Ncol);

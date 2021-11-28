@@ -23,7 +23,8 @@ std::vector<T> sub2ind(std::vector<std::vector<T>>& subs, const size_t Nx);
 
 /** 
  * \brief Convert a flat vector of type T to nested vector of type T
- * \details Assumes all inner vectors have the same size. 
+ * \details Assumes all inner vectors have the same size.
+ *		Size of a row is Ncols. 
  *
  * @param Nrow [in] - number of columns (elements in the inner vectors)  
  * @param Ncol [in] - number of rows (inner vectors)
@@ -42,12 +43,10 @@ std::vector<std::vector<T>> flat_vector_2_vector_2D(const size_t Ncol,
  *		Final vector is: [inner_vec_1] ... [last inner vec]
  *
  * @param vec2D - reference to vector of vectors of type T
- * @param Nelem [in] - number of elements in flat_arr
- * @param flat_vec [in/out] - reference to a flat vector of type T and size Nelem
+ * @preturn flat_vec - flat vector of type T and size Nelem
 */
 template<typename T>
-void vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D, 
-								const size_t Nelem, std::vector<T>& flat_vec);
+std::vector<T> vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D);
 
 /**
  * \brief Convert a string to all lower case
@@ -97,19 +96,16 @@ std::vector<std::vector<T>> flat_vector_2_vector_2D(const size_t Ncol,
 }
 
 template<typename T>
-void vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D, 
-								const size_t Nelem, std::vector<T>& flat_vec)
+std::vector<T> vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D)
 {
 	size_t Nrow = vec2D.size(), Ncol = vec2D.at(0).size(), ind = 0;
-	if (Nelem != Nrow*Ncol) {
-		throw std::range_error("Flat vector and 2D vector sizes mismatch");
-	}
+	std::vector<T> flat_vec(Nrow*Ncol);
 	for (auto row : vec2D) {
-		// Length of one row is Ncol
 		auto it = flat_vec.begin() + ind*Ncol;
-		flat_vec.insert(it, row.begin(), row.end());
+		std::copy(row.begin(), row.end(), it);
 		++ind;
 	}
+	return flat_vec;
 }
 
 #endif
