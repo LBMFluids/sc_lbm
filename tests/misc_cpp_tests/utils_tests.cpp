@@ -206,18 +206,15 @@ bool equal_vec2D_flat_vec(const std::vector<std::vector<T>> vec2D, const std::ve
 			}
 		}
 	}
-	// For an extra check
+
+#if VERBOSE
+	std::cout << "Vector2D: " << std::endl;
 	for (const auto& row : vec2D) {
-		for (const auto& el : row) {
-			std::cout << el << " ";
-		}
+		print_elements<std::vector<T>>(row);
 	}
-	std::cout << std::endl;
-	for (const auto& el : flat_vec) {
-			std::cout << el << " ";
-	}
-	std::cout << std::endl;
-	
+	print_elements<std::vector<T>>(flat_vec, "Vector 1D: ");
+#endif
+
 	return true;
 }
 

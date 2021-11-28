@@ -20,7 +20,9 @@ tst_files = '../common/test_utils.cpp'
 exe_name = 'utils_tests'
 # Files needed only for this build
 spec_files = 'utils_tests.cpp'
-compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
+# Print containers
+verbose = '-DVERBOSE'
+compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files, verbose])
 subprocess.call([compile_com], shell=True)
 
 ### Test suite 2

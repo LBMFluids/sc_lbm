@@ -56,6 +56,16 @@ std::vector<T> vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D)
  */
 std::string str_to_lower(std::string s); 
 
+/**
+ * \brief Prints optional string opstr followed by all elements from coll
+   \details Prints in one line to stdout, separated by spaces; From Josuttis p. 216
+ * 
+ * @param coll - collection of elements
+ * @param optstr - optional string proceeding the collection
+ */
+template<typename T>
+inline void print_elements(const T& coll, const std::string& optstr="");
+
 //
 // Implementation - templates
 //
@@ -106,6 +116,16 @@ std::vector<T> vector_2D_2_flat_vector(const std::vector<std::vector<T>>& vec2D)
 		++ind;
 	}
 	return flat_vec;
+}
+
+template<typename T>
+inline void print_elements(const T& coll, const std::string& optstr)
+{
+	std::cout << optstr;
+	for (const auto& elem : coll) {
+		std::cout << elem << ' ';
+	}
+	std::cout << std::endl;
 }
 
 #endif
