@@ -31,7 +31,7 @@
 //
 
 // Pair of walls in x or y direction
-void Geometry::add_walls(const size_t dH, const std::string where)
+void Geometry::add_walls(const size_t dH, const std::string& where)
 {
 	// Convert the flat vector to a 2D vector
 	// y - outer, x - inner
@@ -60,12 +60,12 @@ void Geometry::add_walls(const size_t dH, const std::string where)
 			top = _Ny - 1 - iy;
 			std::fill(geom_vec_2D.at(top).begin(), geom_vec_2D.at(top).end(), 0);
 		}
-	}else {
+	} else {
 		throw std::invalid_argument( "No options for position argument: " + where);
 	}
 
 	// Convert back to flat array
-	vector_2D_2_flat_vector(geom_vec_2D, _Nx*_Ny, geom);
+	geom = vector_2D_2_flat_vector(geom_vec_2D);
 }
 
 // 
@@ -86,8 +86,9 @@ void Geometry::add_rectangle(const size_t Lx, const size_t Ly,
 	check_constructed_object(obj, "rectangle");
 
 	// Include in the geometry array
-	for (auto node : obj)
-		geom[node] = false;
+	for (const auto& node : obj) {
+		geom.at(node) = 0;
+	}
 }
 
 // Square
@@ -103,8 +104,9 @@ void Geometry::add_square(const size_t Ls, const size_t xc, const size_t yc)
 	check_constructed_object(obj, "square");
 
 	// Include in the geometry array
-	for (auto node : obj)
-		geom[node] = false;
+	for (const auto& node : obj) {
+		geom.at(node) = 0;
+	}
 }
 
 // Ellipse
@@ -121,8 +123,9 @@ void Geometry::add_ellipse(const size_t Lx, const size_t Ly,
 	check_constructed_object(obj, "ellipse");
 
 	// Include in the geometry array
-	for (auto node : obj)
-		geom[node] = false;
+	for (const auto& node : obj) {
+		geom.at(node) = 0;
+	}
 }
 
 // Circle
@@ -138,31 +141,37 @@ void Geometry::add_circle(const size_t D, const size_t xc, const size_t yc)
 	check_constructed_object(obj, "circle");
 
 	// Include in the geometry array
-	for (auto node : obj)
-		geom[node] = false;
+	for (const auto& node : obj) {
+		geom.at(node) = 0;
+	}
 }
 
 // Nominal object bounds check
 void Geometry::check_object_bounds(const size_t Lx, const size_t Ly, 
-				                     const size_t xc, const size_t yc, const std::string name)
+				                     const size_t xc, const size_t yc, 
+									 const std::string& name) const
 {
-	// This assumes that when Ls is even, it is shortened by 1 to retain
-	// symmetry
-	if ((((int)xc - (int)Lx/2) < 0) || (((int)yc - (int)Ly/2) < 0))
+	// This assumes that when Ls is even, it is shortened by 1 to retain symmetry
+	if (((static_cast<int>(xc) - static_cast<int>(Lx)/2) < 0) 
+			|| ((static_cast<int>(yc) - static_cast<int>(Ly)/2) < 0)) {
 		throw std::runtime_error(name +  " lower bounds do not fit the domain.");
-	if (((xc + Lx/2) >= _Nx) || ((yc + Ly/2) >= _Ny))
+	}
+	if (((xc + Lx/2) >= _Nx) || ((yc + Ly/2) >= _Ny)){
 		throw std::runtime_error(name +  " upper bounds do not fit the domain.");
+	}
 }
 
 // Verification of a constructed object
 // Tested "manually" - currently no permanent test, first bound check captures any incorrect 
 // input and this one really checks if the object creation program is wrong
-void Geometry::check_constructed_object(const std::vector<size_t> obj, const std::string name)
+void Geometry::check_constructed_object(const std::vector<size_t>& obj, 
+											const std::string& name) const
 {
 	// Check if max index smaller than domain size 
-	auto iter = std::max_element(obj.begin(), obj.end());
-	if ((!obj.empty()) && (*iter >= _Nx*_Ny))
+	const auto iter = std::max_element(obj.begin(), obj.end());
+	if ((!obj.empty()) && (*iter >= _Nx*_Ny)) {
 		throw std::runtime_error("Constructed " + name + " upper bounds do not fit the domain.");
+	}
 }
 
 //
@@ -170,10 +179,10 @@ void Geometry::check_constructed_object(const std::vector<size_t> obj, const std
 //
 
 // Create an array of built in objects given displacements
-void Geometry::add_array(const std::vector<size_t> object_properties,
-					const std::vector<std::vector<size_t>> array_bounds, 
+void Geometry::add_array(const std::vector<size_t>& object_properties,
+					const std::vector<std::vector<size_t>>& array_bounds, 
 					const size_t dx, const size_t dy, 
-					const std::string object_type, const size_t alpha)
+					const std::string& object_type, const size_t alpha)
 {
 	std::vector<size_t> array_nodes;
 	const std::vector<std::vector<size_t>> object_nodes = 
@@ -182,16 +191,17 @@ void Geometry::add_array(const std::vector<size_t> object_properties,
 	RegularArray array(object_nodes, array_bounds, dx, dy);
 	array_nodes = sub2ind<size_t>(array.get_nodes(), _Nx);
 
-	// Include in the geometry
-	for (auto node : array_nodes)
-		geom[node] = false;
+	// Include in the geometry array
+	for (const auto& node : array_nodes) {
+		geom.at(node) = 0;
+	}
 }	
 
 // Create an array of built in objects given object numbers
-void Geometry::add_array(const std::vector<size_t> object_properties,
-					const std::vector<std::vector<size_t>> array_bounds,
-					const std::vector<size_t> object_numbers,
-					const std::string object_type, const size_t alpha)
+void Geometry::add_array(const std::vector<size_t>& object_properties,
+					const std::vector<std::vector<size_t>>& array_bounds,
+					const std::vector<size_t>& object_numbers,
+					const std::string& object_type, const size_t alpha)
 {
 	std::vector<size_t> array_nodes;
 	const std::vector<std::vector<size_t>> object_nodes = 
@@ -200,28 +210,29 @@ void Geometry::add_array(const std::vector<size_t> object_properties,
 	RegularArray array(object_nodes, array_bounds, object_numbers);
 	array_nodes = sub2ind<size_t>(array.get_nodes(), _Nx);
 
-	// Include in the geometry
-	for (auto node : array_nodes)
-		geom[node] = false;
+	// Include in the geometry array
+	for (const auto& node : array_nodes) {
+		geom.at(node) = 0;
+	}
 }
 
 // Create a built in object and return its nodes
 std::vector<std::vector<size_t>> Geometry::create_built_in_object
-						(std::string object_type, 
-						const std::vector<size_t> p)
+						(const std::string& object_type, 
+						const std::vector<size_t>& p)
 {
 	auto get_object_nodes = [](geom_object&& obj){ return obj.get_nodes(); };
 	std::string vtypes("rectangle, square, ellipse, and circle.");
 
 	// Retrieve the nodes of a build in object with a given type
 	std::string type = str_to_lower(object_type);
-	if (type == "rectangle"){
+	if (type == "rectangle") {
 		return get_object_nodes(Rectangle(p[0], p[1], p[2], p[3]));
-	} else if (type == "square"){
+	} else if (type == "square") {
 		return get_object_nodes(Square(p[0], p[1], p[2]));
-	} else if (type == "ellipse"){
+	} else if (type == "ellipse") {
 		return get_object_nodes(Ellipse(p[0], p[1], p[2], p[3]));
-	} else if (type == "circle"){
+	} else if (type == "circle") {
 		return get_object_nodes(Circle(p[0], p[1], p[2]));
 	} else {
 		throw std::invalid_argument("Non-existing object type. Valid types are: " + vtypes);
@@ -233,7 +244,7 @@ std::vector<std::vector<size_t>> Geometry::create_built_in_object
 //
 
 // Load a geometry from file
-void Geometry::read(const std::string fname)
+void Geometry::read(const std::string& fname)
 {
 	// LbmIO settings
 	std::string delim(" ");
@@ -241,21 +252,19 @@ void Geometry::read(const std::string fname)
 	std::vector<size_t> dims = {0,0,0};
 
 	// Intermediate 2D vector
-	std::vector<std::vector<bool>> geom_vec_2D;
+	std::vector<std::vector<int>> geom_vec_2D;
 
 	// Read as a 2D vector and collect the dimensions
 	LbmIO geom_io(fname, delim, sflag, dims);
-	geom_vec_2D = geom_io.read_vector<bool>();
+	geom_vec_2D = geom_io.read_vector<int>();
 	_Nx = geom_vec_2D.at(0).size();
 	_Ny = geom_vec_2D.size();
-	// Initialize the geom array and convert the vector 
-	// to it
-	geom = new bool[_Nx*_Ny]; 
-	vector_2D_2_flat_array(geom_vec_2D, _Nx*_Ny, geom);
+	// Convert to target flat vector 
+	geom = vector_2D_2_flat_vector(geom_vec_2D);
 }
 
 // Save geometry to file
-void Geometry::write(const std::string fname) const
+void Geometry::write(const std::string& fname) const
 {
 	// LbmIO settings
 	std::string delim(" ");
@@ -263,12 +272,12 @@ void Geometry::write(const std::string fname) const
 	std::vector<size_t> dims = {0,0,0};
 
 	// Intermediate 2D vector
-	std::vector<std::vector<bool>> geom_vec_2D;
+	std::vector<std::vector<int>> geom_vec_2D;
 
 	// Convert geom array to a 2D vector
-	geom_vec_2D = flat_array_2_vector_2D(_Ny, _Nx, geom);
+	geom_vec_2D = flat_vector_2_vector_2D(_Ny, _Nx, geom);
 
 	// Write the 2D vector to file 
 	LbmIO geom_io(fname, delim, sflag, dims);
-	geom_io.write_vector<bool>(geom_vec_2D);
+	geom_io.write_vector<int>(geom_vec_2D);
 }

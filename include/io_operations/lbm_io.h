@@ -33,8 +33,8 @@ public:
 	 * @param sflag - true if IO to/from a single file (not a file sequence)
 	 * @param dims - vector with #rows | # columns | #any higher dimensions
 	 */
-	LbmIO(const std::string name, const std::string delim, const bool sflag, 
-			const std::vector<size_t> dims) : 
+	LbmIO(const std::string& name, const std::string& delim, const bool sflag, 
+			const std::vector<size_t>& dims) : 
 			fname(name), single_file(sflag), dimensions(dims) { } 
 
 	//

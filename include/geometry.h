@@ -68,7 +68,7 @@ public:
 	 * @param dH [in] - wall thickness, default 1 node
 	 * @param where [in] - wall direction, "x" or "y", default "y"
 	 */ 	
-	void add_walls(const size_t dH = 1, const std::string where = "y");
+	void add_walls(const size_t dH = 1, const std::string& where = "y");
 
 	//
 	// Objects
@@ -123,7 +123,7 @@ public:
 	* @param name [in] - object name for the error message
 	*/
 	void check_object_bounds(const size_t Lx, const size_t Ly, 
-				                           const size_t xc, const size_t yc, const std::string name);
+				       const size_t xc, const size_t yc, const std::string& name) const;
 
 	/** 
  	* \brief Verify if the object is not constructed outside the domain's upper bounds
@@ -135,7 +135,7 @@ public:
 	* @param obj [in] - vector of nodes that are considered an object 
 	* @param name [in] - object name for the error message
 	*/
-	void check_constructed_object(const std::vector<size_t> obj, const std::string name);
+	void check_constructed_object(const std::vector<size_t>& obj, const std::string& name) const;
 
 	// 
 	// Arrays of objects
@@ -143,6 +143,7 @@ public:
 	
 	/**
 	 * \brief Create an array of built in objects given displacements
+	 *
 	 * @param [in] object_properties - vector with object parameters;
 	 * 									parameters appear in the same
 	 * 									order as in the add_ function
@@ -160,13 +161,14 @@ public:
 	 * @param [in] object_type - built in object type, case insensitive
 	 * @param [in] alpha - staggering angle, default 0 (regular array)
 	 */
-	void add_array(const std::vector<size_t> object_properties,
-					const std::vector<std::vector<size_t>> array_bounds, 
+	void add_array(const std::vector<size_t>& object_properties,
+					const std::vector<std::vector<size_t>>& array_bounds, 
 					const size_t dx, const size_t dy, 
-					const std::string object_type, const size_t alpha=0);
+					const std::string& object_type, const size_t alpha=0);
 	
 	/**
 	 * \brief Create an array of built in objects given object numbers
+	 *
 	 * @param [in] object_properties - vector with object parameters;
 	 * 									parameters appear in the same
 	 * 									order as in the add_ function
@@ -179,10 +181,10 @@ public:
 	 * @param [in] object_type - built in object type, case insensitive
 	 * @param [in] alpha - staggering angle, default 0 (regular array)
 	 */
-	void add_array(const std::vector<size_t> object_properties,
-					const std::vector<std::vector<size_t>> array_bounds, 
-					const std::vector<size_t> object_numbers,
-					const std::string object_type, const size_t alpha=0);
+	void add_array(const std::vector<size_t>& object_properties,
+					const std::vector<std::vector<size_t>>& array_bounds, 
+					const std::vector<size_t>& object_numbers,
+					const std::string& object_type, const size_t alpha=0);
 
 	//
 	// Change individual nodes
@@ -195,7 +197,8 @@ public:
 	* @param yi [in] - y coordinate
 	*/
 	void set_node_fluid(const size_t xi, const size_t yi)
-		{ geom[yi*_Nx + xi] = 1; }
+		{ geom.at(yi*_Nx + xi) = 1; }
+
 	/** 
 	* \brief Set geometry node to 0 (solid node) 
     * 
@@ -203,7 +206,7 @@ public:
 	* @param yi [in] - y coordinate
 	*/
 	void set_node_solid(const size_t xi, const size_t yi)
-		{ geom[yi*_Nx + xi] = 0; }
+		{ geom.at(yi*_Nx + xi) = 0; }
 
 	// 
 	// I/O
@@ -214,13 +217,14 @@ public:
     * 
 	* @param fname [in] - file name 
 	*/
-	void read(const std::string fname);
+	void read(const std::string& fname);
+
 	/** 
 	* \brief Save geometry to file 
     * 
 	* @param fname [in] - file name 
 	*/
-	void write(const std::string fname) const;
+	void write(const std::string& fname) const;
 
 	//
 	// Indexing
@@ -233,7 +237,8 @@ public:
 	* @param xi [in] - x coordinate 
 	* @param yi [in] - y coordinate
 	*/
-	const int operator()(const size_t xi, const size_t yi) const { return geom.at(yi*_Nx + xi); }
+	const int operator()(const size_t xi, const size_t yi) const 
+		{ return geom.at(yi*_Nx + xi); }
  
 	/** 
 	 * \brief Returns geometry value at a node specified with a flat index 
@@ -241,7 +246,8 @@ public:
 	 *
 	 * @param ind [in] - position in the geometry array
 	 */
-	const int operator()(const size_t ind) const { return geom.at(ind); }
+	const int operator()(const size_t ind) const 
+		{ return geom.at(ind); }
 	
 	//	
 	// Getters
@@ -253,23 +259,27 @@ public:
 	size_t Ny() const { return _Ny; }
 	
 private:
+
 	// Geometric domain
 	std::vector<int> geom;
 	// Dimensions of the domain (in number of nodes)
 	size_t _Nx = 0, _Ny = 0;
 	// Pi
 	const double pi = std::acos(-1);
+
 	/** 
 	 * \brief Generate nodes of an object for array creation
+	 *
 	 * \details Can construct any object already defined in 
 	 * 				the Geometry class (rectangle, ellipse, etc.)
+	 *
 	 * @param [in] type - object type, case insensitive
 	 * @param [in] p - vector of parameters for construction
 	 * 					of the object
 	 * @return Linear indices of the object 
 	 */
-	std::vector<std::vector<size_t>> create_built_in_object(std::string type, 
-						const std::vector<size_t> p);
+	std::vector<std::vector<size_t>> create_built_in_object(const std::string& type, 
+						const std::vector<size_t>& p);
 };
 
 #endif
