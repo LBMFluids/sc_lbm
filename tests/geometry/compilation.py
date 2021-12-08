@@ -5,6 +5,8 @@ import subprocess, glob, os
 ### Input 
 # Path to the main directory
 path = '../../src/'
+# Path to executables 
+path_exe = '../../executables/'
 # Compiler options
 cx = 'g++'
 std = '-std=c++11'
@@ -24,6 +26,7 @@ exe_name = 'add_objects_test'
 spec_files = 'add_objects_test.cpp '
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
 # Arrays of objects tests
 # Name of the executable
@@ -32,6 +35,7 @@ exe_name = 'make_arrays_test'
 spec_files = 'make_arrays_test.cpp '
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
 # Various other geometry tests
 # Name of the executable
@@ -44,3 +48,4 @@ if os.path.exists(f_rm):
 spec_files = 'misc_geom_tests.cpp '
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)

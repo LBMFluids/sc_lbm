@@ -13,6 +13,9 @@ from geom_test import *
 
 py_version = 'python3'
 
+# Directory with executables
+path_exe = '../../executables/'
+
 #
 # Common part
 #
@@ -76,11 +79,11 @@ for file_rm in array_type_files:
 #
 
 # For tests 1 - 3
-subprocess.call(['./misc_geom_tests'], shell=True)
+subprocess.call([path_exe + 'misc_geom_tests'], shell=True)
 # For tests 4 - 7
-subprocess.call( ['./add_objects_test'], shell=True)
+subprocess.call([path_exe + 'add_objects_test'], shell=True)
 # For tests 8 
-subprocess.call(['./make_arrays_test'], shell=True)
+subprocess.call([path_exe + 'make_arrays_test'], shell=True)
 
 #
 # Python tests
