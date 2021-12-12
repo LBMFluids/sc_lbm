@@ -257,6 +257,8 @@ public:
 	size_t Nx() const { return _Nx; }
 	/// \brief Get number of nodes in y (vertical) direction
 	size_t Ny() const { return _Ny; }
+	/// \brief Retrieve a const reference to the underlying vector
+	const std::vector<int>& get_geom() const { return geom; }
 	
 private:
 

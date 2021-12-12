@@ -53,8 +53,8 @@ void x_wall_test_suite()
 	size_t Nx = 15, Ny = 20;
 	// Representative wall thicknesses to check
 	std::vector<size_t> dHs = {0, 1, 5, Ny};
-	// Ceate and save every setup
-	for (const auto dh : dHs){
+	// Create and save every setup
+	for (const auto dh : dHs) {
 		std::string fname("./test_data/x_wall_dH_");
 		fname += (std::to_string(dh) + ".txt");  
 		make_and_save_walls(Nx, Ny, fname, dh, "x");
@@ -68,8 +68,8 @@ void y_wall_test_suite()
 	size_t Nx = 65, Ny = 70;
 	// Representative wall thicknesses to check
 	std::vector<size_t> dHs = {0, 1, 5, Nx};
-	// Ceate and save every setup
-	for (const auto dh : dHs){
+	// Create and save every setup
+	for (const auto dh : dHs) {
 		std::string fname("./test_data/y_wall_dH_");
 		fname += (std::to_string(dh) + ".txt");  
 		make_and_save_walls(Nx, Ny, fname, dh, "y");
@@ -85,8 +85,8 @@ void wall_exception_suite()
 	const std::invalid_argument argerr("Wrong argument");
 	// Geometry properties
 	size_t Nx = 10, Ny = 30;
-	test_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Ny + 10, std::string("x")), "x wall to thick");
-	test_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Nx + 10, std::string("y")), "y wall to thick");
+	test_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Ny + 10, std::string("x")), "x wall too thick");
+	test_pass(exception_test(verbose, &rtime, make_walls, Nx, Ny, Nx + 10, std::string("y")), "y wall too thick");
 	test_pass(exception_test(verbose, &argerr, make_walls, Nx, Ny, Nx - 5, std::string("xyz")), "Wrong direction option");
 }
 
@@ -95,10 +95,13 @@ bool indexing_test()
 {
 	size_t Nx = 10, Ny = 50;
 	Geometry geom(Nx,Ny);
-	for (size_t xi = 0; xi<Nx; xi++)
-		for (size_t yi = 0; yi<Ny; yi++)
-			if (geom(xi,yi) != 1)
+	for (size_t xi = 0; xi<Nx; xi++) {
+		for (size_t yi = 0; yi<Ny; yi++) {
+			if (geom(xi,yi) != 1) {
 				return false;
+			}
+		}
+	}
 	return true;
 }
 
@@ -118,8 +121,9 @@ bool changing_individual_nodes_test()
 			   {5,2}, {0,Ny-1}, {3,Ny-1}};
 
 	// Change select nodes to solid 
-	for (const auto xy : coordinates)
+	for (const auto xy : coordinates) {
 		geom.set_node_solid(xy.first, xy.second);
+	}
 	// Verify if properly changed
 	for (size_t xi = 0; xi<Nx; xi++){
 		for (size_t yi = 0; yi<Ny; yi++){
@@ -129,23 +133,27 @@ bool changing_individual_nodes_test()
 			// Find if coordinates were supposed to be set to 0	
 			auto iter = std::find_if(coordinates.begin(), coordinates.end(), find_coordinates);
 			// If a match, node needs to be 0 (solid)
-			if ((iter != coordinates.end()) && (geom(xi, yi) != 0))
+			if ((iter != coordinates.end()) && (geom(xi, yi) != 0)) {
 				return false;
+			}
 		 	// If no match, node needs to be 1 (fluid)
-			if ((iter == coordinates.end()) && (geom(xi, yi) != 1))
+			if ((iter == coordinates.end()) && (geom(xi, yi) != 1)) {
 				return false;
+			}
 		}
 	}
 	
 	// Change back to fluid
-	for (const auto xy : coordinates)
+	for (const auto xy : coordinates) {
 		geom.set_node_fluid(xy.first, xy.second);	
+	}
 	// Check if all nodes equal 1 (fluid)
-	const bool* geom_array = geom.get_geom();
-	auto iter = std::find_if(geom_array, geom_array + Nx*Ny, 
-					[](const bool node){ return node != 1; });	
-	if (iter != geom_array + Nx*Ny)
+	const std::vector<int>& geom_vec = geom.get_geom();
+	auto iter = std::find_if(geom_vec.begin(), geom_vec.end(), 
+					[](const int node){ return node != 1; });	
+	if (iter != geom_vec.end()) {
 		return false;
+	}
 
 	// All as expected
 	return true;

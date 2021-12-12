@@ -42,7 +42,7 @@ void Geometry::add_walls(const size_t dH, const std::string& where)
 	// spanning the entire height/width
 	if (where == "y") {
 		if (dH > _Nx) { 
-			throw std::invalid_argument("Wall thickness larger than domain width (x)");
+			throw std::runtime_error("Wall thickness larger than domain width (x)");
 		} 
 		for (size_t iy=0; iy<_Ny; iy++) {
 			for (size_t ix=0; ix<dH; ix++) {
