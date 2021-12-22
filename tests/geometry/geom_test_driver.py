@@ -2,6 +2,7 @@
 # Driver for misc geometry tests
 # # # # # # # # # # # # # # # # # #
 
+import matplotlib.pyplot as plt
 import numpy as np
 import subprocess, sys, os, glob
 
@@ -89,13 +90,26 @@ subprocess.call([path_exe + 'make_arrays_test'], shell=True)
 # Python tests
 #
 
-# Test 1 - read/write test
+# ------- Test 1 - read/write test
+
 # Load and check if  both files are equal
 frd = fpath + 'rw_test_geom.txt'
 fwrt = fpath + 'rw_test_geom_out.txt'
 geom_1 = np.loadtxt(frd)
 geom_2 = np.loadtxt(fwrt)
- #test_pass(np.array_equal(geom_1, geom_2), 'Read/write')
+
+# Plot
+fig, axs = plt.subplots(1, 2)
+ax1 = axs[0]
+ax2 = axs[1]
+ax1.spy(geom_1, markersize=5)
+ax2.spy(geom_2, markersize=5)
+plt.show()
+
+# Run the test
+test_pass(np.array_equal(geom_1, geom_2), 'Read/write')
+
+# ------- End of test 1
 
 # Test 2 - x walls
 for fxwall in x_wall_files:
