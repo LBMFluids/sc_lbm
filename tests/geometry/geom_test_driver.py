@@ -2,7 +2,6 @@
 # Driver for misc geometry tests
 # # # # # # # # # # # # # # # # # #
 
-import matplotlib.pyplot as plt
 import numpy as np
 import subprocess, sys, os, glob
 
@@ -11,6 +10,7 @@ sys.path.insert(0, py_src_path)
 
 from utils import * 
 from geom_test import *
+import visualization as vis
 
 py_version = 'python3'
 
@@ -99,12 +99,7 @@ geom_1 = np.loadtxt(frd)
 geom_2 = np.loadtxt(fwrt)
 
 # Plot
-fig, axs = plt.subplots(1, 2)
-ax1 = axs[0]
-ax2 = axs[1]
-ax1.spy(geom_1, markersize=5)
-ax2.spy(geom_2, markersize=5)
-plt.show()
+vis.spy_plot([geom_1, geom_2], 1, 2)
 
 # Run the test
 test_pass(np.array_equal(geom_1, geom_2), 'Read/write')
