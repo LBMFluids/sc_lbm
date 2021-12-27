@@ -275,8 +275,7 @@ void Geometry::write(const std::string& fname) const
 	std::vector<std::vector<int>> geom_vec_2D;
 
 	// Convert geom array to a 2D vector
-	geom_vec_2D = flat_vector_2_vector_2D(_Ny, _Nx, geom);
-
+	geom_vec_2D = flat_vector_2_vector_2D(_Nx, _Ny, geom);
 	// Write the 2D vector to file 
 	LbmIO geom_io(fname, delim, sflag, dims);
 	geom_io.write_vector<int>(geom_vec_2D);

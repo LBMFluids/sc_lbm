@@ -20,7 +20,8 @@
  * 	[ row_1 | row_2 | ... | row_Ny ]
  * 	row_i : [node_1, ..., node_Nx]
  * There are _Nx nodes in a row and _Ny rows. 
- * row represents x and a column y direction.
+ * row represents x and a column y direction. There are _Nx 
+ * columns and _Ny rows.
  *
  * The user indexing starts with 0 and ends with N_x or N_y -1,
  * so it is the same as the underlying C++ indexing. To request
@@ -253,9 +254,9 @@ public:
 	// Getters
 	//
 	
-	/// \brief Get number of nodes in x (horizontal) direction
+	/// \brief Get number of nodes in x (horizontal) direction (#columns)
 	size_t Nx() const { return _Nx; }
-	/// \brief Get number of nodes in y (vertical) direction
+	/// \brief Get number of nodes in y (vertical) direction (#rows)
 	size_t Ny() const { return _Ny; }
 	/// \brief Retrieve a const reference to the underlying vector
 	const std::vector<int>& get_geom() const { return geom; }
