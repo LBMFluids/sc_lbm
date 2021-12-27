@@ -16,12 +16,15 @@ def spy_plot(data, Nr, Ncol):
     		Row 2: data 4, data 5, data 6 '''
 	
 	fig, axs = plt.subplots(Nr, Ncol)
-	if Nr == 1:
+	if Nr == 1 and Ncol > 1:
 		# This is separated so there is no indexing
 		# error when accessing axs
 		for ind, subset in enumerate(data):
 			ax = axs[ind]
-			ax.spy(subset, markersize=5)	
+			ax.spy(subset, markersize=5)
+	elif Nr == 1 and Ncol == 1:
+		# Just one plot
+		axs.spy(data[0], markersize=5)
 	else:
 		ind = 0
 		for ir in range(0, Nr):
