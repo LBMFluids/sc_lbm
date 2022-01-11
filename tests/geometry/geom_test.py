@@ -9,6 +9,7 @@ sys.path.insert(0, py_src_path)
 
 from utils import *
 import numpy as np
+import visualization as vis
 
 # ------> This needs some comparison with expected number of nodes
 class rectangle(object):
@@ -187,13 +188,15 @@ class obj_array:
 		for iy, ix in zip(bounds[0], bounds[1]):
 			for row in range(0,int(self.Nx)):
 				for col in range(0,int(self.Ny)):
-					xs = ix + row*x_shift
-					ys = iy + col*y_shift
+					xs = int(ix + row*x_shift)
+					ys = int(iy + col*y_shift)
 					new_geom[ys,xs] = 0 
 
 		if np.array_equal(new_geom, geom):
 			return True
 		else:
+			# Plot
+			vis.spy_plot([new_geom, geom], 1, 2)
 			msg('Object array not equal to expected', MAGENTA)
 			return False
 

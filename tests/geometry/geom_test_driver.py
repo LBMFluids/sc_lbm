@@ -196,7 +196,7 @@ for farr in array_type_files:
 	num_array = obj_array(**arr_props_args)
 	geom = np.loadtxt(farr, dtype=np.int64)
 	# Plot
-	vis.spy_plot([geom], 1, 1)
+	#vis.spy_plot([geom], 1, 1)
 	test_pass(num_array.correct(geom), 'Array test for ' + farr)
 # ------- End of test 8
 	

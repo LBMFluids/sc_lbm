@@ -86,11 +86,12 @@ std::vector<std::vector<T>> LbmIO::read_vector() const
    	T elem;
 	std::vector<std::vector<T>> output;
 
-	while (std::getline(in, line)){
+	while (std::getline(in, line)) {
 		std::istringstream data_row(line);
 		std::vector<T> temp;
-		while (data_row >> elem)
+		while (data_row >> elem) {
 			temp.push_back(elem);
+		}
 		output.push_back(temp);
 	}
 	return output;
