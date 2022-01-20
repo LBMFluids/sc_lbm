@@ -1,5 +1,28 @@
 #include "../include/fluid.h"
 
+/***************************************************** 
+ * class: Fluid 
+ * 
+ * Initializes single fluid, stores its density
+ *	distribution and other properties. Computes 
+ *  macroscopic quantities: density and velocity.
+ *
+ * The arrays are flat STL vectors of dimensions
+ * Nx*Ny (for macroscopic) and Nx*Ny*9 for the 
+ * distribution.
+ *
+ * The order in arrays is row-major, for macroscopic 
+ * 		[ row1 | row2 | ... | row_Nx ]
+ * with row_i: [ col1 | col2 | ... | col_Ny] 
+ *
+ * and for distributions:
+ *		[Direction 0][Direction 1] ... [Direction 9]
+ * with each direction being
+ * 		[ row1 | row2 | ... | row_Nx ]
+ * and row structure as above
+ *  
+ ******************************************************/
+
 // 
 // Initialization
 //
@@ -24,7 +47,7 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 			xi = i;
 			yi = j;
 			// If a fluid node, fill out the value in all directions
-			if (geom(xi,yi) == true) {
+			if (geom(xi,yi) == 1) {
 				for (size_t k=0; k<Ndir; ++k) {
 					dir_i = k;
 					yfi = dir_i*Nx*Ny + yi*Nx;
@@ -129,15 +152,6 @@ void Fluid::save_state(const std::string& frho, const std::string& fux,
 	write_var(ux, fux + "_" + std::to_string(step) + ".txt");
 	write_var(ux, fuy + "_" + std::to_string(step) + ".txt");
 }
-
-
-
-
-
-
-
-
-
 
 
 

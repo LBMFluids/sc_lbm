@@ -96,10 +96,10 @@ frd = fpath + 'rw_test_geom.txt'
 fwrt = fpath + 'rw_test_geom_out.txt'
 geom_1 = np.loadtxt(frd)
 geom_2 = np.loadtxt(fwrt)
-# Plot
-#vis.spy_plot([geom_1, geom_2], 1, 2)
 # Run the test
 test_pass(np.array_equal(geom_1, geom_2), 'Read/write')
+# Plot
+#vis.spy_plot([geom_1, geom_2], 1, 2)
 # ------- End of test 1
 
 # ------- Test 2 - x walls
@@ -109,9 +109,9 @@ for fxwall in x_wall_files:
 	# Test object
 	wall_x = walls(dh, 'x')
 	geom = np.loadtxt(fxwall)
+	test_pass(wall_x.correct(geom), 'x wall test, wall thickness ' + str(dh))
 	# Plot
 	#vis.spy_plot([geom], 1, 1)
-	test_pass(wall_x.correct(geom), 'x wall test, wall thickness ' + str(dh))
 # ------- End of test 2
 
 # ------- Test 3 - y walls
@@ -121,9 +121,9 @@ for fywall in y_wall_files:
 	# Test object
 	wall_y = walls(dh, 'y')
 	geom = np.loadtxt(fywall)
+	test_pass(wall_y.correct(geom), 'y wall test, wall thickness ' + str(dh))
 	# Plot
 	#vis.spy_plot([geom], 1, 1)
-	test_pass(wall_y.correct(geom), 'y wall test, wall thickness ' + str(dh))
 # ------- End of test 3
 
 # ------- Test 4 - rectangles
@@ -134,9 +134,9 @@ for frec in rectangle_files:
 	# Test object
 	rec = rectangle(props[0], props[1], props[2], props[3])
 	geom = np.loadtxt(frec)
+	test_pass(rec.correct(geom), 'Rectangle test for ' + frec)
 	# Plot
 	#vis.spy_plot([geom], 1, 1)
-	test_pass(rec.correct(geom), 'Rectangle test for ' + frec)
 # ------- End of test 4
 
 #  ------- Test 5 - squares 
@@ -147,9 +147,9 @@ for fsqr in square_files:
 	# Test object
 	sqr = square(props[0], props[1], props[2])
 	geom = np.loadtxt(fsqr)
+	test_pass(sqr.correct(geom), 'Square test for ' + fsqr)
 	# Plot
 	#vis.spy_plot([geom], 1, 1)
-	test_pass(sqr.correct(geom), 'Square test for ' + fsqr)
 # ------- End of test 5
 
 # ------- Test 6 - ellipses 
@@ -160,9 +160,9 @@ for fell in ellipse_files:
 	# Test object
 	ell = ellipse(props[0], props[1], props[2], props[3])
 	geom = np.loadtxt(fell)
+	test_pass(ell.correct(geom), 'Ellipse test for ' + fell)
 	# Plot
 	#vis.spy_plot([geom], 1, 1)
-	test_pass(ell.correct(geom), 'Ellipse test for ' + fell)
 # ------- End of test 6
 
 # ------- Test 7 - circle 
@@ -173,9 +173,9 @@ for fcirc in circle_files:
 	# Test object
 	circ = circle(props[0], props[1], props[2])
 	geom = np.loadtxt(fcirc)
+	test_pass(circ.correct(geom), 'Circle test for ' + fcirc)
 	# Plot
 	#vis.spy_plot([geom], 1, 1)
-	test_pass(circ.correct(geom), 'Circle test for ' + fcirc)
 # ------- End of test 7
 
 # ------- Test 8 - array
@@ -195,9 +195,9 @@ for farr in array_type_files:
 	# Make and test an array 		
 	num_array = obj_array(**arr_props_args)
 	geom = np.loadtxt(farr, dtype=np.int64)
+	test_pass(num_array.correct(geom), 'Array test for ' + farr)
 	# Plot
 	#vis.spy_plot([geom], 1, 1)
-	test_pass(num_array.correct(geom), 'Array test for ' + farr)
 # ------- End of test 8
 	
 

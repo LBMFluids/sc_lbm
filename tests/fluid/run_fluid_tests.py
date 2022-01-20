@@ -9,8 +9,11 @@ from colors import *
 
 py_version = 'python3'
 
+# Directory with executables
+path_exe = '../../executables/'
+
 #
-# Compile and run all the abm class specific tests
+# Compile and run all the Fluid class specific tests
 #
 
 # Compile
@@ -18,5 +21,5 @@ subprocess.call([py_version + ' compilation.py'], shell=True)
 
 # Test suite
 ut.msg('Fluid class tests', CYAN)
-subprocess.call(['./fl_test'], shell=True)
+subprocess.call([path_exe + 'fl_test'], shell=True)
 

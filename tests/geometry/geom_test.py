@@ -159,14 +159,14 @@ class obj_array:
 			self.dx = kwargs['dx']
 			self.dy = kwargs['dy']
 			# Expected number of objects in x and y
-			self.Nx = (self.xf-self.x0+1)/(self.dx + self.obj_x) + 1
-			self.Ny = (self.yf-self.y0+1)/(self.dy + self.obj_y) + 1
+			self.Nx = int((self.xf-self.x0+1)/(self.dx + self.obj_x)) + 1
+			self.Ny = int((self.yf-self.y0+1)/(self.dy + self.obj_y)) + 1
 		else:
 			self.Nx = kwargs['Nx']
 			self.Ny = kwargs['Ny']
 			# Expected displacements 
-			self.dx = (self.xf-self.x0+1)/(self.Nx - 1) - self.obj_x
-			self.dy = (self.yf-self.y0+1)/(self.Ny - 1) - self.obj_y
+			self.dx = int((self.xf-self.x0+1)/(self.Nx - 1)) - self.obj_x
+			self.dy = int((self.yf-self.y0+1)/(self.Ny - 1)) - self.obj_y
 
 	def correct(self, geom):
 		# Load a single object that was replicated

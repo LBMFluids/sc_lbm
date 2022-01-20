@@ -5,6 +5,8 @@ import subprocess, glob, os
 ### Input 
 # Path to the main directory
 path = '../../src/'
+# Path to executables 
+path_exe = '../../executables/'
 # Compiler options
 cx = 'g++'
 std = '-std=c++11'
@@ -25,5 +27,6 @@ exe_name = 'fl_test'
 spec_files = 'fluid_test_main.cpp '
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
 
