@@ -12,15 +12,24 @@
  * distribution.
  *
  * The order in arrays is row-major, for macroscopic 
- * 		[ row1 | row2 | ... | row_Nx ]
- * with row_i: [ col1 | col2 | ... | col_Ny] 
+ * 		[ row1 | row2 | ... | row_Ny ]
+ * with row_i: [ col1 | col2 | ... | col_Nx] 
  *
  * and for distributions:
  *		[Direction 0][Direction 1] ... [Direction 9]
  * with each direction being
- * 		[ row1 | row2 | ... | row_Nx ]
+ * 		[ row1 | row2 | ... | row_Ny ]
  * and row structure as above
  *  
+ * The user indexing starts with 0 and ends with N_x-1 or N_y-1,
+ * so it is the same as the underlying C++ indexing. To request
+ * the first node, ask for property(0,0) and last node for 
+ * property(_Nx-1, _Ny-1). 
+ *
+ * First index is the x direction and second is the y. 
+ * First index is the position within a row, second indicates
+ * which row the user asks for.
+ *
  ******************************************************/
 
 // 
@@ -50,8 +59,9 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 			if (geom(xi,yi) == 1) {
 				for (size_t k=0; k<Ndir; ++k) {
 					dir_i = k;
+					// Size of a row is Nx (and there are Ny rows)
 					yfi = dir_i*Nx*Ny + yi*Nx;
-					ind_fi = yfi + i;
+					ind_fi = yfi + xi;
 					f_dist.at(ind_fi) = rho_0/rho_factor;
 				}			
 			} 		

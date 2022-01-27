@@ -23,7 +23,7 @@
  * row represents x and a column y direction. There are _Nx 
  * columns and _Ny rows.
  *
- * The user indexing starts with 0 and ends with N_x or N_y -1,
+ * The user indexing starts with 0 and ends with N_x-1 or N_y-1,
  * so it is the same as the underlying C++ indexing. To request
  * the first node, ask for geom(0,0) and last node for 
  * geom(_Nx-1, _Ny-1). 
