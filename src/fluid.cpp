@@ -123,7 +123,7 @@ void Fluid::write_var(const std::vector<double>& variable, const std::string& fn
 			one_row.at(ind++) = variable.at(i);
 			continue;
 		}
-		if ((ind > 0) && (ind <= (Nx-1))) {
+		if ((ind > 0) && (ind < Nx)) {
 			// All but the first element of any row
 			one_row.at(ind++) = variable.at(i); 
 		} else {
@@ -137,7 +137,7 @@ void Fluid::write_var(const std::vector<double>& variable, const std::string& fn
 	// Write to file
 	std::string delim{" "};
 	bool single_file = true; 
-	std::vector<size_t> dims = {Nx,Ny,0};
+	std::vector<size_t> dims = {Ny,Nx,0};
 	LbmIO lbm_io(fname, delim, single_file, dims);
 	lbm_io.write_vector(temp_2D);
 }
@@ -145,11 +145,10 @@ void Fluid::write_var(const std::vector<double>& variable, const std::string& fn
 // Save a 3D variable to file
 void Fluid::write_var(const std::vector<double>& variable, const std::string& fname, const bool is_3D) const
 {
-	std::vector<double> temp;
+	std::vector<double> temp(Nx*Ny, -1.0);
 	for (size_t i=0; i<Ndir; ++i) {
-		std::copy(variable.cbegin() + i*Nx*Ny, variable.cend(), temp.begin());
+		std::copy(variable.cbegin() + i*Nx*Ny, variable.cbegin() + (i+1)*Nx*Ny, temp.begin());
 		write_var(temp, fname + "_" + std::to_string(i) + ".txt");
-		temp.clear();	
 	}
 }
 
