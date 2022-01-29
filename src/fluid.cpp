@@ -81,7 +81,7 @@ void Fluid::compute_density()
 		for (size_t j=0; j<Ndir; ++j) {
 			rho.at(i) += f_dist.at(j*Nx*Ny+i);
 		}
-	}				
+	}
 }
 
 // Compute macroscopic velocities
@@ -121,6 +121,12 @@ void Fluid::write_var(const std::vector<double>& variable, const std::string& fn
 		// First element of the first row
 		if (i == 0) {
 			one_row.at(ind++) = variable.at(i);
+			continue;
+		}
+		// Last row
+		if (i == Nx*Ny-1) {
+			one_row.at(Nx-1) = variable.at(i);
+			temp_2D.push_back(one_row);
 			continue;
 		}
 		if ((ind > 0) && (ind < Nx)) {

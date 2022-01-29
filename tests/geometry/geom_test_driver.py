@@ -111,7 +111,7 @@ for fxwall in x_wall_files:
 	geom = np.loadtxt(fxwall)
 	test_pass(wall_x.correct(geom), 'x wall test, wall thickness ' + str(dh))
 	# Plot
-	#vis.spy_plot([geom], 1, 1)
+	vis.spy_plot([geom], 1, 1)
 # ------- End of test 2
 
 # ------- Test 3 - y walls
