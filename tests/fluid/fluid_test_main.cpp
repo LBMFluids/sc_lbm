@@ -13,6 +13,9 @@ bool empty_geom();
 bool fluid_with_walls();
 bool object_array();
 
+// Supporting functions
+bool check_from_files(const std::string&, const double, const Geometry&);
+
 int main()
 {
 	test_pass(empty_geom(), "Just the fluid");
@@ -40,7 +43,7 @@ bool empty_geom()
 	water.save_state(den_file, ux_file, uy_file, 10);
 	water.write_f(den_dist_file);	
 
-	return true;
+	return check_from_files("test_data/", rho_0, geom);
 }
 
 bool fluid_with_walls()
@@ -107,4 +110,18 @@ bool object_array()
 	return true;
 }
 
+/// Loads and checks files with macroscopic variables and density functions
+/// @details fname is the precursor, like oat_ - rest is assumed as convention
+bool check_from_files(const std::string& fname, const double exp_den, const Geometry& geom)
+{
+	// Common placeholders
+	std::string delim{" "};
+	bool single_file = true; 
+	std::vector<size_t> dims = {geom.Ny(),geom.Nx(),0};
 
+	// Macroscopic density
+	LbmIO den_io(fname + "macro_density_10.txt", delim, single_file, dims);
+	std::vector<std::vector<double>> density = den_io.read_vector<double>();
+	
+	return true;
+}

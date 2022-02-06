@@ -26,6 +26,7 @@ public:
 	 * \details File will be located in the current working directory
 	 */ 
 	LbmIO() = default;
+
 	/** 
 	 * \brief Creates a LbmIO object
 	 * @param name - name of the file or begining of the file names for file sequences
