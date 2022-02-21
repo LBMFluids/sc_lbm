@@ -5,7 +5,11 @@
 #include <algorithm>
 #include <vector>
 #include "geometry.h"
+#include "lbm.h"
 #include "logger.h"
+#include "common.h"
+#include "utils.h"
+#include "./io_operations/lbm_io.h"
 
 /***************************************************** 
  * class: Fluid 
@@ -40,8 +44,9 @@
  ******************************************************/
 
 class Fluid {
+//friend LBM;
 public:
-	
+		
 	// 
 	//Constructors
 	//	
@@ -84,6 +89,24 @@ public:
 	//
 	// Getters 
 	//
+
+	/// Reference to density distribution, flat array of size Nx*Ny*9 
+	std::vector<double>& get_f_dist() { return f_dist; } 
+	/// Reference to macroscopic density Nx*Ny
+	std::vector<double>& get_rho() { return rho; }
+	/// Reference to macroscopic x velocity component
+	std::vector<double>& get_ux() { return ux; }
+	/// Reference to macroscopic y velocity component
+	std::vector<double>& get_uy() { return uy; }
+
+	/// Const reference to density distribution, flat array of size Nx*Ny*9 
+    const std::vector<double>& get_const_f_dist() { return f_dist; } 
+	/// Const reference to macroscopic density Nx*Ny
+	const std::vector<double>& get_const_rho() { return rho; }
+	/// Const reference to macroscopic x velocity component
+	const std::vector<double>& get_const_ux() { return ux; }
+	/// Const reference to macroscopic y velocity component
+	const std::vector<double>& get_const_uy() { return uy; }
 
 	//
 	// Setters
