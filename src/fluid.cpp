@@ -105,6 +105,20 @@ void Fluid::compute_macroscopic()
 	compute_velocities();
 }
 
+// Compute the equilibrium distribution function
+void Fluid::compute_f_equilibrium()
+{
+	double rt0 = 0.0, rt1 = 0.0, rt2 = 0.0;
+	double ueqxij = 0.0, ueqyij = 0.0, uxsq = 0.0, uysq = 0.0, uxuy5 = 0.0;
+	double uxuy6 = 0.0, uxuy7 = 0.0, uxuy8 = 0.0, usq = 0.0;
+
+	compute_macroscopic();
+
+	for (size_t ai=0; ai<Nx*Ny; ++ai) {
+		size_t ci = // this should be some modulo for y and similar for x 
+	}			
+}
+
 //
 // I/O
 //

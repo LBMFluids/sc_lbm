@@ -44,7 +44,6 @@
  ******************************************************/
 
 class Fluid {
-//friend LBM;
 public:
 		
 	// 
@@ -85,6 +84,13 @@ public:
 
 	// Compute density and x and y velocity components
 	void compute_macroscopic();
+
+	//
+	// Other properties
+	//
+
+	/// Compute the equilibrium distribution function
+	void compute_f_equilibrium();
 
 	//
 	// Getters 
@@ -167,8 +173,10 @@ private:
 
 	// Horizontal and vertical dimensions (number of nodes)
 	size_t Nx = 0, Ny = 0;
-	// Density distribution, flat array of size Nx*Ny*9 
+	// Density distribution function, flat array of size Nx*Ny*9 
 	std::vector<double> f_dist; 
+	// Equilibrium density distribution function, flat array of size Nx*Ny*9 
+	std::vector<double> f_eq_dist;
 	// Macroscopic density Nx*Ny
 	std::vector<double> rho;
 	// Macroscopic velocity components
