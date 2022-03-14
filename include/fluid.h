@@ -21,6 +21,9 @@
  * The arrays are flat STL vectors of dimensions
  * Nx*Ny (for macroscopic) and Nx*Ny*9 for the 
  * distribution.
+ * 
+ * First direction (0) is the center, last (8th) is 
+ * North-West.
  *
  * The order in arrays is row-major, for macroscopic 
  * 		[ row1 | row2 | ... | row_Ny ]
@@ -106,13 +109,18 @@ public:
 	std::vector<double>& get_uy() { return uy; }
 
 	/// Const reference to density distribution, flat array of size Nx*Ny*9 
-    const std::vector<double>& get_const_f_dist() { return f_dist; } 
+    const std::vector<double>& get_f_dist() const { return f_dist; } 
+	/// Const reference to equilibrium density distribution, flat array of size Nx*Ny*9 
+    const std::vector<double>& get_f_eq_dist() const { return f_eq_dist; }
 	/// Const reference to macroscopic density Nx*Ny
-	const std::vector<double>& get_const_rho() { return rho; }
+	const std::vector<double>& get_rho() const { return rho; }
 	/// Const reference to macroscopic x velocity component
-	const std::vector<double>& get_const_ux() { return ux; }
+	const std::vector<double>& get_ux() const { return ux; }
 	/// Const reference to macroscopic y velocity component
-	const std::vector<double>& get_const_uy() { return uy; }
+	const std::vector<double>& get_uy() const { return uy; }
+
+	/// Density weights for computing the equilibrium distribution
+	std::vector<double> get_wrts() const { return {wrt0, wrt1, wrt2}; }  
 
 	//
 	// Setters
@@ -166,6 +174,9 @@ private:
 	// Discrete lattice velocities
 	const std::vector<double> Cx = {0.0, 1.0, 0.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0};
     const std::vector<double> Cy = {0.0, 0.0, 1.0, 0.0, -1.0, 1.0, 1.0, -1.0, -1.0};	
+	// Weights for the equilibrium distribution
+	double wrt0 = 4.0/9.0, wrt1 = 1.0/9.0, wrt2 = 1.0/36.0;
+	double feq1 = 3.0, feq2 = 4.5, feq3 = 1.5;
 
 	//
 	// Variables

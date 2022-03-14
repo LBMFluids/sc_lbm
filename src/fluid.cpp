@@ -10,6 +10,9 @@
  * The arrays are flat STL vectors of dimensions
  * Nx*Ny (for macroscopic) and Nx*Ny*9 for the 
  * distribution.
+ * 
+ * First direction (0) is the center, last (8th) is 
+ * North-West.
  *
  * The order in arrays is row-major, for macroscopic 
  * 		[ row1 | row2 | ... | row_Ny ]
@@ -67,6 +70,8 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 			} 		
 		}
 	}
+	// Zero-initialized equilibrium distribution function
+	f_eq_dist.resize(Nx*Ny*Ndir, 0.0);
 }
 
 //
@@ -113,9 +118,32 @@ void Fluid::compute_f_equilibrium()
 	double uxuy6 = 0.0, uxuy7 = 0.0, uxuy8 = 0.0, usq = 0.0;
 
 	compute_macroscopic();
+	size_t Ntot = Nx*Ny;
+	for (size_t ai = 0; ai < Ntot; ++ai) {
 
-	for (size_t ai=0; ai<Nx*Ny; ++ai) {
-		size_t ci = // this should be some modulo for y and similar for x 
+		rt0 = wrt0*rho[ai];
+		rt1 = wrt1*rho[ai];
+	 	rt2 = wrt2*rho[ai];
+
+		ueqxij =  ux[ai];
+      	ueqyij =  uy[ai];
+	    uxsq   =  ueqxij * ueqxij;
+		uysq   =  ueqyij * ueqyij;
+		uxuy5  =  ueqxij +  ueqyij;
+		uxuy6  = -ueqxij +  ueqyij;
+		uxuy7  = -ueqxij + -ueqyij;
+		uxuy8  =  ueqxij + -ueqyij;
+		usq    =  uxsq + uysq;
+
+		f_eq_dist[ai] = rt0*(1.0 - feq3*usq);
+		f_eq_dist[ai + Ntot] = rt1*(1.0 + feq1*ueqxij + feq2*uxsq - feq3*usq);
+		f_eq_dist[ai + 2*Ntot] = rt1*(1.0 + feq1*ueqyij + feq2*uysq - feq3*usq);
+		f_eq_dist[ai + 3*Ntot] = rt1*(1.0 - feq1*ueqxij + feq2*uxsq - feq3*usq);
+		f_eq_dist[ai + 4*Ntot] = rt1*(1.0 - feq1*ueqyij + feq2*uysq - feq3*usq);
+		f_eq_dist[ai + 5*Ntot] = rt2*(1.0 + feq1*uxuy5 + feq2*uxuy5*uxuy5 - feq3*usq);
+		f_eq_dist[ai + 6*Ntot] = rt2*(1.0 + feq1*uxuy6 + feq2*uxuy6*uxuy6 - feq3*usq);
+		f_eq_dist[ai + 7*Ntot] = rt2*(1.0 + feq1*uxuy7 + feq2*uxuy7*uxuy7 - feq3*usq);
+		f_eq_dist[ai + 8*Ntot] = rt2*(1.0 + feq1*uxuy8 + feq2*uxuy8*uxuy8 - feq3*usq);
 	}			
 }
 

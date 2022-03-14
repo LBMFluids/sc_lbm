@@ -71,6 +71,17 @@ bool fluid_with_walls()
 	water.save_state(den_file, ux_file, uy_file, 10);
 	water.write_f(den_dist_file);
 
+	// Equilibrium distribution - corner case for 0 velocity
+	water.compute_f_equilibrium();
+	size_t Ntot = Nx*Ny;
+	const std::vector<double>& f_eq_dist = water.get_f_eq_dist(); 
+	const std::vector<double>& rho = water.get_rho();
+	std::vector<double> wrts = water.get_wrts();
+
+	for (size_t ai = 0; ai < Ntot; ++ai) {	
+				
+	}
+
 	return check_from_files("test_data/wt_", rho_0, geom);
 }
 
