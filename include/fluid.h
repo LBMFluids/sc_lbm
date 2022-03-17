@@ -107,7 +107,13 @@ public:
 	std::vector<double>& get_ux() { return ux; }
 	/// Reference to macroscopic y velocity component
 	std::vector<double>& get_uy() { return uy; }
-
+	/// x dimension
+	size_t get_Nx() const { return Nx; }
+	/// y dimension
+	size_t get_Ny() const { return Ny; }
+	/// Omega (fluid constant)
+	double get_omega() const { return omega; }
+	
 	/// Const reference to density distribution, flat array of size Nx*Ny*9 
     const std::vector<double>& get_f_dist() const { return f_dist; } 
 	/// Const reference to equilibrium density distribution, flat array of size Nx*Ny*9 

@@ -23,11 +23,21 @@ public:
 
 	LBM() = default;
 
+	/// Collision step for a single fluid
+	void collide(Fluid&);
+
+	/// Add an external volume force to a single fluid (gravity, pressure drop)	
+	void add_volume_force(const Geometry&, Fluid&, const std::vector<double>&); 
+
+	/// Streaming step for a single fluid
+	void stream(const Geometry& geom, Fluid&);
+
 // stream(geom, fluid1, fluid2)
 // stream(geom, fluid1)
 
 private:
-
+	// Number of directions
+	const size_t Ndir = 9;
 };
 
 #endif
