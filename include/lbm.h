@@ -21,7 +21,15 @@
 class LBM {
 public:
 
-	LBM() = default;
+	/// Need to assign the right size to temporary arrays
+	LBM() = delete;
+	
+	/// Constructor: stores dimensions and initializes temporary arrays
+	LBM(Geometry& geom) 
+	{	
+		Nx = geom.Nx(); Ny = geom.Ny(); Ntot = Nx*Ny; 
+		temp_f_dist.resize(Ntot*Ndir, 0.0); 
+	}  
 
 	/// Collision step for a single fluid
 	void collide(Fluid&);
@@ -37,7 +45,15 @@ public:
 
 private:
 	// Number of directions
-	const size_t Ndir = 9;
+	const size_t Nx = 0, Ny = 0, Ntot = 0, Ndir = 9;
+	// Bounce-back direction conversions
+	const std::vector<size_t> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
+	// Discerete velocities - x components
+	const std::vector<double> Cx = {0.0, 1.0, 0.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0};
+	// Discerete velocities - y components
+	const std::vector<double> Cy = {0.0, 1.0, 0.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0};
+	// Temporary container for streaming operations
+	std::vector<double> temp_f_dist; 
 };
 
 #endif
