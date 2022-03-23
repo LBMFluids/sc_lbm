@@ -43,6 +43,7 @@ void LBM::stream(const Geometry& geom, Fluid& fluid)
 	std::vector<double>& f_dist = fluid.get_f_dist();
 	size_t ist = 0, jst = 0;
 	size_t xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0;
+	// Stream with boundary conditions
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 		xi = ai%Nx; 
 		yj = ai/Nx;
@@ -62,13 +63,15 @@ void LBM::stream(const Geometry& geom, Fluid& fluid)
 				// Streaming with bounce-back
 				ijk_final = dj*Ntot + yj*Nx + xi;
 				if (geom(ist,jst) == 1) {
-					temp.at(ijk_final) = f_dist.at(ijk_final);
+					temp_f_dist.at(ijk_final) = f_dist.at(ijk_final);
 				} else {
 					bb_ijk_final = bb_rules[dj-1]*Ntot + yj*Nx + xi;
-					temp.at(bb_ijk_final) = f_dist.at(bb_ijk_final);	
+					temp_f_dist.at(bb_ijk_final) = f_dist.at(bb_ijk_final);	
 				}			
 			}
 		}
 	}
-	std::swap(temp, f_dist);
+	// Reassign and fill temp with 0s just in case
+	std::swap(temp_f_dist, f_dist);
+	std::fill(temp_f_dist.begin(), temp_f_dist.end(), 0.0);
 }
