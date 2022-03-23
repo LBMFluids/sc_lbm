@@ -42,10 +42,11 @@ void LBM::stream(const Geometry& geom, Fluid& fluid)
 {
 	std::vector<double>& f_dist = fluid.get_f_dist();
 	size_t ist = 0, jst = 0;
+	size_t xi = 0, yj =0, aik = 0, bb_aik = 0;
 
 	for (size_t ai = 0; ai < Ntot; ++ai) {
-		// xi = 
-		// yj = 
+		xi = ai%Nx; 
+		yj = ai/Nx;
 		if (geom(ai) == 1) {
 			for (size_t dj = 0; dj < Ndir; ++dj) {
 				// Periodic boundaries
@@ -60,14 +61,16 @@ void LBM::stream(const Geometry& geom, Fluid& fluid)
 					jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : Ny;
 				}
 				// Streaming with bounce-back
+				aik = dj*Ntot + Nyj*Nx + xi;
 				if (geom(ist,jst) == 1) {
-					// ---- roll back ist and jst 					
-					temp[ist][jst][k] = f[i][j][k];
+					temp.at(aik) = f_dist.at(aik);
 				} else {
-					// --- same here
-					temp[i][j][bb_rules[k-1]] = f[i][j][k];	
+					bb_aik = bb_rules[dj-1]*Ntot + Nyj*Nx + xi;
+					temp.at(bb_aik) = f_dist.at(aik);	
 				}			
 			}
 		}
 	}
+	// -------- copy temp to f_dist
+
 }

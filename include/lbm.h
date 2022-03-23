@@ -44,7 +44,7 @@ public:
 // stream(geom, fluid1)
 
 private:
-	// Number of directions
+	// Number of directions (Ntot is Nx*Ny)
 	const size_t Nx = 0, Ny = 0, Ntot = 0, Ndir = 9;
 	// Bounce-back direction conversions
 	const std::vector<size_t> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
