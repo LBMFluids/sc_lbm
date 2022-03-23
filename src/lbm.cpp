@@ -42,13 +42,12 @@ void LBM::stream(const Geometry& geom, Fluid& fluid)
 {
 	std::vector<double>& f_dist = fluid.get_f_dist();
 	size_t ist = 0, jst = 0;
-	size_t xi = 0, yj =0, aik = 0, bb_aik = 0;
-
+	size_t xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0;
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 		xi = ai%Nx; 
 		yj = ai/Nx;
 		if (geom(ai) == 1) {
-			for (size_t dj = 0; dj < Ndir; ++dj) {
+			for (size_t dj = 1; dj < Ndir; ++dj) {
 				// Periodic boundaries
 				if (Cx[dj] > 0) {
 					ist = (xi+Cx[dj] < Nx+1) ? (xi+Cx[dj]) : 0;
@@ -61,16 +60,15 @@ void LBM::stream(const Geometry& geom, Fluid& fluid)
 					jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : Ny;
 				}
 				// Streaming with bounce-back
-				aik = dj*Ntot + Nyj*Nx + xi;
+				ijk_final = dj*Ntot + yj*Nx + xi;
 				if (geom(ist,jst) == 1) {
-					temp.at(aik) = f_dist.at(aik);
+					temp.at(ijk_final) = f_dist.at(ijk_final);
 				} else {
-					bb_aik = bb_rules[dj-1]*Ntot + Nyj*Nx + xi;
-					temp.at(bb_aik) = f_dist.at(aik);	
+					bb_ijk_final = bb_rules[dj-1]*Ntot + yj*Nx + xi;
+					temp.at(bb_ijk_final) = f_dist.at(bb_ijk_final);	
 				}			
 			}
 		}
 	}
-	// -------- copy temp to f_dist
-
+	std::swap(temp, f_dist);
 }
