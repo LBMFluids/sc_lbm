@@ -144,14 +144,18 @@ template <typename T>
 bool is_equal_floats(const std::vector<std::vector<T>> vec1, 
 				const std::vector<std::vector<T>> vec2, const T tol)
 {
-	if (vec1.size() != vec2.size())
+	if (vec1.size() != vec2.size()) {
 		return false;
-	for (int i=0; i<vec1.size(); i++){
-		if (vec1.at(i).size() != vec2.at(i).size())
+	}
+	for (int i=0; i<vec1.size(); i++) {
+		if (vec1.at(i).size() != vec2.at(i).size()) {
 			return false;
-		for (int j=0; j<vec1.at(i).size(); j++)
-			if (!(float_equality(vec1.at(i).at(j), vec2.at(i).at(j), tol)))
+		}
+		for (int j=0; j<vec1.at(i).size(); j++) {
+			if (!(float_equality(vec1.at(i).at(j), vec2.at(i).at(j), tol))) {
 				return false;
+			}
+		}
 	}
 	return true;
 }

@@ -101,6 +101,8 @@ public:
 
 	/// Reference to density distribution, flat array of size Nx*Ny*9 
 	std::vector<double>& get_f_dist() { return f_dist; } 
+	/// Reference to equilibrium density distribution, flat array of size Nx*Ny*9 
+    std::vector<double>& get_f_eq_dist() { return f_eq_dist; }
 	/// Reference to macroscopic density Nx*Ny
 	std::vector<double>& get_rho() { return rho; }
 	/// Reference to macroscopic x velocity component

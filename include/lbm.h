@@ -18,6 +18,8 @@
  *
  ******************************************************/
 
+class Fluid;
+
 class LBM {
 public:
 
@@ -35,6 +37,7 @@ public:
 	void collide(Fluid&);
 
 	/// Add an external volume force to a single fluid (gravity, pressure drop)	
+	/// @details The force is specified for each lattice direction (check manual)
 	void add_volume_force(const Geometry&, Fluid&, const std::vector<double>&); 
 
 	/// Streaming step for a single fluid
@@ -45,7 +48,7 @@ public:
 
 private:
 	// Number of directions (Ntot is Nx*Ny)
-	const size_t Nx = 0, Ny = 0, Ntot = 0, Ndir = 9;
+	size_t Nx = 0, Ny = 0, Ntot = 0, Ndir = 9;
 	// Bounce-back direction conversions
 	const std::vector<size_t> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
 	// Discerete velocities - x components

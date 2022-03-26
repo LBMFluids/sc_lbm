@@ -21,5 +21,5 @@ subprocess.call([py_version + ' compilation.py'], shell=True)
 
 # Test suite
 ut.msg('LBM class tests', CYAN)
-subprocess.call([path_exe + 'lbm_cll_test'], shell=True)
+subprocess.call([path_exe + 'lbm_tst'], shell=True)
 

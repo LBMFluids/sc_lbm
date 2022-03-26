@@ -23,9 +23,9 @@ tst_files = '../common/test_utils.cpp'
 
 ## Entire test suite 
 # Name of the executable
-exe_name = 'lbm_cll_test'
+exe_name = 'lbm_tst'
 # Files needed only for this build
-spec_files = 'lbm_collision_tests.cpp '
+spec_files = 'lbm_tests.cpp '
 compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
