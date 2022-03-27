@@ -191,7 +191,7 @@ private:
 	//
 
 	// Horizontal and vertical dimensions (number of nodes)
-	size_t Nx = 0, Ny = 0;
+	size_t Nx = 0, Ny = 0, Ntot = 0;
 	// Density distribution function, flat array of size Nx*Ny*9 
 	std::vector<double> f_dist; 
 	// Equilibrium density distribution function, flat array of size Nx*Ny*9 

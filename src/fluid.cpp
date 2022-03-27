@@ -45,6 +45,7 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 	// Number of nodes in each direction
 	Nx = geom.Nx();		
 	Ny = geom.Ny();
+	Ntot = Nx*Ny;
 	const double rho_factor = static_cast<double>(Ndir);
 	// Coordinates
 	size_t xi = 0, yi = 0, ind_fi = 0, yfi = 0, dir_i = 0;
@@ -118,15 +119,14 @@ void Fluid::compute_f_equilibrium()
 	double uxuy6 = 0.0, uxuy7 = 0.0, uxuy8 = 0.0, usq = 0.0;
 
 	compute_macroscopic();
-	size_t Ntot = Nx*Ny;
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 
-		rt0 = wrt0*rho[ai];
-		rt1 = wrt1*rho[ai];
-	 	rt2 = wrt2*rho[ai];
+		rt0 = wrt0*rho.at(ai);
+		rt1 = wrt1*rho.at(ai);
+	 	rt2 = wrt2*rho.at(ai);
 
-		ueqxij =  ux[ai];
-      	ueqyij =  uy[ai];
+		ueqxij =  ux.at(ai);
+      	ueqyij =  uy.at(ai);
 	    uxsq   =  ueqxij * ueqxij;
 		uysq   =  ueqyij * ueqyij;
 		uxuy5  =  ueqxij +  ueqyij;
@@ -135,15 +135,15 @@ void Fluid::compute_f_equilibrium()
 		uxuy8  =  ueqxij + -ueqyij;
 		usq    =  uxsq + uysq;
 
-		f_eq_dist[ai] = rt0*(1.0 - feq3*usq);
-		f_eq_dist[ai + Ntot] = rt1*(1.0 + feq1*ueqxij + feq2*uxsq - feq3*usq);
-		f_eq_dist[ai + 2*Ntot] = rt1*(1.0 + feq1*ueqyij + feq2*uysq - feq3*usq);
-		f_eq_dist[ai + 3*Ntot] = rt1*(1.0 - feq1*ueqxij + feq2*uxsq - feq3*usq);
-		f_eq_dist[ai + 4*Ntot] = rt1*(1.0 - feq1*ueqyij + feq2*uysq - feq3*usq);
-		f_eq_dist[ai + 5*Ntot] = rt2*(1.0 + feq1*uxuy5 + feq2*uxuy5*uxuy5 - feq3*usq);
-		f_eq_dist[ai + 6*Ntot] = rt2*(1.0 + feq1*uxuy6 + feq2*uxuy6*uxuy6 - feq3*usq);
-		f_eq_dist[ai + 7*Ntot] = rt2*(1.0 + feq1*uxuy7 + feq2*uxuy7*uxuy7 - feq3*usq);
-		f_eq_dist[ai + 8*Ntot] = rt2*(1.0 + feq1*uxuy8 + feq2*uxuy8*uxuy8 - feq3*usq);
+		f_eq_dist.at(ai) = rt0*(1.0 - feq3*usq);
+		f_eq_dist.at(ai + Ntot) = rt1*(1.0 + feq1*ueqxij + feq2*uxsq - feq3*usq);
+		f_eq_dist.at(ai + 2*Ntot) = rt1*(1.0 + feq1*ueqyij + feq2*uysq - feq3*usq);
+		f_eq_dist.at(ai + 3*Ntot) = rt1*(1.0 - feq1*ueqxij + feq2*uxsq - feq3*usq);
+		f_eq_dist.at(ai + 4*Ntot) = rt1*(1.0 - feq1*ueqyij + feq2*uysq - feq3*usq);
+		f_eq_dist.at(ai + 5*Ntot) = rt2*(1.0 + feq1*uxuy5 + feq2*uxuy5*uxuy5 - feq3*usq);
+		f_eq_dist.at(ai + 6*Ntot) = rt2*(1.0 + feq1*uxuy6 + feq2*uxuy6*uxuy6 - feq3*usq);
+		f_eq_dist.at(ai + 7*Ntot) = rt2*(1.0 + feq1*uxuy7 + feq2*uxuy7*uxuy7 - feq3*usq);
+		f_eq_dist.at(ai + 8*Ntot) = rt2*(1.0 + feq1*uxuy8 + feq2*uxuy8*uxuy8 - feq3*usq);
 	}			
 }
 
