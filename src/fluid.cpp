@@ -131,8 +131,8 @@ void Fluid::compute_f_equilibrium()
 		uysq   =  ueqyij * ueqyij;
 		uxuy5  =  ueqxij +  ueqyij;
 		uxuy6  = -ueqxij +  ueqyij;
-		uxuy7  = -ueqxij + -ueqyij;
-		uxuy8  =  ueqxij + -ueqyij;
+		uxuy7  = -ueqxij - ueqyij;
+		uxuy8  =  ueqxij - ueqyij;
 		usq    =  uxsq + uysq;
 
 		f_eq_dist.at(ai) = rt0*(1.0 - feq3*usq);
