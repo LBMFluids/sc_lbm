@@ -1,5 +1,6 @@
 *.txt
 *.object
+*.swp
 *__pycache__*
 tests/geometry/test_data/array_type*
 executables

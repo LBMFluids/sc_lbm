@@ -7,6 +7,12 @@
  *
  ******************************************************/
 
+// Collective computation of macroscopic properties
+void LBM::compute_macroscopic(Fluid& fluid_1)
+{
+	fluid_1.compute_macroscopic();		
+}
+
 // Collision step for a single fluid
 void LBM::collide(Fluid& fluid_1)
 {

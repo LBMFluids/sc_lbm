@@ -33,6 +33,9 @@ public:
 		temp_f_dist.resize(Ntot*Ndir, 0.0); 
 	}  
 
+	/// Collective computation of macroscopic properties
+	void compute_macroscopic(Fluid&);
+
 	/// Collision step for a single fluid
 	void collide(Fluid&);
 

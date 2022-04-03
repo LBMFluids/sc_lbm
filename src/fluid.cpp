@@ -99,8 +99,8 @@ void Fluid::compute_velocities()
 			ux.at(i) += f_dist.at(j*Nx*Ny+i)*Cx.at(j); 
 			uy.at(i) += f_dist.at(j*Nx*Ny+i)*Cy.at(j);
 		}
-		ux.at(i) *= rho.at(i);
-		uy.at(i) *= rho.at(i);
+		ux.at(i) /= rho.at(i);
+		uy.at(i) /= rho.at(i);
 	}	
 }
 
