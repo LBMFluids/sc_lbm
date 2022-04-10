@@ -81,6 +81,7 @@ bool single_phase_walls_test()
 	size_t dh = 3;
 	Geometry geom(Nx, Ny);
 	geom.add_walls(dh, "x");
+	geom.write("test_data/domain_with_walls.txt");
 	
 	// All default
 	double rho_ini = 2.0;
@@ -96,6 +97,7 @@ bool single_phase_walls_test()
 	const std::vector<double> rho_0 = water.get_rho();
 	const std::vector<double> ux_0 = water.get_ux();
 	const std::vector<double> uy_0 = water.get_uy();
+	water.write_f("test_data/initial_walls_f_dist");
 
 	// Simulation
 	LBM lbm(geom);
@@ -103,11 +105,12 @@ bool single_phase_walls_test()
 	lbm.add_volume_force(geom, water, no_force);		
 	lbm.stream(geom, water);
 
-	// Initial values
+	// Final values
 	water.compute_macroscopic();
 	const std::vector<double> rho_F = water.get_rho();
 	const std::vector<double> ux_F = water.get_ux();
 	const std::vector<double> uy_F = water.get_uy();
+	water.write_f("test_data/final_walls_f_dist");
 
 	// Check
 	double tol = 1e-5;

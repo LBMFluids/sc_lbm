@@ -94,7 +94,7 @@ function just_fluid_test(channel_file, f_file, omega, out_file)
         end
 
         % Stream
-        %f=stream_wObs(f,Nr,Mc,iawint,jawint,lenwint, lenobs,iobs,jobs,Channel2D);
+        f=stream_wObs(f,Nr,Mc,iawint,jawint,lenwint, lenobs,iobs,jobs,Channel2D);
          
         if ~(mod(Cur_Iter, disp_every))
              disp(['Iteration ', num2str(Cur_Iter)])

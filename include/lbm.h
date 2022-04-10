@@ -53,11 +53,11 @@ private:
 	// Number of directions (Ntot is Nx*Ny)
 	size_t Nx = 0, Ny = 0, Ntot = 0, Ndir = 9;
 	// Bounce-back direction conversions
-	const std::vector<size_t> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
+	const std::vector<int> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
 	// Discerete velocities - x components
-	const std::vector<double> Cx = {0.0, 1.0, 0.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0};
+	const std::vector<int> Cx = {0, 1, 0, -1, 0, 1, -1, -1, 1};
 	// Discerete velocities - y components
-	const std::vector<double> Cy = {0.0, 1.0, 0.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0};
+	const std::vector<int> Cy = {0, 0, 1, 0, -1, 1, 1, -1, -1};
 	// Temporary container for streaming operations
 	std::vector<double> temp_f_dist; 
 };

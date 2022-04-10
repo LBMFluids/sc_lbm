@@ -52,8 +52,8 @@ void LBM::add_volume_force(const Geometry& geom, Fluid& fluid_1, const std::vect
 void LBM::stream(const Geometry& geom, Fluid& fluid_1)
 {
 	std::vector<double>& f_dist = fluid_1.get_f_dist();
-	size_t ist = 0, jst = 0;
-	size_t xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0;
+	int ist = 0, jst = 0;
+	int xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0;
 	// Stream with boundary conditions
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 		xi = ai%Nx; 
@@ -76,6 +76,8 @@ void LBM::stream(const Geometry& geom, Fluid& fluid_1)
 					jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : Ny-1;
 				}
 				// Streaming with bounce-back
+				xi = ist;
+				yj = jst;
 				ijk_final = dj*Ntot + yj*Nx + xi;
 				if (geom(ist,jst) == 1) {
 					temp_f_dist.at(ijk_final) = f_dist.at(ijk_final);

@@ -83,17 +83,17 @@ public:
 	void compute_density();
 
 	/// Compute macroscopic velocities
-	void compute_velocities();
+	void compute_velocities(const Geometry& geom);
 
 	// Compute density and x and y velocity components
-	void compute_macroscopic();
+	void compute_macroscopic(const Geometry& geom);
 
 	//
 	// Other properties
 	//
 
 	/// Compute the equilibrium distribution function
-	void compute_f_equilibrium();
+	void compute_f_equilibrium(const Geometry& geom);
 
 	//
 	// Getters 
@@ -145,11 +145,11 @@ public:
 	void write_density(const std::string& fname)
 			{ compute_density(); write_var(rho, fname); }
 	/// Save macroscopic x velocity component to file
-	void write_ux(const std::string& fname)
-			{ compute_velocities(); write_var(ux, fname); }
+	void write_ux(const std::string& fname, const Geometry& geom)
+			{ compute_velocities(geom); write_var(ux, fname); }
 	/// Save macroscopic y velocity component to file
-	void write_uy(const std::string& fname)
-			{ compute_velocities(); write_var(uy, fname); }
+	void write_uy(const std::string& fname, const Geometry& geom)
+			{ compute_velocities(geom); write_var(uy, fname); }
 	/// Save the density distribution to file
 	/// @details This produces a sequence of numbered files fname_dir, where 
 	/// 	dir is an integer that represents the direction (0 to 8);
@@ -159,7 +159,7 @@ public:
 	/// Save all macroscopic properties at this step to files
 	/// @details Appends the step number and an "_"
 	void save_state(const std::string& frho, const std::string& fux, 
-						const std::string& fuy, const int step);
+						const std::string& fuy, const int step, const Geometry& geom);
 
 private:
 

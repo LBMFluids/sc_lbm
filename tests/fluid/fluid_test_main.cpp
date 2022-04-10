@@ -16,7 +16,7 @@ bool object_array();
 // Supporting functions
 bool check_from_files(const std::string&, const double, const Geometry&);
 bool check_values(const std::string&, const double, const Geometry&);
-bool check_equlibrium_distribution(Fluid& fluid, const size_t Nx, const size_t Ny);
+bool check_equilibrium_distribution(Fluid& fluid, const size_t Nx, const size_t Ny, const Geometry& geom);
 
 int main()
 {
@@ -42,14 +42,14 @@ bool empty_geom()
 
 	// The macroscopic density should be 2, velocities 0.0, and 
 	// the distribution function should be 2/9 everywhere
-	water.save_state(den_file, ux_file, uy_file, 10);
+	water.save_state(den_file, ux_file, uy_file, 10, geom);
 	water.write_f(den_dist_file);	
 
 	if (!check_from_files("test_data/", rho_0, geom)) {
 		std::cerr << "Wrong initial properties" << std::endl;
 		return false;
 	}
-	if (!check_equlibrium_distribution(water, Nx, Ny)) {
+	if (!check_equilibrium_distribution(water, Nx, Ny, geom)) {
 		std::cerr << "Wrong zero velocity equlibrium density distribution" << std::endl;
 		return false;
 	} 
@@ -77,14 +77,14 @@ bool fluid_with_walls()
 
 	// The macroscopic density should be 1, velocities 0.0, and 
 	// the distribution function should be 1/9 except for wall nodes
-	water.save_state(den_file, ux_file, uy_file, 10);
+	water.save_state(den_file, ux_file, uy_file, 10, geom);
 	water.write_f(den_dist_file);
 
 	if (!check_from_files("test_data/wt_", rho_0, geom)) {
 		std::cerr << "Wrong initial properties" << std::endl;
 		return false;
 	}
-	if (!check_equlibrium_distribution(water, Nx, Ny)) {
+	if (!check_equilibrium_distribution(water, Nx, Ny, geom)) {
 		std::cerr << "Wrong zero velocity equlibrium density distribution" << std::endl;
 		return false;
 	}
@@ -122,14 +122,14 @@ bool object_array()
 
 	// The macroscopic density should be 1, velocities 0.0, and 
 	// the distribution function should be 2/9 except for wall nodes
-	water.save_state(den_file, ux_file, uy_file, 10);
+	water.save_state(den_file, ux_file, uy_file, 10, geom);
 	water.write_f(den_dist_file);
 
 	if (!check_from_files("test_data/oat_", rho_0, geom)) {
 		std::cerr << "Wrong initial properties" << std::endl;
 		return false;
 	}
-	if (!check_equlibrium_distribution(water, Nx, Ny)) {
+	if (!check_equilibrium_distribution(water, Nx, Ny, geom)) {
 		std::cerr << "Wrong zero velocity equlibrium density distribution" << std::endl;
 		return false;
 	}
@@ -192,9 +192,9 @@ bool check_values(const std::string& fname, const double exp_value, const Geomet
 }
 
 /// Verifies correctness of the equilibrium density distribution for zero velocity
-bool check_equlibrium_distribution(Fluid& fluid, const size_t Nx, const size_t Ny)
+bool check_equilibrium_distribution(Fluid& fluid, const size_t Nx, const size_t Ny, const Geometry& geom)
 {
-	fluid.compute_f_equilibrium();
+	fluid.compute_f_equilibrium(geom);
 	size_t Ntot = Nx*Ny;
 	const std::vector<double>& f_eq_dist = fluid.get_f_eq_dist(); 
 	const std::vector<double>& rho = fluid.get_rho();

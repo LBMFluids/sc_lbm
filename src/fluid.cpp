@@ -91,34 +91,36 @@ void Fluid::compute_density()
 }
 
 // Compute macroscopic velocities
-void Fluid::compute_velocities()
+void Fluid::compute_velocities(const Geometry& geom)
 {
 	compute_density();
 	for (size_t i=0; i<Nx*Ny; ++i) {
-		for (size_t j=0; j<Ndir; ++j) {
-			ux.at(i) += f_dist.at(j*Nx*Ny+i)*Cx.at(j); 
-			uy.at(i) += f_dist.at(j*Nx*Ny+i)*Cy.at(j);
+		if (geom(i) == 1) {
+			for (size_t j=0; j<Ndir; ++j) {
+				ux.at(i) += f_dist.at(j*Nx*Ny+i)*Cx.at(j); 
+				uy.at(i) += f_dist.at(j*Nx*Ny+i)*Cy.at(j);
+			}
+			ux.at(i) /= rho.at(i);
+			uy.at(i) /= rho.at(i);
 		}
-		ux.at(i) /= rho.at(i);
-		uy.at(i) /= rho.at(i);
 	}	
 }
 
 // Compute density and x and y velocity components
-void Fluid::compute_macroscopic()
+void Fluid::compute_macroscopic(const Geometry& geom)
 {
 	compute_density();
-	compute_velocities();
+	compute_velocities(geom);
 }
 
 // Compute the equilibrium distribution function
-void Fluid::compute_f_equilibrium()
+void Fluid::compute_f_equilibrium(const Geometry& geom)
 {
 	double rt0 = 0.0, rt1 = 0.0, rt2 = 0.0;
 	double ueqxij = 0.0, ueqyij = 0.0, uxsq = 0.0, uysq = 0.0, uxuy5 = 0.0;
 	double uxuy6 = 0.0, uxuy7 = 0.0, uxuy8 = 0.0, usq = 0.0;
 
-	compute_macroscopic();
+	compute_macroscopic(geom);
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 
 		rt0 = wrt0*rho.at(ai);
@@ -201,11 +203,11 @@ void Fluid::write_var(const std::vector<double>& variable, const std::string& fn
 }
 
 void Fluid::save_state(const std::string& frho, const std::string& fux,
-                        const std::string& fuy, const int step)
+                        const std::string& fuy, const int step, const Geometry& geom)
 {
 	compute_density(); 
 	write_var(rho, frho + "_" + std::to_string(step) + ".txt");
-	compute_velocities(); 
+	compute_velocities(geom); 
 	write_var(ux, fux + "_" + std::to_string(step) + ".txt");
 	write_var(ux, fuy + "_" + std::to_string(step) + ".txt");
 }
