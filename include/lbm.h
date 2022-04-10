@@ -26,18 +26,16 @@ public:
 	/// Need to assign the right size to temporary arrays
 	LBM() = delete;
 	
-	/// Constructor: stores dimensions and initializes temporary arrays
-	LBM(Geometry& geom) 
+	/// Constructor: stores dimensions and initializes temporary arrays, stores BCs
+	LBM(const Geometry& geom, const bool pb_x, const bool pb_y) : 
+		xperiodic(pb_x), yperiodic(pb_y) 
 	{	
 		Nx = geom.Nx(); Ny = geom.Ny(); Ntot = Nx*Ny; 
 		temp_f_dist.resize(Ntot*Ndir, 0.0); 
 	}  
 
-	/// Collective computation of macroscopic properties
-	void compute_macroscopic(Fluid&);
-
 	/// Collision step for a single fluid
-	void collide(Fluid&);
+	void collide(const Geometry& geom, Fluid&);
 
 	/// Add an external volume force to a single fluid (gravity, pressure drop)	
 	/// @details The force is specified for each lattice direction (check manual)
@@ -52,6 +50,9 @@ public:
 private:
 	// Number of directions (Ntot is Nx*Ny)
 	size_t Nx = 0, Ny = 0, Ntot = 0, Ndir = 9;
+	// Boundary conditions (default periodic in all directions)
+	bool xperiodic = true;
+	bool yperiodic = true;
 	// Bounce-back direction conversions
 	const std::vector<int> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
 	// Discerete velocities - x components

@@ -7,17 +7,11 @@
  *
  ******************************************************/
 
-// Collective computation of macroscopic properties
-void LBM::compute_macroscopic(Fluid& fluid_1)
-{
-	fluid_1.compute_macroscopic();		
-}
-
 // Collision step for a single fluid
-void LBM::collide(Fluid& fluid_1)
+void LBM::collide(const Geometry& geom, Fluid& fluid_1)
 {
 	// Equilibrium distribution and arrays
-	fluid_1.compute_f_equilibrium();
+	fluid_1.compute_f_equilibrium(geom);
 
 	std::vector<double>& f_dist = fluid_1.get_f_dist();
 	const std::vector<double>& f_eq_dist = fluid_1.get_f_eq_dist();
@@ -65,24 +59,28 @@ void LBM::stream(const Geometry& geom, Fluid& fluid_1)
 			// Remaining directions
 			for (size_t dj = 1; dj < Ndir; ++dj) {
 				// Periodic boundaries
-				if (Cx[dj] > 0) {
-					ist = (xi+Cx[dj] < Nx) ? (xi+Cx[dj]) : 0;
-				} else {
-					ist = (xi+Cx[dj] >= 0) ? (xi+Cx[dj]) : Nx-1;
+				if (xperiodic) {
+					if (Cx[dj] > 0) {
+						ist = (xi+Cx[dj] < static_cast<int>(Nx)) ? (xi+Cx[dj]) : 0;
+					} else {
+						ist = (xi+Cx[dj] >= 0) ? (xi+Cx[dj]) : static_cast<int>(Nx)-1;
+					}
+					xi = ist;
 				}
-				if (Cy[dj] > 0) {
-					jst = (yj+Cy[dj] < Ny) ? (yj+Cy[dj]) : 0;
-				} else {
-					jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : Ny-1;
+				if (yperiodic) {
+					if (Cy[dj] > 0) {
+						jst = (yj+Cy[dj] < static_cast<int>(Ny)) ? (yj+Cy[dj]) : 0;
+					} else {
+						jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : static_cast<int>(Ny)-1;
+					}
+					yj = jst;
 				}
 				// Streaming with bounce-back
-				xi = ist;
-				yj = jst;
-				ijk_final = dj*Ntot + yj*Nx + xi;
+				ijk_final = static_cast<size_t>(dj*Ntot + yj*Nx + xi);
 				if (geom(ist,jst) == 1) {
 					temp_f_dist.at(ijk_final) = f_dist.at(ijk_final);
 				} else {
-					bb_ijk_final = bb_rules[dj-1]*Ntot + yj*Nx + xi;
+					bb_ijk_final = static_cast<size_t>(bb_rules[dj-1]*Ntot + yj*Nx + xi);
 					temp_f_dist.at(bb_ijk_final) = f_dist.at(bb_ijk_final);	
 				}			
 			}
