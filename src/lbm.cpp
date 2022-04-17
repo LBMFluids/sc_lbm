@@ -47,11 +47,11 @@ void LBM::stream(const Geometry& geom, Fluid& fluid_1)
 {
 	std::vector<double>& f_dist = fluid_1.get_f_dist();
 	int ist = 0, jst = 0;
-	int xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0;
+	int xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0, ijk_ini = 0;
 	// Stream with boundary conditions
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 		xi = ai%Nx; 
-		yj = ai/Nx;
+		yj = ((ai-xi)/Nx)%Ny;
 		// 1 - fluid node, 0 - solid
 		if (geom(ai) == 1) {
 			// Lattice direction 0
@@ -65,23 +65,26 @@ void LBM::stream(const Geometry& geom, Fluid& fluid_1)
 					} else {
 						ist = (xi+Cx[dj] >= 0) ? (xi+Cx[dj]) : static_cast<int>(Nx)-1;
 					}
-					xi = ist;
-				}
+				} else {
+					ist = xi+Cx[dj];
+				}				
 				if (yperiodic) {
 					if (Cy[dj] > 0) {
 						jst = (yj+Cy[dj] < static_cast<int>(Ny)) ? (yj+Cy[dj]) : 0;
 					} else {
 						jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : static_cast<int>(Ny)-1;
 					}
-					yj = jst;
+				} else {
+					jst = yj+Cy[dj];
 				}
 				// Streaming with bounce-back
-				ijk_final = static_cast<size_t>(dj*Ntot + yj*Nx + xi);
+				ijk_ini = static_cast<size_t>(dj*Ntot + yj*Nx + xi);
 				if (geom(ist,jst) == 1) {
-					temp_f_dist.at(ijk_final) = f_dist.at(ijk_final);
+					ijk_final = static_cast<size_t>(dj*Ntot + jst*Nx + ist);
+					temp_f_dist.at(ijk_final) = f_dist.at(ijk_ini);
 				} else {
 					bb_ijk_final = static_cast<size_t>(bb_rules[dj-1]*Ntot + yj*Nx + xi);
-					temp_f_dist.at(bb_ijk_final) = f_dist.at(bb_ijk_final);	
+					temp_f_dist.at(bb_ijk_final) = f_dist.at(ijk_ini);	
 				}			
 			}
 		}
