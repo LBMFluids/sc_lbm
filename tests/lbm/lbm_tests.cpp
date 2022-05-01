@@ -14,9 +14,9 @@ void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string&
 {
 	// Density distribution functions are already computed and stored
 	fluid_1.compute_macroscopic(geom);
-	fluid_1.write_density(fname + "density");
-	/*fluid_1.write_ux(fname + std::to_string("ux"), geom);
-	fluid_1.write_ux(fname + std::to_string("uy"), geom);
-	*/fluid_1.write_feq(fname_feq);
+	fluid_1.write_density(fname + "_density.txt");
+	fluid_1.write_ux(fname + "_ux.txt", geom);
+	fluid_1.write_ux(fname + "_uy.txt", geom);
+	fluid_1.write_feq(fname_feq);
 	fluid_1.write_f(fname_f);
 }
