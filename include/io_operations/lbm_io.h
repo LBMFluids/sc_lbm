@@ -109,8 +109,7 @@ void LbmIO::write_vector(const std::vector<std::vector<T>>& data) const
 	std::fstream &out = file.get_stream();
 
 	size_t nrows = data.size();
-	size_t ncols = data.at(0).size();
-	for (int i = 0; i<nrows; i++){
+	for (size_t i = 0; i<nrows; i++) {
 		std::copy(data.at(i).begin(), data.at(i).end(),	std::ostream_iterator<T>(out, delim.c_str()));
 		out << '\n';
 	}	

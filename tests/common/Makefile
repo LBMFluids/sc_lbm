@@ -1,6 +1,6 @@
 # Compile tests for common testing utilities
 CXX=g++
-CXXFLAGS=-std=c++11
+CXXFLAGS=-std=c++11 -Wall
 TARGET=tu_test
 
 OBJS=test_utils.o

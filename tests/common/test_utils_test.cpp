@@ -4,7 +4,7 @@
  * Tests of general testing utility functions
 ***************************************************************/
 
-void tst_pass_test();
+void test_pass_test();
 bool exception_wrapper_test(bool verbose=false);
 bool exception_wrapper_member_functions_test(bool verbose=false);
 int exception_helper_v1(double, double);
@@ -35,18 +35,18 @@ public:
 int main()
 {
 	bool verbose = true;
-	tst_pass_test();
-	tst_pass(exception_wrapper_test(verbose), "Exception wrapper");
-	tst_pass(exception_wrapper_member_functions_test(verbose), "Exception wrapper - member functions");
-	tst_pass(equal_doubles_test(verbose), "Equality of doubles");
+	test_pass_test();
+	test_pass(exception_wrapper_test(verbose), "Exception wrapper");
+	test_pass(exception_wrapper_member_functions_test(verbose), "Exception wrapper - member functions");
+	test_pass(equal_doubles_test(verbose), "Equality of doubles");
 	return 0;
 }
 
 // Verifies if printing right messages
-void tst_pass_test()
+void test_pass_test()
 {
-	tst_pass(false, "Should fail");
-	tst_pass(true, "Should work");
+	test_pass(false, "Should fail");
+	test_pass(true, "Should work");
 }
 
 // Verifies correct behavior of exception test with

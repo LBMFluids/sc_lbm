@@ -104,7 +104,7 @@ bool object_array()
 	// Array created by imposing the number of objects
 	std::string object_type("ellipse");
 	size_t obj_x = 5, obj_y = 7, xc = 10, yc = 15;
-	size_t x0 = 5, xf = 190, y0 = 3, yf = 70, dx = 0, dy = 0;
+	size_t x0 = 5, xf = 190, y0 = 3, yf = 70;
 	size_t ob_num_x = 20, ob_num_y = 5;
 	
 	geom.add_array({obj_x, obj_y, xc, yc}, {{x0, xf},{y0, yf}}, {ob_num_x, ob_num_y}, object_type);
@@ -175,8 +175,8 @@ bool check_values(const std::string& fname, const double exp_value, const Geomet
 
 	LbmIO val_io(fname, delim, single_file, dims);
 	std::vector<std::vector<double>> values = val_io.read_vector<double>();
-	for (int i = 0; i < values.size(); ++i) {
-		for (int j = 0; j < values.at(0).size(); ++j) {
+	for (size_t i = 0; i < values.size(); ++i) {
+		for (size_t j = 0; j < values.at(0).size(); ++j) {
 			if (geom(j,i) == 0) {
 				if (!float_equality<double>(values.at(i).at(j), 0.0, tol)) {
 					std::cerr << "Value from " << fname  << " should be zero" << std::endl;

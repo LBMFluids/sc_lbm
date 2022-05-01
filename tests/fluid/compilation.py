@@ -11,6 +11,7 @@ path_exe = '../../executables/'
 cx = 'g++'
 std = '-std=c++11'
 opt = '-O0'
+other = '-Wall'
 # Common source files
 src_files = path + 'geometry.cpp' + ' ' + path + 'misc_checks.cpp '
 src_files += path + 'geom_object/rectangle.cpp' + ' ' + path + 'geom_object/ellipse.cpp'
@@ -25,7 +26,7 @@ tst_files = '../common/test_utils.cpp'
 exe_name = 'fl_test'
 # Files needed only for this build
 spec_files = 'fluid_test_main.cpp '
-compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 

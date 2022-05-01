@@ -131,11 +131,14 @@ void exception_test_helper(std::true_type, Functor fun, Arg0&& arg0, Args&&... a
 template <typename T>
 bool is_equal_exact(const std::vector<std::vector<T>> vec1, const std::vector<std::vector<T>> vec2)
 {
-	if (vec1.size() != vec2.size())
+	if (vec1.size() != vec2.size()) {
 		return false;
-	for (int i=0; i<vec1.size(); i++)
-		if (!(vec1.at(i) == vec2.at(i)))
+	}
+	for (size_t i=0; i<vec1.size(); i++) {
+		if (!(vec1.at(i) == vec2.at(i))) {
 			return false;
+		}
+	}
 	return true;
 }
 
@@ -147,11 +150,11 @@ bool is_equal_floats(const std::vector<std::vector<T>> vec1,
 	if (vec1.size() != vec2.size()) {
 		return false;
 	}
-	for (int i=0; i<vec1.size(); i++) {
+	for (size_t i=0; i<vec1.size(); i++) {
 		if (vec1.at(i).size() != vec2.at(i).size()) {
 			return false;
 		}
-		for (int j=0; j<vec1.at(i).size(); j++) {
+		for (size_t j=0; j<vec1.at(i).size(); j++) {
 			if (!(float_equality(vec1.at(i).at(j), vec2.at(i).at(j), tol))) {
 				return false;
 			}

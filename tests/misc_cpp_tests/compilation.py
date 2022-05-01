@@ -11,6 +11,7 @@ path_exe = '../../executables/'
 cx = 'g++'
 std = '-std=c++11'
 opt = '-O0'
+other = '-Wall'
 # Common source files
 src_files = path + 'misc_checks.cpp'
 src_files += ' ' + path + 'io_operations/FileHandler.cpp'
@@ -26,7 +27,7 @@ spec_files = 'utils_tests.cpp'
 verbose = '-DVERBOSE'
 # or overwrite and don't
 verbose = '-UVERBOSE'
-compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files, verbose])
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, tst_files, src_files, verbose])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
@@ -41,7 +42,7 @@ if os.path.exists(f_app):
 exe_name = 'file_hdl_tests'
 # Files needed only for this build
 spec_files = 'file_handler_tests.cpp'
-compile_com = ' '.join([cx, std, opt, '-o', exe_name, spec_files, tst_files, src_files])
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
@@ -59,6 +60,6 @@ for frm in files_rm:
 exe_name = 'lbm_io_tests'
 # Files needed only for this build
 spec_files = 'lbm_io_tests.cpp'
-compile_com = ' '.join([cx, std, opt, '-o', exe_name, tst_files, src_files, spec_files])
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, tst_files, src_files, spec_files])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)

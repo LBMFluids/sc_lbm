@@ -150,6 +150,12 @@ public:
 	/// Save macroscopic y velocity component to file
 	void write_uy(const std::string& fname, const Geometry& geom)
 			{ compute_velocities(geom); write_var(uy, fname); }
+	/// Save the equilibrium density distribution to file
+	/// @details This produces a sequence of numbered files fname_dir, where 
+	/// 	dir is an integer that represents the direction (0 to 8);
+	///		this adds a "_" to fname so no need for it
+	void write_feq(const std::string& fname) const 
+			{ write_var(f_eq_dist, fname, true); }
 	/// Save the density distribution to file
 	/// @details This produces a sequence of numbered files fname_dir, where 
 	/// 	dir is an integer that represents the direction (0 to 8);

@@ -19,7 +19,9 @@ path_exe = '../../executables/'
 # Compile
 subprocess.call([py_version + ' compilation.py'], shell=True)
 
-# Test suite
+# General message
 ut.msg('LBM class tests', CYAN)
-subprocess.call([path_exe + 'lbm_tst'], shell=True)
+
+# Test suite
+subprocess.call([path_exe + 'lbm_tst_nof'], shell=True)
 
