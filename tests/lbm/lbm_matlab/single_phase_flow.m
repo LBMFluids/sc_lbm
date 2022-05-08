@@ -1,41 +1,58 @@
-%% Generate equilibrium distribution to compare with the C++ output
-function laminar_test(channel_file, f_file, omega, out_file)
+%% Generate data to compare with the C++ output
+% geom_file - file with domain geometry (1 for fluid, 0 for solid node)
+% rho_ini - initial (nominal) density 
+% dPdL - pressure drop
+% Max_Iter - how long to iterate (0 means just one step)
+% out_file - file name template for saving the variables - it should follow
+% the C++ template, see test code
+function single_phase_flow(geom_file, rho_ini, force, Max_Iter, out_file)
     
     % Load the geometry
-    Channel2D = load(channel_file);
+    Channel2D = load(geom_file);
+    [Nr Mc]=size(Channel2D);
     
-    % Load f
-    N_c = 9;
-    f = load_f(f_file, N_c);
-    
-    % Force 
-    dPdL = 1e-5;
-    force=-dPdL*(1/6)*[0 -1 0 1 -1 -1 1 1 0]';
-    
+    % Viscosity
+    omega = 1.0;
+
     % Compute the equlibrium distribution function for given distribution
     % function f and geometry
-    [Nr Mc N_c]=size(f);
+ 
     % Compute indices for streaming
-    Obstacles=bwperim(Channel2D,8); % perimeter of the grains for bounce back Bound.Cond.
+    Obstacles=bwperim(Channel2D,8); 
     border=logical(ones(Nr,Mc));
     Obstacles=Obstacles.*(border);
-    
+
     [iobs jobs]=find(Obstacles);lenobs=length(iobs); ijobs= (jobs-1)*Nr+iobs; 
     [iawint jawint]=find(( Channel2D==1 & ~Obstacles)); 
     lenwint=length(iawint);
     ijaint= (jawint-1)*Nr+iawint;
     
-    [iabw1 jabw1]=find(f(:,:,9)~=0);
+    [iabw1 jabw1]=find(Channel2D~=0);
     lena=length(iabw1);
-    ija=(jabw1-1)*Nr+iabw1; % Linear index
+    ija=(jabw1-1)*Nr+iabw1; 
+
+    C_x=[1 0 -1 0 1 -1 -1 1 0];
+    C_y=[0 1 0 -1 1 1 -1 -1 0];
+
+    % Initialize
+    N_c = 9;
+    f=zeros(Nr,Mc,N_c); 
+    for ia=1:lena 
+        i=iabw1(ia); j=jabw1(ia); 
+        f(i,j,:)=rho_ini/N_c; 
+    end
+    % Velocity
+    ux=zeros(Nr,Mc);uy=zeros(Nr,Mc);
+    for ic=1:N_c-1
+        ux=ux+C_x(ic).*f(:,:,ic);uy=uy+C_y(ic).*f(:,:,ic);
+    end
     % Density
     rho=sum(f,3);
+        
 	% Dot products etc declarations 
     uxsq=zeros(size(rho)); uysq=zeros(size(rho)); usq=zeros(size(rho));
     feq=zeros(size(f));
     ux=zeros(size(rho));uy=zeros(size(rho));
-    C_x=[1 0 -1 0 1 -1 -1 1 0];
-    C_y=[0 1 0 -1 1 1 -1 -1 0];
     % Density weights
     w0=16/36.;w1=4/36.;w2=1/36.;
     W=[w1 w1 w1 w1 w2 w2 w2 w2 w0];
@@ -43,23 +60,16 @@ function laminar_test(channel_file, f_file, omega, out_file)
     f1=3.; f2=4.5; f3=1.5;
     NxM=Nr*Mc;
     
-    % Analytical solution
-    wb = 1;
-    Channel_2D_half_width = (Mc-2)/2.0;
-    uy_fin_max=dPdL*(Channel_2D_half_width.^2)/(2*1/6);
-    uyf_av=uy_fin_max*(2/3); % Average velocity.
-    x_profile=([-Channel_2D_half_width:+Channel_2D_half_width-1]+0.5);
-    uy_analy_profile=uy_fin_max.*(1-(x_profile/Channel_2D_half_width).^2);
-    uy_analy_profile=[zeros(1,wb),uy_analy_profile,zeros(1,wb)];
-    x_pro_fig=[[x_profile(1)-[wb:-1:1]],[x_profile,[1:wb]+x_profile(end)]];
-    
     % While - main time evolution loop
-    Max_Iter=10000;
-    disp_every = 500; 
-    save_every=1500;
+    disp_every = 200; 
+    save_every=10e3;
     Cur_Iter=0;
     StopFlag=false;
-    tic
+    
+    % Save to file
+    compute_feq();
+    save_all(f, feq, ux, uy, rho, ['../test_data/matlab_', out_file, '_ini'], N_c);
+
     while (Cur_Iter <= Max_Iter)
         Cur_Iter=Cur_Iter+1;
         
@@ -71,6 +81,47 @@ function laminar_test(channel_file, f_file, omega, out_file)
         % Density
         rho=sum(f,3);
 
+        compute_feq();
+
+        % Collision
+        f=(1.-omega).*f+omega.*feq;
+        % Save to file
+        save_all(f, feq, ux, uy, rho, ['../test_data/matlab_', out_file, '_collide'], N_c);
+
+        % Add force
+        for ic=1:N_c
+            for ia=1:lena
+                i=iabw1(ia); j=jabw1(ia);
+                f(i,j,ic)=f(i,j,ic)+force(ic);
+            end
+        end
+        % Save to file
+        save_all(f, feq, ux, uy, rho, ['../test_data/matlab_', out_file, '_add_force'], N_c);
+
+        % Stream
+        f=stream_wObs(f,Nr,Mc,iawint,jawint,lenwint, lenobs,iobs,jobs,Channel2D);
+           
+        if ~(mod(Cur_Iter, disp_every))
+             disp(['Iteration ', num2str(Cur_Iter)])
+        end
+        if ~(mod(Cur_Iter, save_every))
+             save(['step_', num2str(Cur_Iter)])
+        end
+    end
+
+    % Density
+    rho=sum(f,3);
+    % Velocity
+    ux=zeros(Nr,Mc);uy=zeros(Nr,Mc);
+    for ic=1:N_c-1
+        ux=ux+C_x(ic).*f(:,:,ic);uy=uy+C_y(ic).*f(:,:,ic);
+    end
+    ux(ija)=ux(ija)./rho(ija); uy(ija)=uy(ija)./rho(ija);
+
+    % Save to file
+    save_all(f, feq, ux, uy, rho, ['../test_data/matlab_', out_file, '_stream'], N_c);
+
+    function compute_feq()
         % Dot products computation
         ux(ija)=ux(ija)./rho(ija); uy(ija)=uy(ija)./rho(ija);
         uxsq(ija)=ux(ija).^2;uysq(ija)=uy(ija).^2;
@@ -92,52 +143,27 @@ function laminar_test(channel_file, f_file, omega, out_file)
 
         feq(ija+NxM*(9-1))=rt0(ija).*(1-f3*usq(ija));
 
-        % Collision
-        f=(1.-omega).*f+omega.*feq;
-
-        % Add force
-        for ic=1:N_c;
-            for ia=1:lena
-                i=iabw1(ia); j=jabw1(ia);
-                f(i,j,ic)=f(i,j,ic)+force(ic);
-            end
-        end
-
-        % Stream
-         f=stream_wObs(f,Nr,Mc,iawint,jawint,lenwint, lenobs,iobs,jobs,Channel2D);
-         
-%         if ~(mod(Cur_Iter, disp_every))
-%              disp(['Iteration ', num2str(Cur_Iter)])
-%         end
-%         if ~(mod(Cur_Iter, save_every))
-%              save(['step_', num2str(Cur_Iter)])
-%         end
     end
-    toc
-    % Save the equilibrium distribution function to be used in C++
-    save_f(f, out_file, N_c);
 end
 
-function f = load_f(file, Nc)
-    %% Loads the distribution function generated with C++ part
-    for i = 1:Nc
-       f(:,:,i) = load([file, '_', num2str(i-1), '.txt']); 
-    end
-    % Shift (different conventions)
-    f = circshift(f,1,3);
-end
-
-function save_f(f, filename, Nc)
-    %% Saves the f grid for C++ comparisons
+function save_all(f, feq, ux, uy, rho, filename, Nc)
+    %% Saves the all variables for C++ comparisons
     
     % Shift (different conventions)
     f = circshift(f,1,3);
-    
+    feq = circshift(feq,1,3);
+
     % Save
     for i = 1:Nc
        temp = f(:,:,i);
-       save([filename, '_', num2str(i-1), '.txt'], 'temp', '-ascii'); 
+       save([filename, '_f_', num2str(i-1), '.txt'], 'temp', '-ascii'); 
+       temp = feq(:,:,i);
+       save([filename, '_feq_', num2str(i-1), '.txt'], 'temp', '-ascii'); 
     end
+
+    save([filename, '_density.txt'], 'rho', '-ascii'); 
+    save([filename, '_ux.txt'], 'ux', '-ascii');
+    save([filename, '_uy.txt'], 'uy', '-ascii');
 end
 
 function f=stream_wObs(f,Nr,Mc,iawint,jawint,lenwint, lenobs,iobs,jobs,Channel2D)

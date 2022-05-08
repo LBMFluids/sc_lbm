@@ -4,7 +4,8 @@
 
 /***************************************************** 
  *
- * Test suite for the LBM class - no driving force
+ * Test suite for the LBM class - unidirectional 
+ *	driving force
  *
  *****************************************************/
 
@@ -25,19 +26,22 @@ int main()
 	test_pass(single_phase_array_y_walls_test(), "Single phase, array of objects, y walls");
 }
 
-/// Empty geometry with no volume force
+/// Empty geometry with unidirectional volume force
 /// @details The macroscopic results should be the same as initial
 bool single_phase_empty_test()
 {
 	// External forcing term
-	const std::vector<double> no_force(9, 0.0);
+	const double dPdL = -1e-5/6;
+	std::vector<double> uni_force{0, 1, 0, -1, 0, 1, -1, -1, 1};
+	std::for_each(uni_force.begin(), uni_force.end(), [&dPdL](double& el) { el *= dPdL; });
+
+	// Other settings
+	int max_iter = 100;
 
 	// Filename templates
 	std::string path("test_data/");
-	std::string fname_ini("no_force_empty_ini");
-	std::string fname_col("no_force_empty_collide");
-	std::string fname_force("no_force_empty_add_force");
-	std::string fname_stream("no_force_empty_stream");
+	std::string fname_ini("uni_force_empty_ini");
+	std::string fname_stream("uni_force_empty_stream");
 
 	// No solid nodes
 	size_t Nx = 5, Ny = 10;
@@ -58,20 +62,16 @@ bool single_phase_empty_test()
 	LBM lbm(geom, pb_x, pb_y);
 
 	// Simulation
-	lbm.collide(geom, test_fluid);	
-	compute_and_write_values(geom, test_fluid, fname_col, 
-					fname_col + "_f", fname_col + "_feq", path);
-
-	lbm.add_volume_force(geom, test_fluid, no_force);		
-	compute_and_write_values(geom, test_fluid, fname_force, 
-					fname_force + "_f", fname_force + "_feq", path);
-
-	lbm.stream(geom, test_fluid);
+	for (int iter = 0; iter<max_iter; ++iter) {
+		lbm.collide(geom, test_fluid);	
+		lbm.add_volume_force(geom, test_fluid, uni_force);		
+		lbm.stream(geom, test_fluid);
+	}
 	compute_and_write_values(geom, test_fluid, fname_stream, 
-					fname_stream + "_f", fname_stream + "_feq", path);
+		fname_stream + "_f", fname_stream + "_feq", path);
 
 	// Check
-	if (!compare_with_correct({fname_ini, fname_col, fname_force, fname_stream}, path)) {
+	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for empty domain" << std::endl;
 		return false;
 	}
@@ -79,18 +79,21 @@ bool single_phase_empty_test()
 	return true;	
 }
 
-/// Domain with walls spanning x direction and with no volume force
+/// Domain with walls spanning x direction and with unidirectional volume force
 bool single_phase_x_walls_test()
 {
 	// External forcing term
-	const std::vector<double> no_force(9, 0.0);
-
-	// Filename template
+	const double dPdL = -1e-5/6;
+	std::vector<double> uni_force{0, 1, 0, -1, 0, 1, -1, -1, 1};
+	std::for_each(uni_force.begin(), uni_force.end(), [&dPdL](double& el) { el *= dPdL; });
+	
+	// Other settings
+	int max_iter = 1000;
+	
+	// Filename templates
 	std::string path("test_data/");
-	std::string fname_ini("no_force_x_walls_ini");
-	std::string fname_col("no_force_x_walls_collide");
-	std::string fname_force("no_force_x_walls_add_force");
-	std::string fname_stream("no_force_x_walls_stream");
+	std::string fname_ini("uni_force_x_walls_ini");
+	std::string fname_stream("uni_force_x_walls_stream");
 
 	// A wall spanning the x direction (and growing in y) 
 	size_t Nx = 20, Ny = 10;
@@ -113,20 +116,16 @@ bool single_phase_x_walls_test()
 	LBM lbm(geom, pb_x, pb_y);
 
 	// Simulation
-	lbm.collide(geom, test_fluid);
-	compute_and_write_values(geom, test_fluid, fname_col, 
-					fname_col + "_f", fname_col + "_feq", path);
-	
-	lbm.add_volume_force(geom, test_fluid, no_force);		
-	compute_and_write_values(geom, test_fluid, fname_force, 
-					fname_force + "_f", fname_force + "_feq", path);
-	
-	lbm.stream(geom, test_fluid);
+	for (int iter = 0; iter<max_iter; ++iter) {
+		lbm.collide(geom, test_fluid);	
+		lbm.add_volume_force(geom, test_fluid, uni_force);		
+		lbm.stream(geom, test_fluid);
+	}
 	compute_and_write_values(geom, test_fluid, fname_stream, 
-					fname_stream + "_f", fname_stream + "_feq", path);
+		fname_stream + "_f", fname_stream + "_feq", path);
 
 	// Check
-	if (!compare_with_correct({fname_ini, fname_col, fname_force, fname_stream}, path)) {
+	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with x walls" << std::endl;
 		return false;
 	}	
@@ -134,18 +133,21 @@ bool single_phase_x_walls_test()
 	return true;	
 }
 
-/// Domain with walls spanning y direction and with no volume force
+/// Domain with walls spanning y direction and with unidirectional volume force
 bool single_phase_y_walls_test()
 {
 	// External forcing term
-	const std::vector<double> no_force(9, 0.0);
-
+	const double dPdL = -1e-5/6;
+	std::vector<double> uni_force{0, 0, 1, 0, -1, 1, 1, -1, -1};
+	std::for_each(uni_force.begin(), uni_force.end(), [&dPdL](double& el) { el *= dPdL; });
+	
+	// Other settings
+	int max_iter = 1000;
+	
 	// Filename templates
 	std::string path("test_data/");
-	std::string fname_ini("no_force_y_walls_ini");
-	std::string fname_col("no_force_y_walls_collide");
-	std::string fname_force("no_force_y_walls_add_force");
-	std::string fname_stream("no_force_y_walls_stream");
+	std::string fname_ini("uni_force_y_walls_ini");
+	std::string fname_stream("uni_force_y_walls_stream");
 
 	// A wall spanning the y direction (and growing in x) 
 	size_t Nx = 20, Ny = 10;
@@ -168,39 +170,37 @@ bool single_phase_y_walls_test()
 	LBM lbm(geom, pb_x, pb_y);
 
 	// Simulation
-	lbm.collide(geom, test_fluid);
-	compute_and_write_values(geom, test_fluid, fname_col, 
-					fname_col + "_f", fname_col + "_feq", path);
-	
-	lbm.add_volume_force(geom, test_fluid, no_force);		
-	compute_and_write_values(geom, test_fluid, fname_force, 
-					fname_force + "_f", fname_force + "_feq", path);
-	
-	lbm.stream(geom, test_fluid);
+	for (int iter = 0; iter<max_iter; ++iter) {
+		lbm.collide(geom, test_fluid);	
+		lbm.add_volume_force(geom, test_fluid, uni_force);		
+		lbm.stream(geom, test_fluid);
+	}
 	compute_and_write_values(geom, test_fluid, fname_stream, 
-					fname_stream + "_f", fname_stream + "_feq", path);
+		fname_stream + "_f", fname_stream + "_feq", path);
 
 	// Check
-	if (!compare_with_correct({fname_ini, fname_col, fname_force, fname_stream}, path)) {
+	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with y walls" << std::endl;
 		return false;
-	}
-
+	}	
 	return true;	
 }
 
-/// Domain with an array of objects, no walls, and no volume force
+/// Domain with an array of objects, no walls, and unidirectional volume force
 bool single_phase_array_no_walls_test()
 {
 	// External forcing term
-	const std::vector<double> no_force(9, 0.0);
-
+	const double dPdL = -1e-5/6;
+	std::vector<double> uni_force{0, 0, 1, 0, -1, 1, 1, -1, -1};
+	std::for_each(uni_force.begin(), uni_force.end(), [&dPdL](double& el) { el *= dPdL; });
+	
+	// Other settings
+	int max_iter = 200;
+	
 	// Filename templates
 	std::string path("test_data/");
-	std::string fname_ini("no_force_array_no_walls_ini");
-	std::string fname_col("no_force_array_no_walls_collide");
-	std::string fname_force("no_force_array_no_walls_add_force");
-	std::string fname_stream("no_force_array_no_walls_stream");
+	std::string fname_ini("uni_force_array_no_walls_ini");
+	std::string fname_stream("uni_force_array_no_walls_stream");
 
 	// A staggered array
 	size_t Nx = 200, Ny = 100;
@@ -227,20 +227,16 @@ bool single_phase_array_no_walls_test()
 	LBM lbm(geom, pb_x, pb_y);
 
 	// Simulation
-	lbm.collide(geom, test_fluid);
-	compute_and_write_values(geom, test_fluid, fname_col, 
-					fname_col + "_f", fname_col + "_feq", path);
-	
-	lbm.add_volume_force(geom, test_fluid, no_force);		
-	compute_and_write_values(geom, test_fluid, fname_force, 
-					fname_force + "_f", fname_force + "_feq", path);
-	
-	lbm.stream(geom, test_fluid);
+	for (int iter = 0; iter<max_iter; ++iter) {
+		lbm.collide(geom, test_fluid);	
+		lbm.add_volume_force(geom, test_fluid, uni_force);		
+		lbm.stream(geom, test_fluid);
+	}
 	compute_and_write_values(geom, test_fluid, fname_stream, 
-					fname_stream + "_f", fname_stream + "_feq", path);
+		fname_stream + "_f", fname_stream + "_feq", path);
 
 	// Check
-	if (!compare_with_correct({fname_ini, fname_col, fname_force, fname_stream}, path)) {
+	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and no walls" << std::endl;
 		return false;
 	}
@@ -248,18 +244,21 @@ bool single_phase_array_no_walls_test()
 	return true;	
 }
 
-/// Domain with an array of objects, x walls, and no volume force
+/// Domain with an array of objects, x walls, and unidirectional volume force
 bool single_phase_array_x_walls_test()
 {
 	// External forcing term
-	const std::vector<double> no_force(9, 0.0);
+	const double dPdL = -1e-5/6;
+	std::vector<double> uni_force{0, 1, 0, -1, 0, 1, -1, -1, 1};
+	std::for_each(uni_force.begin(), uni_force.end(), [&dPdL](double& el) { el *= dPdL; });
+	
+	// Other settings
+	int max_iter = 200;
 
 	// Filename templates
 	std::string path("test_data/");
-	std::string fname_ini("no_force_array_x_walls_ini");
-	std::string fname_col("no_force_array_x_walls_collide");
-	std::string fname_force("no_force_array_x_walls_add_force");
-	std::string fname_stream("no_force_array_x_walls_stream");
+	std::string fname_ini("uni_force_array_x_walls_ini");
+	std::string fname_stream("uni_force_array_x_walls_stream");
 
 	// A staggered array
 	size_t Nx = 200, Ny = 100;
@@ -287,20 +286,16 @@ bool single_phase_array_x_walls_test()
 	LBM lbm(geom, pb_x, pb_y);
 
 	// Simulation
-	lbm.collide(geom, test_fluid);
-	compute_and_write_values(geom, test_fluid, fname_col, 
-					fname_col + "_f", fname_col + "_feq", path);
-	
-	lbm.add_volume_force(geom, test_fluid, no_force);		
-	compute_and_write_values(geom, test_fluid, fname_force, 
-					fname_force + "_f", fname_force + "_feq", path);
-	
-	lbm.stream(geom, test_fluid);
+	for (int iter = 0; iter<max_iter; ++iter) {
+		lbm.collide(geom, test_fluid);	
+		lbm.add_volume_force(geom, test_fluid, uni_force);		
+		lbm.stream(geom, test_fluid);
+	}
 	compute_and_write_values(geom, test_fluid, fname_stream, 
-					fname_stream + "_f", fname_stream + "_feq", path);
+		fname_stream + "_f", fname_stream + "_feq", path);
 
 	// Check
-	if (!compare_with_correct({fname_ini, fname_col, fname_force, fname_stream}, path)) {
+	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and x walls" << std::endl;
 		return false;
 	}
@@ -308,18 +303,21 @@ bool single_phase_array_x_walls_test()
 	return true;	
 }
 
-/// Domain with an array of objects, y walls, and no volume force
+/// Domain with an array of objects, y walls, and unidirectional volume force
 bool single_phase_array_y_walls_test()
 {
 	// External forcing term
-	const std::vector<double> no_force(9, 0.0);
+	const double dPdL = -1e-5/6;
+	std::vector<double> uni_force{0, 0, 1, 0, -1, 1, 1, -1, -1};
+	std::for_each(uni_force.begin(), uni_force.end(), [&dPdL](double& el) { el *= dPdL; });
+	
+	// Other settings
+	int max_iter = 200;
 
 	// Filename templates
 	std::string path("test_data/");
-	std::string fname_ini("no_force_array_y_walls_ini");
-	std::string fname_col("no_force_array_y_walls_collide");
-	std::string fname_force("no_force_array_y_walls_add_force");
-	std::string fname_stream("no_force_array_y_walls_stream");
+	std::string fname_ini("uni_force_array_y_walls_ini");
+	std::string fname_stream("uni_force_array_y_walls_stream");
 
 	// A staggered array
 	size_t Nx = 200, Ny = 100;
@@ -347,21 +345,17 @@ bool single_phase_array_y_walls_test()
 	LBM lbm(geom, pb_x, pb_y);
 
 	// Simulation
-	lbm.collide(geom, test_fluid);
-	compute_and_write_values(geom, test_fluid, fname_col, 
-					fname_col + "_f", fname_col + "_feq", path);
-	
-	lbm.add_volume_force(geom, test_fluid, no_force);		
-	compute_and_write_values(geom, test_fluid, fname_force, 
-					fname_force + "_f", fname_force + "_feq", path);
-	
-	lbm.stream(geom, test_fluid);
+	for (int iter = 0; iter<max_iter; ++iter) {
+		lbm.collide(geom, test_fluid);	
+		lbm.add_volume_force(geom, test_fluid, uni_force);		
+		lbm.stream(geom, test_fluid);
+	}
 	compute_and_write_values(geom, test_fluid, fname_stream, 
-					fname_stream + "_f", fname_stream + "_feq", path);
+		fname_stream + "_f", fname_stream + "_feq", path);
 
 	// Check
-	if (!compare_with_correct({fname_ini, fname_col, fname_force, fname_stream}, path)) {
-		std::cerr << "Mismatch with expected for empty domain" << std::endl;
+	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
+		std::cerr << "Mismatch with expected for domain with an array and y walls" << std::endl;
 		return false;
 	}	
 

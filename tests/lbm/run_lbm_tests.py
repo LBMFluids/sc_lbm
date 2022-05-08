@@ -22,6 +22,14 @@ subprocess.call([py_version + ' compilation.py'], shell=True)
 # General message
 ut.msg('LBM class tests', CYAN)
 
-# Test suite
+# No force test suite
+ut.msg('Tests without a driving force', RED)
 subprocess.call([path_exe + 'lbm_tst_nof'], shell=True)
 
+# Unidirectional force test suite
+ut.msg('Tests with a unidirectional driving force', RED)
+subprocess.call([path_exe + 'lbm_tst_uni'], shell=True)
+
+# Multidirectional force test suite
+ut.msg('Tests with a multidirectional driving force', RED)
+subprocess.call([path_exe + 'lbm_tst_multi'], shell=True)

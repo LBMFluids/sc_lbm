@@ -12,28 +12,22 @@ void LBM::collide(const Geometry& geom, Fluid& fluid_1)
 {
 	// Equilibrium distribution and arrays
 	fluid_1.compute_f_equilibrium(geom);
-
 	std::vector<double>& f_dist = fluid_1.get_f_dist();
 	const std::vector<double>& f_eq_dist = fluid_1.get_f_eq_dist();
 	double omega = fluid_1.get_omega();
-
 	// Collision
 	for (size_t ai = 0; ai < Ntot; ++ai) {
-		for (size_t dj = 0; dj < Ndir; ++dj){						
-			temp_f_dist.at(ai + dj*Ntot) = (1.0 - omega)*f_dist.at(ai + dj*Ntot) + omega*f_eq_dist.at(ai + dj*Ntot);							
+		for (size_t dj = 0; dj < Ndir; ++dj) {						
+			f_dist.at(ai + dj*Ntot) = (1.0 - omega)*f_dist.at(ai + dj*Ntot) + omega*f_eq_dist.at(ai + dj*Ntot);							
 		}
 	}
-
-	// Reassign and fill temp with 0s just in case
-	std::swap(temp_f_dist, f_dist);
-	std::fill(temp_f_dist.begin(), temp_f_dist.end(), 0.0);
 }
 
 // Add an external volume force to a single fluid (gravity, pressure drop)
 void LBM::add_volume_force(const Geometry& geom, Fluid& fluid_1, const std::vector<double>& force)
 {
 	std::vector<double>& f_dist = fluid_1.get_f_dist();
-	for (size_t ai = 0; ai < Nx*Ny; ++ai) {
+	for (size_t ai = 0; ai < Ntot; ++ai) {
 		if (geom(ai) == 1) {
 			for (size_t dj = 0; dj < Ndir; ++dj) {						
 				f_dist.at(ai + dj*Ntot) += force.at(dj);							

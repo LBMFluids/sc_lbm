@@ -93,12 +93,13 @@ void Fluid::compute_density()
 // Compute macroscopic velocities
 void Fluid::compute_velocities(const Geometry& geom)
 {
-	compute_density();
-	for (size_t i=0; i<Nx*Ny; ++i) {
+	std::fill(ux.begin(), ux.end(), 0.0);
+	std::fill(uy.begin(), uy.end(), 0.0);
+	for (size_t i=0; i<Ntot; ++i) {
 		if (geom(i) == 1) {
 			for (size_t j=0; j<Ndir; ++j) {
-				ux.at(i) += f_dist.at(j*Nx*Ny+i)*Cx.at(j); 
-				uy.at(i) += f_dist.at(j*Nx*Ny+i)*Cy.at(j);
+				ux.at(i) += f_dist.at(j*Ntot+i)*Cx.at(j); 
+				uy.at(i) += f_dist.at(j*Ntot+i)*Cy.at(j);
 			}
 			ux.at(i) /= rho.at(i);
 			uy.at(i) /= rho.at(i);

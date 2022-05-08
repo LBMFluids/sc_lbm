@@ -22,11 +22,29 @@ src_files += ' ' + path + 'arrays/regular_array.cpp'
 src_files += ' ' + path + 'utils.cpp'
 tst_files = '../common/test_utils.cpp' + ' lbm_tests.cpp'
 
-## Entire test suite 
+## No force test suite 
 # Name of the executable
 exe_name = 'lbm_tst_nof'
 # Files needed only for this build
 spec_files = 'no_force_tests.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, tst_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+
+## Unidirectional force test suite
+# Name of the executable
+exe_name = 'lbm_tst_uni'
+# Files needed only for this build
+spec_files = 'uni_force_tests.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, tst_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+
+## Multidirectional force test suite
+# Name of the executable
+exe_name = 'lbm_tst_multi'
+# Files needed only for this build
+spec_files = 'multi_force_tests.cpp '
 compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
