@@ -38,4 +38,17 @@ os.chdir('geometry/')
 subprocess.call([py_version + ' run_geometry_tests.py'], shell=True)
 os.chdir('../')
 
+# Fluid class
+print('\n'*2)
+ut.msg('- '*nSim + 'FLUID CLASS TESTS' + ' -'*nSim, REVERSE+RED)
+os.chdir('fluid/')
+subprocess.call([py_version + ' run_fluid_tests.py'], shell=True)
+os.chdir('../')
 
+# LBM class
+print('\n'*2)
+ut.msg('- '*nSim + 'LBM CLASS TESTS' + ' -'*nSim, REVERSE+RED)
+os.chdir('lbm/')
+subprocess.call([py_version + ' make_geoms.py'], shell=True)
+subprocess.call([py_version + ' run_lbm_tests.py'], shell=True)
+os.chdir('../')

@@ -196,7 +196,7 @@ class obj_array:
 			return True
 		else:
 			# Plot
-			vis.spy_plot([new_geom, geom], 1, 2)
+			#vis.spy_plot([new_geom, geom], 1, 2)
 			msg('Object array not equal to expected', MAGENTA)
 			return False
 
