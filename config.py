@@ -21,6 +21,6 @@ dir_list = [f for f in cur_path.iterdir() if (f.is_dir() and (not f.name in excl
 for dir_i in dir_list:
 	path_i = Path(dir_i.name + '/test_data')
 	if (not path_i.exists()) or	(not path_i.is_dir()):
-		print('Creating ' + dir_i.name)
-		subprocess.call(['mkdir ' + path_i.name], shell=True)
+		print('Creating ' + dir_i.name + '/' + path_i.name)
+		subprocess.call(['mkdir ' + dir_i.name + '/' + path_i.name], shell=True)
 
