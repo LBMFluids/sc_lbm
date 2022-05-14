@@ -52,24 +52,16 @@ void LBM::stream(const Geometry& geom, Fluid& fluid_1)
 			temp_f_dist.at(ai) = f_dist.at(ai);
 			// Remaining directions
 			for (size_t dj = 1; dj < Ndir; ++dj) {
-				// Periodic boundaries
-				if (xperiodic) {
-					if (Cx[dj] > 0) {
-						ist = (xi+Cx[dj] < static_cast<int>(Nx)) ? (xi+Cx[dj]) : 0;
-					} else {
-						ist = (xi+Cx[dj] >= 0) ? (xi+Cx[dj]) : static_cast<int>(Nx)-1;
-					}
+				// Counting for periodic boundaries
+				if (Cx[dj] > 0) {
+					ist = (xi+Cx[dj] < static_cast<int>(Nx)) ? (xi+Cx[dj]) : 0;
 				} else {
-					ist = xi+Cx[dj];
-				}				
-				if (yperiodic) {
-					if (Cy[dj] > 0) {
-						jst = (yj+Cy[dj] < static_cast<int>(Ny)) ? (yj+Cy[dj]) : 0;
-					} else {
-						jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : static_cast<int>(Ny)-1;
-					}
+					ist = (xi+Cx[dj] >= 0) ? (xi+Cx[dj]) : static_cast<int>(Nx)-1;
+				}	
+				if (Cy[dj] > 0) {
+					jst = (yj+Cy[dj] < static_cast<int>(Ny)) ? (yj+Cy[dj]) : 0;
 				} else {
-					jst = yj+Cy[dj];
+					jst = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : static_cast<int>(Ny)-1;
 				}
 				// Streaming with bounce-back
 				ijk_ini = static_cast<size_t>(dj*Ntot + yj*Nx + xi);

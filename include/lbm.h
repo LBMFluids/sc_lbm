@@ -26,9 +26,8 @@ public:
 	/// Need to assign the right size to temporary arrays
 	LBM() = delete;
 	
-	/// Constructor: stores dimensions and initializes temporary arrays, stores BCs
-	LBM(const Geometry& geom, const bool pb_x, const bool pb_y) : 
-		xperiodic(pb_x), yperiodic(pb_y) 
+	/// Constructor: stores dimensions and initializes temporary arrays
+	LBM(const Geometry& geom) 
 	{	
 		Nx = geom.Nx(); Ny = geom.Ny(); Ntot = Nx*Ny; 
 		temp_f_dist.resize(Ntot*Ndir, 0.0); 

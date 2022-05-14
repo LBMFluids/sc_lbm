@@ -8,6 +8,79 @@
  *
  *****************************************************/
 
+// Run simulations with an option for full data collection
+void run_and_collect_all(const std::string& gfile, const double rho_ini, 
+			const std::vector<double>& vol_force, const std::string& path,
+			const std::string& fname_ini, const std::string& fname_col,
+			const std::string& fname_force, const std::string& fname_stream)
+{
+	Geometry geom;
+	geom.read(gfile);
+
+	Fluid test_fluid;
+	test_fluid.simple_ini(geom, rho_ini);
+	test_fluid.compute_f_equilibrium(geom);
+
+#ifdef FULL_TEST
+	compute_and_write_values(geom, test_fluid, fname_ini, 
+					fname_ini + "_f", fname_ini + "_feq", path);
+#endif
+
+	// Simulation setup
+	LBM lbm(geom);
+
+	// Simulation
+	lbm.collide(geom, test_fluid);	
+
+#ifdef FULL_TEST
+	compute_and_write_values(geom, test_fluid, fname_col, 
+					fname_col + "_f", fname_col + "_feq", path);
+#endif
+
+	lbm.add_volume_force(geom, test_fluid, vol_force);		
+
+#ifdef FULL_TEST
+	compute_and_write_values(geom, test_fluid, fname_force, 
+					fname_force + "_f", fname_force + "_feq", path);
+#endif
+
+	lbm.stream(geom, test_fluid);
+	compute_and_write_values(geom, test_fluid, fname_stream, 
+					fname_stream + "_f", fname_stream + "_feq", path);
+}
+
+// Run simulations with an option for collecting only initial and final data (as full)
+void run_and_collect(const std::string& gfile, const double rho_ini,
+			const int max_iter, const std::vector<double>& vol_force, 
+			const std::string& path, const std::string& fname_ini, 
+			const std::string& fname_stream)
+{
+	Geometry geom;
+	geom.read(gfile);
+
+	Fluid test_fluid;
+	test_fluid.simple_ini(geom, rho_ini);
+	test_fluid.compute_f_equilibrium(geom);
+
+#ifdef FULL_TEST
+	compute_and_write_values(geom, test_fluid, fname_ini, 
+					fname_ini + "_f", fname_ini + "_feq", path);
+#endif
+
+	// Simulation setup
+	LBM lbm(geom);
+
+	// Simulation
+	for (int iter = 0; iter<max_iter; ++iter) {
+		lbm.collide(geom, test_fluid);	
+		lbm.add_volume_force(geom, test_fluid, vol_force);		
+		lbm.stream(geom, test_fluid);
+	}
+
+	compute_and_write_values(geom, test_fluid, fname_stream, 
+		fname_stream + "_f", fname_stream + "_feq", path);
+}
+
 // Compute macroscopic properties, save to files along wiht density distributions
 void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string& fname,
 						const std::string& fname_f, const std::string& fname_feq, const std::string& path)
