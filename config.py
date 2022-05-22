@@ -24,3 +24,14 @@ for dir_i in dir_list:
 		print('Creating ' + dir_i.name + '/' + path_i.name)
 		subprocess.call(['mkdir ' + dir_i.name + '/' + path_i.name], shell=True)
 
+# Make directories for benchmarking
+os.chdir('../benchmarks/')
+make_dirs = ['output', 'comparison_files']
+
+for dir_i in make_dirs:
+	path_i = Path(dir_i)
+	if (not path_i.exists()) or	(not path_i.is_dir()):
+		print('Creating ' + path_i.name)
+		subprocess.call(['mkdir ' + path_i.name], shell=True)
+
+os.chdir('../')

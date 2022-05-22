@@ -163,7 +163,7 @@ public:
 	void write_f(const std::string& fname) const 
 			{ write_var(f_dist, fname, true); }
 	/// Save all macroscopic properties at this step to files
-	/// @details Appends the step number and an "_"
+	/// @details Appends an "_", the step number, and then ".txt"
 	void save_state(const std::string& frho, const std::string& fux, 
 						const std::string& fuy, const int step, const Geometry& geom);
 
