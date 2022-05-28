@@ -3,7 +3,9 @@
 
 /***************************************************** 
  *
- * Laminar flow in a 2D channel in x-direction 
+ * Laminar flow in a 2D channel in y-direction 
+ * 
+ * The channel is periodic in y and has walls in x
  *
  *****************************************************/
 
@@ -16,7 +18,7 @@ int main()
 	// Nominal density 
 	const double rho_ini = 1.0;
 	// External forcing term
-	const double dPdL = 1e-3/6;
+	const double dPdL = 1e-5/6;
 	std::vector<double> vol_force{0, 0, 1, 0, -1, 1, 1, -1, -1};
 	std::for_each(vol_force.begin(), vol_force.end(), [&dPdL](double& el) { el *= dPdL; });
 
@@ -27,9 +29,9 @@ int main()
 	// Directory with all the results
 	const std::string out_path("output/");
 	// All simulation results 
-	const std::string fname_out("y_walls_results");
+	const std::string fname_out("x_walls_results");
 	// File for saving the geometry
-	const std::string gfile(out_path + "domain_with_y_walls.txt");
+	const std::string gfile(out_path + "domain_with_x_walls.txt");
 	
 	//
 	// Geometry setup
@@ -78,6 +80,6 @@ int main()
 			out_path + fname_out + "_ux",
 			out_path + fname_out + "_uy", max_iter, geom);	
 	// Save the density distribution function
-	working_fluid.write_f(out_path + fname_out + "f_dist");
+	working_fluid.write_f(out_path + fname_out + "_f_dist");
 
 }

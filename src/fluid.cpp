@@ -210,7 +210,7 @@ void Fluid::save_state(const std::string& frho, const std::string& fux,
 	write_var(rho, frho + "_" + std::to_string(step) + ".txt");
 	compute_velocities(geom); 
 	write_var(ux, fux + "_" + std::to_string(step) + ".txt");
-	write_var(ux, fuy + "_" + std::to_string(step) + ".txt");
+	write_var(uy, fuy + "_" + std::to_string(step) + ".txt");
 }
 
 
