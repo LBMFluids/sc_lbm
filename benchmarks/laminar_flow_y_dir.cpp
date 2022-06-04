@@ -18,12 +18,13 @@ int main()
 	// Nominal density 
 	const double rho_ini = 1.0;
 	// External forcing term
-	const double dPdL = 1e-5/6;
+	const double beta = 1.0/6.0;
+	const double dPdL = 1e-5*beta;
 	std::vector<double> vol_force{0, 0, 1, 0, -1, 1, 1, -1, -1};
 	std::for_each(vol_force.begin(), vol_force.end(), [&dPdL](double& el) { el *= dPdL; });
 
 	// Number of steps to simulate
-	int max_iter = 3000;
+	int max_iter = 30000;
 
 	// Filename templates
 	// Directory with all the results
@@ -39,7 +40,7 @@ int main()
 	
 	// Channel with walls spanning in y direction	
 	size_t Nx = 50, Ny = 10;
-	size_t dh = 3;
+	size_t dh = 1;
 
 	Geometry geom(Nx, Ny);
 	geom.add_walls(dh, "y");

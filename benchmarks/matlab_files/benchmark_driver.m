@@ -12,7 +12,7 @@ array_y_walls_input = '../output/domain_with_array_y_walls.txt';
 %
 
 dPdL = 1e-5;
-Max_Iter = 3000;
+Max_Iter = 30000;
 force = dPdL*(1/6)*[1, 0, -1, 0, 1, -1, -1, 1, 0]';
 
 % % Domains with walls

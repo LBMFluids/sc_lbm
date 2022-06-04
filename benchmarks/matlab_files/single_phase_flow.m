@@ -61,7 +61,7 @@ function single_phase_flow(geom_file, rho_ini, force, Max_Iter, out_file)
     NxM=Nr*Mc;
     
     % While - main time evolution loop
-    disp_every = 500; 
+    disp_every = 10000; 
     save_every=1e3;
     Cur_Iter=0;
     StopFlag=false;

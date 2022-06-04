@@ -5,6 +5,7 @@
 # # # # # # # # # # # # # # # # # #
 
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import numpy as np
 
 def spy_plot(data, Nr, Ncol):
@@ -35,4 +36,32 @@ def spy_plot(data, Nr, Ncol):
 
 	plt.show()
 
+def plot_2D_with_an(x, y_num, y_an):
+	''' Plot of numerical and analytical solutions '''
 
+	plt.plot(x, y_num, 'b', label = 'Numerical solution')
+	plt.plot(x, y_an, 'ro', label = 'Analytical solution')
+	plt.xlabel('Channel width', fontsize = 18)
+	plt.ylabel('Velocity', fontsize = 18)
+	plt.legend(loc = 2)
+	plt.grid()
+	plt.show()
+
+def plot_3D_flat(nrow, ncol, sol):
+
+	fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+	# Grid
+	X = np.arange(0, nrow)
+	Y = np.arange(0, ncol)
+	X, Y = np.meshgrid(X, Y)
+
+	# Plot
+	surf = ax.plot_surface(X, Y, sol, cmap=cm.jet,
+                       linewidth=0, antialiased=False)
+
+	# Add a color bar which maps values to colors.
+	fig.colorbar(surf, shrink=0.5, aspect=5)
+
+	ax.view_init(90, 90)
+	plt.show()

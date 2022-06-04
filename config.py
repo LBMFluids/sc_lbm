@@ -26,7 +26,7 @@ for dir_i in dir_list:
 
 # Make directories for benchmarking
 os.chdir('../benchmarks/')
-make_dirs = ['output', 'comparison_files']
+make_dirs = ['output']
 
 for dir_i in make_dirs:
 	path_i = Path(dir_i)
