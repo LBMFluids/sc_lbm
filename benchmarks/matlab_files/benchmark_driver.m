@@ -11,18 +11,18 @@ array_y_walls_input = '../output/domain_with_array_y_walls.txt';
 % Laminar flow in a 2D channel
 %
 
-dPdL = 1e-5;
 Max_Iter = 30000;
-force = dPdL*(1/6)*[1, 0, -1, 0, 1, -1, -1, 1, 0]';
 
-% % Domains with walls
-% rho_ini = 2.0;
-% Max_Iter = 1000;
-% out_file = 'uni_force_x_walls';
-% single_phase_flow(x_walls_geom_input, rho_ini, force, Max_Iter, out_file);
+% Domains with walls
+rho_ini = 2.0;
+dPdL = 1e-4;
+force = dPdL*(1/6)*[1, 0, -1, 0, 1, -1, -1, 1, 0]';
+out_file = 'y_walls_results';
+single_phase_flow(y_walls_geom_input, rho_ini, force, Max_Iter, out_file);
 
 % Flow in y-direction
 rho_ini = 1.0;
+dPdL = 1e-5;
 force = dPdL*(1/6)*[0, 1, 0, -1, 1, 1, -1, -1, 0]';
 out_file = 'x_walls_results';
 single_phase_flow(x_walls_geom_input, rho_ini, force, Max_Iter, out_file);

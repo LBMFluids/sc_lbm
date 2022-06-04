@@ -22,6 +22,10 @@ subprocess.call([py_version + ' compilation.py'], shell=True)
 # General message
 ut.msg('LBM class tests', CYAN)
 
+# Laminar flow in x direction with walls in y 
+ut.msg('Laminar flow in x direction', RED)
+subprocess.call([path_exe + 'lam_x'], shell=True)
+
 # Laminar flow in y direction with walls in x 
 ut.msg('Laminar flow in y direction', RED)
 subprocess.call([path_exe + 'lam_y'], shell=True)

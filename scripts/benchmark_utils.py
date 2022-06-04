@@ -72,32 +72,35 @@ def compare_with_matlab(path, fname, tres):
 	cppname = path + '/' + fname
 
 	# Density
-	msol = np.loadtxt(mname + '_density.txt')
-	cppsol = np.loadtxt(cppname + '_density_' + tres + '.txt')
-	if not np.allclose(msol, cppsol, 1e-5, 1e-4):
-		print('Cpp density not equal to matlab one') 
+	if not load_and_compare(cppname, mname, 'density', tres):
 		return False 
-
 	# Velocities 
 	# ux
-	msol = np.loadtxt(mname + '_ux.txt')
-	cppsol = np.loadtxt(cppname + '_ux_' + tres + '.txt')
-	if not np.allclose(msol, cppsol, 1e-5, 1e-4):
-		print('Cpp ux not equal to matlab one') 
+	if not load_and_compare(cppname, mname, 'ux', tres):
 		return False
 	# uy
-	msol = np.loadtxt(mname + '_uy.txt')
-	cppsol = np.loadtxt(cppname + '_uy_' + tres + '.txt')
-	if not np.allclose(msol, cppsol, 1e-5, 1e-4):
-		print('Cpp uy not equal to matlab one') 
+	if not load_and_compare(cppname, mname, 'uy', tres):
 		return False
 
 	# Density distribution functions
 	for ri in range(0,9):
-		msol = np.loadtxt(mname + '_f_dist_' + str(ri) + '.txt')
-		cppsol = np.loadtxt(cppname + '_f_dist_' + str(ri) + '.txt')
-		if not np.allclose(msol, cppsol, 1e-5, 1e-4):
-			print('Cpp density distribution in ', str(ri), 'direction not equal to matlab one') 
+		if not load_and_compare(cppname, mname, 'f_dist_' + str(ri)):
 			return False
 
+	return True
+
+def load_and_compare(cppname, mname, var, tres = ''):
+	''' Load data from cppname and mname that store values 
+			of variable var and compare them for equality;
+			optionally transpose the loaded cpp matrix '''
+
+	if not tres:
+		cppsol = np.loadtxt(cppname + '_' + var + '.txt')
+	else:
+		cppsol = np.loadtxt(cppname + '_' + var + '_' + tres + '.txt')
+	msol = np.loadtxt(mname + '_' + var + '.txt')
+
+	if not np.allclose(msol, cppsol, 1e-5, 1e-4):
+		print('Cpp', var, 'not equal to matlab one') 
+		return False 
 	return True

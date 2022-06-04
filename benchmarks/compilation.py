@@ -22,6 +22,15 @@ src_files += ' ' + path + 'io_operations/FileHandler.cpp'
 src_files += ' ' + path + 'arrays/regular_array.cpp'
 src_files += ' ' + path + 'utils.cpp'
 
+## Laminar flow in x direction 
+# Name of the executable
+exe_name = 'lam_x'
+# Files needed only for this build
+spec_files = 'laminar_flow_x_dir.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+
 ## Laminar flow in y direction 
 # Name of the executable
 exe_name = 'lam_y'
