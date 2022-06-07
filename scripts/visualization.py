@@ -67,7 +67,7 @@ def plot_3D_flat(nrow, ncol, sol):
 	ax.view_init(90, 90)
 	plt.show()
 
-def plot_velocity_field(nrow, ncol, ux, uy):
+def plot_velocity_field(nrow, ncol, ux, uy, geom):
 	''' Plot a velocity field as streamlines '''
 
 	# Grid
@@ -76,13 +76,21 @@ def plot_velocity_field(nrow, ncol, ux, uy):
 	X, Y = np.meshgrid(X, Y)
 
 	# Velocity field components
-	U = ux
-	V = uy 
+	U = uy
+	V = ux 
+
+	# Mask - solid objects
+	mask = np.logical_not(geom)
+	U = np.ma.array(U, mask=mask)
+	V = np.ma.array(V, mask=mask)
 
 	# Varying color along a streamline
 	fig = plt.figure(figsize=(5,5))
 	ax = plt.subplot()
-	strm = ax.streamplot(X, Y, U, V, color=U, linewidth=2, cmap='autumn')
-	fig.colorbar(strm.lines) 
+	strm = ax.streamplot(X, Y, U, V, linewidth=2, color='b')
+
+	ax.imshow(~mask, alpha=0.5, cmap='gray', aspect='auto')
+	ax.set_aspect('equal')
+	ax.invert_yaxis()
 
 	plt.show()

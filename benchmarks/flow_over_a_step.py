@@ -19,6 +19,7 @@ import visualization as vis
 
 path = 'output'
 fname = 'step_results'
+gfile = 'domain_with_step.txt'
 res_time = '30000'
 axial_vel_file = path + '/' + fname + '_ux_' + res_time + '.txt'
 
@@ -31,8 +32,9 @@ Ny = 100
 #
 
 cppname = path + '/' + fname
-ux = np.transpose(np.loadtxt(cppname + '_ux_30000.txt'))
-uy = np.transpose(np.loadtxt(cppname + '_uy_30000.txt'))
+ux = np.loadtxt(cppname + '_ux_30000.txt')
+uy = np.loadtxt(cppname + '_uy_30000.txt')
+geom = np.loadtxt(path + '/' + gfile) 
 
 #
 # Comparison - matlab files
@@ -46,7 +48,7 @@ if not bu.compare_with_matlab(path, fname, res_time):
 #
 
 # Surface plot
-vis.plot_3D_flat(Ny, Nx, uy) 
+vis.plot_3D_flat(Nx, Ny, uy) 
 
 # Streamlines
-vis.plot_velocity_field(Ny, Nx, ux, uy)
+vis.plot_velocity_field(Nx, Ny, ux, uy, geom)
