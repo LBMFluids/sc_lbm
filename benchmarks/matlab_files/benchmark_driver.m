@@ -3,6 +3,8 @@
 % Geometry files
 x_walls_geom_input = '../output/domain_with_x_walls.txt';
 y_walls_geom_input = '../output/domain_with_y_walls.txt';
+step_geom_input = '../output/domain_with_step.txt';
+
 array_no_walls_input = '../output/domain_with_array_no_walls.txt';
 array_x_walls_input = '../output/domain_with_array_x_walls.txt';
 array_y_walls_input = '../output/domain_with_array_y_walls.txt';
@@ -26,6 +28,17 @@ dPdL = 1e-5;
 force = dPdL*(1/6)*[0, 1, 0, -1, 1, 1, -1, -1, 0]';
 out_file = 'x_walls_results';
 single_phase_flow(x_walls_geom_input, rho_ini, force, Max_Iter, out_file);
+
+%
+% Flow past objects
+%
+
+% Flow in y-direction
+rho_ini = 1.0;
+dPdL = 1e-4;
+force = dPdL*(1/6)*[0, 1, 0, -1, 1, 1, -1, -1, 0]';
+out_file = 'step_results';
+single_phase_flow(step_geom_input, rho_ini, force, Max_Iter, out_file);
 
 % % Domains with arrays
 % Max_Iter = 200;

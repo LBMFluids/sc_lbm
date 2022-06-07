@@ -48,6 +48,7 @@ def plot_2D_with_an(x, y_num, y_an):
 	plt.show()
 
 def plot_3D_flat(nrow, ncol, sol):
+	''' Plot a 3D surface plot, initially shown as flat 2D surface ''' 	
 
 	fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
@@ -64,4 +65,24 @@ def plot_3D_flat(nrow, ncol, sol):
 	fig.colorbar(surf, shrink=0.5, aspect=5)
 
 	ax.view_init(90, 90)
+	plt.show()
+
+def plot_velocity_field(nrow, ncol, ux, uy):
+	''' Plot a velocity field as streamlines '''
+
+	# Grid
+	X = np.arange(0, nrow)
+	Y = np.arange(0, ncol)
+	X, Y = np.meshgrid(X, Y)
+
+	# Velocity field components
+	U = ux
+	V = uy 
+
+	# Varying color along a streamline
+	fig = plt.figure(figsize=(5,5))
+	ax = plt.subplot()
+	strm = ax.streamplot(X, Y, U, V, color=U, linewidth=2, cmap='autumn')
+	fig.colorbar(strm.lines) 
+
 	plt.show()

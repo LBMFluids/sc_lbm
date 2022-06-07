@@ -30,3 +30,7 @@ subprocess.call([path_exe + 'lam_x'], shell=True)
 ut.msg('Laminar flow in y direction', RED)
 subprocess.call([path_exe + 'lam_y'], shell=True)
 
+# Flow past a step (in x) 
+ut.msg('Flow past a step (wall)', RED)
+subprocess.call([path_exe + 'stp'], shell=True)
+

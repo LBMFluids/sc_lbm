@@ -40,4 +40,12 @@ compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_fil
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
+## Flow past a step (wall) 
+# Name of the executable
+exe_name = 'stp'
+# Files needed only for this build
+spec_files = 'flow_over_a_step.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
