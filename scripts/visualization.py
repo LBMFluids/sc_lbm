@@ -76,8 +76,8 @@ def plot_velocity_field(nrow, ncol, ux, uy, geom):
 	X, Y = np.meshgrid(X, Y)
 
 	# Velocity field components
-	U = uy
-	V = ux 
+	U = ux
+	V = uy 
 
 	# Mask - solid objects
 	mask = np.logical_not(geom)

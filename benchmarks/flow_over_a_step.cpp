@@ -22,7 +22,7 @@ int main()
 	// External forcing term
 	const double beta = 1.0/6.0;
 	const double dPdL = 1e-4*beta;
-	std::vector<double> vol_force{0, 0, 1, 0, -1, 1, 1, -1, -1};
+	std::vector<double> vol_force{0, 1, 0, -1, 0, 1, -1, -1, 1};
 	std::for_each(vol_force.begin(), vol_force.end(), [&dPdL](double& el) { el *= dPdL; });
 
 	// Number of steps to simulate
