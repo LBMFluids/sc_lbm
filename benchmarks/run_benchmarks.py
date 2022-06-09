@@ -20,17 +20,29 @@ path_exe = '../executables/'
 subprocess.call([py_version + ' compilation.py'], shell=True)
 
 # General message
-ut.msg('LBM class tests', CYAN)
+ut.msg('Benchmarks for single phase flow', CYAN)
 
-# Laminar flow in x direction with walls in y 
-ut.msg('Laminar flow in x direction', RED)
-subprocess.call([path_exe + 'lam_x'], shell=True)
-
-# Laminar flow in y direction with walls in x 
-ut.msg('Laminar flow in y direction', RED)
-subprocess.call([path_exe + 'lam_y'], shell=True)
+## Laminar flow in x direction with walls in y 
+#ut.msg('Laminar flow in x direction', RED)
+#subprocess.call([path_exe + 'lam_x'], shell=True)
+#
+## Laminar flow in y direction with walls in x 
+#ut.msg('Laminar flow in y direction', RED)
+#subprocess.call([path_exe + 'lam_y'], shell=True)
 
 # Flow past a step (in x) 
-ut.msg('Flow past a step (wall)', RED)
-subprocess.call([path_exe + 'stp'], shell=True)
+#ut.msg('Flow past a step (wall)', RED)
+#subprocess.call([path_exe + 'stp'], shell=True)
+
+# Flow past a cylinder (in x) - low Re
+#dPdL = 1e-6
+#fname = 'cylinder_slow_results'
+#ut.msg('Flow past a cylinder - low Re', RED)
+#subprocess.call([path_exe + 'fpc ' + str(dPdL) + ' ' + fname], shell=True)
+
+# Flow past a cylinder (in x) - medium Re
+dPdL = 1e-4
+fname = 'cylinder_medium_results'
+ut.msg('Flow past a cylinder - medium Re', RED)
+subprocess.call([path_exe + 'fpc ' + str(dPdL) + ' ' + fname], shell=True)
 

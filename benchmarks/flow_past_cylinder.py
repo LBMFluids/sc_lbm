@@ -1,7 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # 
 # Script for comparison and visualization
 #	of results for laminar flow in x direction
-#	in a 2D channel with a rectangular step
+#	in a 2D channel with cylinder
 # # # # # # # # # # # # # # # # # # # # # # # #
 
 import sys
@@ -18,19 +18,19 @@ import visualization as vis
 #
 
 path = 'output'
-fname = 'step_results'
-gfile = 'domain_with_step.txt'
+fname_1 = 'cylinder_slow_results'
+gfile = 'domain_with_cylinder.txt'
 res_time = '30000'
 
 # Dimensions
-Nx = 200
-Ny = 100
+Nx = 300
+Ny = 200
 
 #
 # Load the data for post-processing and visualization
 #
 
-cppname = path + '/' + fname
+cppname = path + '/' + fname_1
 ux = np.loadtxt(cppname + '_ux_30000.txt')
 uy = np.loadtxt(cppname + '_uy_30000.txt')
 geom = np.loadtxt(path + '/' + gfile) 
@@ -39,7 +39,7 @@ geom = np.loadtxt(path + '/' + gfile)
 # Comparison - matlab files
 #
 
-if not bu.compare_with_matlab(path, fname, res_time):
+if not bu.compare_with_matlab(path, fname_1, res_time):
 	print('Cpp and MATLAB solutions do not match')
 
 #
