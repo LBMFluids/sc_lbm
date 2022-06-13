@@ -18,13 +18,24 @@ import visualization as vis
 #
 
 path = 'output'
-fname_1 = 'cylinder_slow_results'
+
+
+# ------- Choose a simulation
+
+# Creeping flow
+#fname_1 = 'cylinder_slow_results'
+# Stable vortex formation
+#fname_1 = 'cylinder_medium_results'
+# Von Karman vortex street 
+fname_1 = 'von_karman_vortex_street'
+
+# Other settings
 gfile = 'domain_with_cylinder.txt'
 res_time = '30000'
 
 # Dimensions
-Nx = 300
-Ny = 200
+Nx = 600
+Ny = 300
 
 #
 # Load the data for post-processing and visualization
@@ -39,8 +50,8 @@ geom = np.loadtxt(path + '/' + gfile)
 # Comparison - matlab files
 #
 
-if not bu.compare_with_matlab(path, fname_1, res_time):
-	print('Cpp and MATLAB solutions do not match')
+#if not bu.compare_with_matlab(path, fname_1, res_time):
+#	print('Cpp and MATLAB solutions do not match')
 
 #
 # Visualization 

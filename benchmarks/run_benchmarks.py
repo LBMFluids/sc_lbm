@@ -35,14 +35,20 @@ ut.msg('Benchmarks for single phase flow', CYAN)
 #subprocess.call([path_exe + 'stp'], shell=True)
 
 # Flow past a cylinder (in x) - low Re
-#dPdL = 1e-6
-#fname = 'cylinder_slow_results'
-#ut.msg('Flow past a cylinder - low Re', RED)
-#subprocess.call([path_exe + 'fpc ' + str(dPdL) + ' ' + fname], shell=True)
+dPdL = 1e-6
+fname = 'cylinder_slow_results'
+ut.msg('Flow past a cylinder - low Re', RED)
+subprocess.call([path_exe + 'fpc ' + str(dPdL) + ' ' + fname], shell=True)
 
 # Flow past a cylinder (in x) - medium Re
-dPdL = 1e-4
+dPdL = 1e-5
 fname = 'cylinder_medium_results'
+ut.msg('Flow past a cylinder - medium Re', RED)
+subprocess.call([path_exe + 'fpc ' + str(dPdL) + ' ' + fname], shell=True)
+
+# Flow past a cylinder (in x) - medium Re
+dPdL = '5e-5'
+fname = 'von_karman_vortex_street'
 ut.msg('Flow past a cylinder - medium Re', RED)
 subprocess.call([path_exe + 'fpc ' + str(dPdL) + ' ' + fname], shell=True)
 

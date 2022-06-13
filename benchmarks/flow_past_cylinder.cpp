@@ -39,6 +39,8 @@ int main(int argc, char *argv[])
 
 	// Number of steps to simulate
 	int max_iter = 30000;
+	// When to print an update status
+	int disp_every = 10000;
 
 	// Filename templates
 	// Directory with all the results
@@ -51,7 +53,7 @@ int main(int argc, char *argv[])
 	//
 	
 	// Channel with walls spanning in y direction	
-	size_t Nx = 300, Ny = 200;
+	size_t Nx = 600, Ny = 300;
 	size_t dh = 1;
 	// Dimensions and position of the wall (obstacle)
 	size_t Ds = 31;
@@ -81,6 +83,10 @@ int main(int argc, char *argv[])
 		lbm.collide(geom, working_fluid);	
 		lbm.add_volume_force(geom, working_fluid, vol_force);		
 		lbm.stream(geom, working_fluid);
+
+		if (iter+1 == disp_every) {
+			std::cout << "Simulation step  " << iter+1 << std::endl;
+		}
 	}
 	
 	// Print time needed
