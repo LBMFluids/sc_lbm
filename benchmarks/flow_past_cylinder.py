@@ -50,8 +50,8 @@ geom = np.loadtxt(path + '/' + gfile)
 # Comparison - matlab files
 #
 
-#if not bu.compare_with_matlab(path, fname_1, res_time):
-#	print('Cpp and MATLAB solutions do not match')
+if not bu.compare_with_matlab(path, fname_1, res_time):
+	print('Cpp and MATLAB solutions do not match')
 
 #
 # Visualization 
