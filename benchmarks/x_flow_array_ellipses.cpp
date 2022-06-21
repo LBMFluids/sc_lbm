@@ -31,16 +31,16 @@ int main()
 	// Directory with all the results
 	const std::string out_path("output/");
 	// All simulation results 
-	const std::string fname_out("array_of_ellipses_y_walls_results");
+	const std::string fname_out("array_of_ellipses_x_walls_results");
 	// File for saving the geometry
-	const std::string gfile(out_path + "array_of_ellipses_y_walls.txt");
+	const std::string gfile(out_path + "array_of_ellipses_x_walls.txt");
 	
 	//
 	// Geometry setup
 	//
 	
 	// Channel with walls spanning in x direction	
-	size_t Nx = 300, Ny = 500;
+	size_t Nx = 200, Ny = 100;
 	size_t dh = 1;
 
 	Geometry geom(Nx, Ny);

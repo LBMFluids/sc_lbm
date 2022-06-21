@@ -58,3 +58,39 @@ compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_fil
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
+## Flow past an array of ellipses in x direction
+# Name of the executable
+exe_name = 'xarre'
+# Files needed only for this build
+spec_files = 'x_flow_array_ellipses.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+
+## Flow past a staggered array of circles in x direction
+# Name of the executable
+exe_name = 'xarrc'
+# Files needed only for this build
+spec_files = 'x_flow_array_staggered_circles.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+
+## Flow past an array of squares in y direction
+# Name of the executable
+exe_name = 'yarrs'
+# Files needed only for this build
+spec_files = 'y_flow_array_squares.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+
+## Flow past a staggered array of rectangles in y direction
+# Name of the executable
+exe_name = 'yarrr'
+# Files needed only for this build
+spec_files = 'y_flow_staggered_array_rectangles.cpp '
+compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+

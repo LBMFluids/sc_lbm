@@ -160,7 +160,7 @@ public:
 	 * 						bounds of the object in y; this is in number
 	 * 						of nodes
 	 * @param [in] object_type - built in object type, case insensitive
-	 * @param [in] alpha - staggering angle, default 0 (regular array)
+	 * @param [in] alpha - staggering angle, default 0 (regular array, not available right now)
 	 */
 	void add_array(const std::vector<size_t>& object_properties,
 					const std::vector<std::vector<size_t>>& array_bounds, 
@@ -180,7 +180,7 @@ public:
 	 * 								[[lower x, upper x], [lower y, upper y]]
 	 * @param [in] object_numbers - vector with numbers of objects in x and y 
 	 * @param [in] object_type - built in object type, case insensitive
-	 * @param [in] alpha - staggering angle, default 0 (regular array)
+	 * @param [in] alpha - staggering angle, default 0 (regular array, not available right now)
 	 */
 	void add_array(const std::vector<size_t>& object_properties,
 					const std::vector<std::vector<size_t>>& array_bounds, 

@@ -5,9 +5,8 @@ x_walls_geom_input = '../output/domain_with_x_walls.txt';
 y_walls_geom_input = '../output/domain_with_y_walls.txt';
 step_geom_input = '../output/domain_with_step.txt';
 cylinder_geom_input = '../output/domain_with_cylinder.txt';
-
-array_no_walls_input = '../output/domain_with_array_no_walls.txt';
-array_x_walls_input = '../output/domain_with_array_x_walls.txt';
+array_x_walls_input = '../output/array_of_ellipses_x_walls.txt';
+array_x_walls_input = '../output/staggered_array_of_circles_x_walls.txt';
 array_y_walls_input = '../output/domain_with_array_y_walls.txt';
 
 %
@@ -62,19 +61,16 @@ force = dPdL*(1/6)*[1, 0, -1, 0, 1, -1, -1, 1, 0]';
 out_file = 'von_karman_vortex_street';
 single_phase_flow(cylinder_geom_input, rho_ini, force, Max_Iter, out_file);
 
-% % Domains with arrays
-% Max_Iter = 200;
-% rho_ini = 1.5;
-% out_file = 'uni_force_array_no_walls';
-% single_phase_flow(array_no_walls_input, rho_ini, force, Max_Iter, out_file);
-% 
-% rho_ini = 1.5;
-% force=-dPdL*(1/6)*[1, 0, -1, 0, 1, -1, -1, 1, 0]';
-% out_file = 'uni_force_array_x_walls';
-% single_phase_flow(array_x_walls_input, rho_ini, force, Max_Iter, out_file);
-% 
-% rho_ini = 5.25;
-% force=-dPdL*(1/6)*[0, 1, 0, -1, 1, 1, -1, -1, 0]';
-% out_file = 'uni_force_array_y_walls';
-% single_phase_flow(array_y_walls_input, rho_ini, force, Max_Iter, out_file);
+%
+% Flow past arrays of objects
+%
+
+% Flow in x direction through array of ellipses
+rho_ini = 2.5;
+dPdL = 1e-5;
+force = dPdL*(1/6)*[1, 0, -1, 0, 1, -1, -1, 1, 0]';
+out_file = 'array_of_ellipses_x_walls_results';
+single_phase_flow(array_x_walls_input, rho_ini, force, Max_Iter, out_file);
+
+
 
