@@ -49,17 +49,20 @@ int main()
 	// First array
 	std::string object_type("circle");
 	size_t diam = 5, xc = 10, yc = 15;
-	size_t x0 = 5, xf = 190, y0 = 3, yf = 70;
-	size_t ob_num_x = 10, ob_num_y = 5;
-	geom.add_array({diam, xc, yc}, {{x0, xf},{y0, yf}}, {ob_num_x, ob_num_y}, object_type);
+	size_t x0 = 5, xf = 190, y0 = 3, yf = 75;
+	size_t disp_x = 10, disp_y = 25;
+	geom.add_array({diam, xc, yc}, {{x0, xf},{y0, yf}}, disp_x, disp_y, object_type);
 	// Second array (staggered)
-	xc = 15;
-	yc = 20;
+	diam = 7;
+	xc = 17;
+	yc = 29;
 	x0 = 10; 
-	xf = 180;
-	y0 = 8;
-	yf = 65;
-	geom.add_array({diam, xc, yc}, {{x0, xf},{y0, yf}}, {ob_num_x, ob_num_y}, object_type);
+	xf = 182;
+	y0 = 10;
+	yf = 100;
+	disp_x = 15;
+	disp_y = 25;
+	geom.add_array({diam, xc, yc}, {{x0, xf},{y0, yf}}, disp_x, disp_y, object_type);
 
 	geom.write(gfile);
 	

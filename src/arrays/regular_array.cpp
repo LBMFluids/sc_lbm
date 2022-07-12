@@ -18,17 +18,21 @@ void RegularArray::find_object_bounds()
 
 	for (const auto& node : input_nodes){
 		// Min x
-		if (node.at(0) < obj_bounds_x.at(0))
+		if (node.at(0) < obj_bounds_x.at(0)) {
 			obj_bounds_x.at(0) = node.at(0);
+		}
 		// Max x
-		if (node.at(0) > obj_bounds_x.at(1))
-			obj_bounds_x.at(1) = node.at(0);		
+		if (node.at(0) > obj_bounds_x.at(1)) {
+			obj_bounds_x.at(1) = node.at(0);
+		}		
 		// Min y
-		if (node.at(1) < obj_bounds_y.at(0))
+		if (node.at(1) < obj_bounds_y.at(0)) {
 			obj_bounds_y.at(0) = node.at(1);
+		}
 		// Max y
-		if (node.at(1) > obj_bounds_y.at(1))
-			obj_bounds_y.at(1) = node.at(1);			
+		if (node.at(1) > obj_bounds_y.at(1)) {
+			obj_bounds_y.at(1) = node.at(1);
+		}			
 	}
 	
 	obj_bounds.push_back(obj_bounds_x);
@@ -98,9 +102,9 @@ void RegularArray::find_nodes()
 	size_t y_shift = obj_bounds.at(1).at(1) - obj_bounds.at(1).at(0) + dy + 1;
 
 	size_t xpos = 0, ypos = 0;
-	for (const auto& node : input_nodes){	
-		for (size_t xi = 0; xi < Nx; ++xi){
-			for (size_t yi = 0; yi < Ny; ++yi){
+	for (const auto& node : input_nodes) {	
+		for (size_t xi = 0; xi < Nx; ++xi) {
+			for (size_t yi = 0; yi < Ny; ++yi) {
 				xpos = node.at(0) + x_shift*xi;
 				ypos = node.at(1) + y_shift*yi;
 				array_nodes.push_back({xpos, ypos});

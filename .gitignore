@@ -2,6 +2,7 @@
 *.object
 *.swp
 *__pycache__*
+*.asv
 tests/geometry/test_data/array_type*
 test_data/*.txt
 executables

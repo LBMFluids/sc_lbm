@@ -50,15 +50,18 @@ int main()
 	std::string object_type("rectangle");
 	size_t obj_x = 7, obj_y = 5, xc = 15, yc = 10;
 	size_t x0 = 3, xf = 70, y0 = 5, yf = 190;
-	size_t ob_num_x = 5, ob_num_y = 20;
+	size_t ob_num_x = 3, ob_num_y = 10;
 	geom.add_array({obj_x, obj_y, xc, yc}, {{x0, xf},{y0, yf}}, {ob_num_x, ob_num_y}, object_type);
 	// Second array (staggered)
-	xc = 20;
-	yc = 15;
-	x0 = 8; 
-	xf = 65;
+	obj_x = 10;
+	xc = 33;
+	yc = 20;
+	x0 = 23; 
+	xf = 55;
 	y0 = 10;
 	yf = 180;
+	ob_num_x = 2; 
+	ob_num_y = 8;
 	geom.add_array({obj_x, obj_y, xc, yc}, {{x0, xf},{y0, yf}}, {ob_num_x, ob_num_y}, object_type);
 
 	geom.write(gfile);

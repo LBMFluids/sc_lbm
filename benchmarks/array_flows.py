@@ -23,27 +23,27 @@ path = 'output'
 # ------- Choose a simulation
 
 # ---> Result files
-#fname = 'array_of_ellipses_x_walls_results'
+fname = 'array_of_ellipses_x_walls_results'
 #fname = 'staggered_array_of_circles_x_walls_results'
 #fname = 'array_of_squares_y_walls_results'
-fname = 'staggered_array_of_rectangles_y_walls_results'
+#fname = 'staggered_array_of_rectangles_y_walls_results'
 
 # ---> File with geometry
-#gfile = 'array_of_ellipses_x_walls.txt'
+gfile = 'array_of_ellipses_x_walls.txt'
 #gfile = 'staggered_array_of_circles_x_walls.txt'
 #gfile = 'array_of_squares_y_walls.txt'
-gfile = 'staggered_array_of_rectangles_y_walls.txt'
+#gfile = 'staggered_array_of_rectangles_y_walls.txt'
 
 # ---> Other settings
 res_time = '30000'
 
 # ---> Dimensions
 # For x flows
-#Nx = 200
-#Ny = 100
+Nx = 200
+Ny = 100
 # For y flows
-Nx = 100
-Ny = 200
+#Nx = 100
+#Ny = 200
 
 #
 # Load the data for post-processing and visualization
@@ -58,8 +58,8 @@ geom = np.loadtxt(path + '/' + gfile)
 # Comparison - matlab files
 #
 
-#if not bu.compare_with_matlab(path, fname_1, res_time):
-#	print('Cpp and MATLAB solutions do not match')
+if not bu.compare_with_matlab(path, fname, res_time):
+	print('Cpp and MATLAB solutions do not match')
 
 #
 # Visualization 
