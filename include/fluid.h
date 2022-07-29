@@ -75,6 +75,17 @@ public:
 	/// @param rho_0 - initial density of this fluid, same everywhere
 	void simple_ini(const Geometry& geom, const double rho_0);
 
+
+	/** Assign multicomponent interaction parameters
+	 *	@param Gs - strength of fluid-solid interactions, negative value indicates attractive interactions, positive - repulsive
+		@param Gf - strength of fluid-fluid interactions between different components  
+	 */
+	void set_multicomponent_interactions(const double Gs, const double Gf)
+		{ Gsolid = Gs; Gfluid = Gf; }
+
+	/// Compute and store the force components stemming from interactions with solids
+	void add_surface_forces(const std::vector<double>, const std::vector<double>);
+
 	//
 	// Macroscopic properties
 	// 
@@ -185,12 +196,20 @@ private:
 	double nu = 0.0;
 	// Inverse of relaxation time
 	double omega = 0.0;
+	// Fluid-solid interaction potential
+	double Gsolid = 0.0;
+	// Fluid-fluid interaction potential
+	double Gfluid = 0.0;
 	// Discrete lattice velocities
 	const std::vector<double> Cx = {0.0, 1.0, 0.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0};
     const std::vector<double> Cy = {0.0, 0.0, 1.0, 0.0, -1.0, 1.0, 1.0, -1.0, -1.0};	
 	// Weights for the equilibrium distribution
 	double wrt0 = 4.0/9.0, wrt1 = 1.0/9.0, wrt2 = 1.0/36.0;
 	double feq1 = 3.0, feq2 = 4.5, feq3 = 1.5;
+
+	// Fluid-solid interaction force terms (constant for stationary solids)
+	std::vector<double> F_solid_x;
+	std::vector<double> F_solid_y;
 
 	//
 	// Variables

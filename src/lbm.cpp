@@ -7,6 +7,48 @@
  *
  ******************************************************/
 
+// Computes the force from fluid-solid interactions
+void LBM::solid_surface_force(const Geometry& geom, Fluid& fluid_1, Fluid& fluid_2)
+{
+	// Compute the common force components (fixed for stationary solids)
+	std::vector<double> Fxs(Ntot, 0.0);
+	std::vector<double> Fys(Ntot, 0.0);
+	int inei = 0, jnei = 0;
+	int xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0, ijk_ini = 0;
+
+	for (size_t ai = 0; ai < Ntot; ++ai) {
+		xi = ai%Nx; 
+		yj = ((ai-xi)/Nx)%Ny;
+		// Skip solid nodes 
+		if (geom(ai) == 0) {
+			continue;
+		}
+		// All non-stationary lattice directions
+		for (size_t dj = 1; dj < Ndir; ++dj) {
+			// Counting for periodic boundaries
+			if (Cx[dj] > 0) {
+				inei = (xi+Cx[dj] < static_cast<int>(Nx)) ? (xi+Cx[dj]) : 0;
+			} else {
+				inei = (xi+Cx[dj] >= 0) ? (xi+Cx[dj]) : static_cast<int>(Nx)-1;
+			}	
+			if (Cy[dj] > 0) {
+				jnei = (yj+Cy[dj] < static_cast<int>(Ny)) ? (yj+Cy[dj]) : 0;
+			} else {
+				jnei = (yj+Cy[dj] >= 0) ? (yj+Cy[dj]) : static_cast<int>(Ny)-1;
+			}
+			// Force is non-zero only if the neighbor is a solid node
+			if (geom(inei, jnei) == 0) {
+				Fxs(ai) += solid_weights(dj)*Cx(dj);
+				Fys(ai) += solid_weights(dj)*Cy(dj);				
+			} 		
+		}
+	}
+
+	// Specific values for each fluid
+	fluid_1.add_surface_forces(Fxs, Fys);
+	fluid_2.add_surface_forces(Fxs, Fys);
+}
+
 // Collision step for a single fluid
 void LBM::collide(const Geometry& geom, Fluid& fluid_1)
 {

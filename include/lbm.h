@@ -33,6 +33,10 @@ public:
 		temp_f_dist.resize(Ntot*Ndir, 0.0); 
 	}  
 
+	/// Computes the force from fluid-solid interactions
+	/// @details Stores it in the fluid objects  
+	void solid_surface_force(const Geometry& geom, Fluid&, Fluid&);
+
 	/// Collision step for a single fluid
 	void collide(const Geometry& geom, Fluid&);
 
@@ -52,6 +56,9 @@ private:
 	// Boundary conditions (default periodic in all directions)
 	bool xperiodic = true;
 	bool yperiodic = true;
+	// Weights for computing fluid-solid interactions
+	const std::vector<double> solid_weights = {0.0, 1./9, 1./9, 1./9, 1./9, ...
+							1./36, 1./36, 1./36, 1./36};
 	// Bounce-back direction conversions
 	const std::vector<int> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
 	// Discerete velocities - x components

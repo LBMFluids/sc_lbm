@@ -75,6 +75,15 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 	f_eq_dist.resize(Nx*Ny*Ndir, 0.0);
 }
 
+// Compute and store the force components stemming from interactions with solids
+void Fluid::add_surface_forces(const std::vector<double> Fxs, const std::vector<double> Fys)
+{
+    std::transform(Fxs.cbegin(), Fxs.cend(), std::back_inserter(F_solid_x),
+                   [this](double el) { return -1.0*this->Gsolid*el; });		
+    std::transform(Fys.cbegin(), Fys.cend(), std::back_inserter(F_solid_y),
+                   [this](double el) { return -1.0*this->Gsolid*el; });
+}
+
 //
 // Macroscopic properties
 // 
