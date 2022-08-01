@@ -84,6 +84,14 @@ void Fluid::add_surface_forces(const std::vector<double> Fxs, const std::vector<
                    [this](double el) { return -1.0*this->Gsolid*el; });
 }
 
+// Initialize vectors and parameters for repulsive interactions
+void Fluid::initialize_fluid_repulsion(const double Gf)
+{
+	Gfluid_repulsion = Gf;	
+	F_repulsive_x.resize(Nx*Ny, 0.0);
+	F_repulsive_y.resize(Nx*Ny, 0.0);
+}
+
 //
 // Macroscopic properties
 // 

@@ -35,7 +35,11 @@ public:
 
 	/// Computes the force from fluid-solid interactions
 	/// @details Stores it in the fluid objects  
-	void solid_surface_force(const Geometry& geom, Fluid&, Fluid&);
+	void compute_solid_surface_force(const Geometry&, Fluid&, Fluid&);
+
+	/// Computes the force from fluid-fluid interactions for both fluids
+	/// @details Stores it in the fluid objects 
+	void compute_fluid_repulsive_interactions(const Geometry&, Fluid&, Fluid&);
 
 	/// Collision step for a single fluid
 	void collide(const Geometry& geom, Fluid&);

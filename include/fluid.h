@@ -50,7 +50,7 @@ class Fluid {
 public:
 		
 	// 
-	//Constructors
+	// Constructors
 	//	
 	
 	/// Custom name, squared lattice speed of sound, and relaxation time
@@ -76,15 +76,18 @@ public:
 	void simple_ini(const Geometry& geom, const double rho_0);
 
 
-	/** Assign multicomponent interaction parameters
+	/** 
+	 * Assign fluid-solid interaction potential
 	 *	@param Gs - strength of fluid-solid interactions, negative value indicates attractive interactions, positive - repulsive
-		@param Gf - strength of fluid-fluid interactions between different components  
 	 */
-	void set_multicomponent_interactions(const double Gs, const double Gf)
-		{ Gsolid = Gs; Gfluid = Gf; }
+	void set_multicomponent_interactions(const double Gs)
+		{ Gsolid = Gs; }
 
 	/// Compute and store the force components stemming from interactions with solids
 	void add_surface_forces(const std::vector<double>, const std::vector<double>);
+
+	/// Initialize vectors and parameters for repulsive interactions
+	void initialize_fluid_repulsion(const double Gf);
 
 	//
 	// Macroscopic properties
@@ -114,18 +117,25 @@ public:
 	std::vector<double>& get_f_dist() { return f_dist; } 
 	/// Reference to equilibrium density distribution, flat array of size Nx*Ny*9 
     std::vector<double>& get_f_eq_dist() { return f_eq_dist; }
+	/// Reference to x component of the repulsive fluid-fluid force 
+	std::vector<double>& get_repulsive_force_x() { return F_repulsive_x; }
+	/// Reference to y component of the repulsive fluid-fluid force 
+	std::vector<double>& get_repulsive_force_y() { return F_repulsive_y; }
 	/// Reference to macroscopic density Nx*Ny
 	std::vector<double>& get_rho() { return rho; }
 	/// Reference to macroscopic x velocity component
 	std::vector<double>& get_ux() { return ux; }
 	/// Reference to macroscopic y velocity component
 	std::vector<double>& get_uy() { return uy; }
+
 	/// x dimension
 	size_t get_Nx() const { return Nx; }
 	/// y dimension
 	size_t get_Ny() const { return Ny; }
 	/// Omega (fluid constant)
 	double get_omega() const { return omega; }
+	/// Repulsive fluid-fluid interaction potential
+	double get_repulsive_g_fluid() const { return Gfluid_repulsion; }
 	
 	/// Const reference to density distribution, flat array of size Nx*Ny*9 
     const std::vector<double>& get_f_dist() const { return f_dist; } 
@@ -198,8 +208,8 @@ private:
 	double omega = 0.0;
 	// Fluid-solid interaction potential
 	double Gsolid = 0.0;
-	// Fluid-fluid interaction potential
-	double Gfluid = 0.0;
+	// Fluid-fluid potential for repulsive interactions
+	double Gfluid_repulsion = 0.0;
 	// Discrete lattice velocities
 	const std::vector<double> Cx = {0.0, 1.0, 0.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0};
     const std::vector<double> Cy = {0.0, 0.0, 1.0, 0.0, -1.0, 1.0, 1.0, -1.0, -1.0};	
@@ -221,6 +231,9 @@ private:
 	std::vector<double> f_dist; 
 	// Equilibrium density distribution function, flat array of size Nx*Ny*9 
 	std::vector<double> f_eq_dist;
+	// Forces stemming from repulsive interactions between fluids
+	std::vector<double> F_repulsive_x;
+	std::vector<double> F_repulsive_y;
 	// Macroscopic density Nx*Ny
 	std::vector<double> rho;
 	// Macroscopic velocity components
