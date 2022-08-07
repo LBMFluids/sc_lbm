@@ -66,6 +66,19 @@ std::string str_to_lower(std::string s);
 template<typename T>
 inline void print_elements(const T& coll, const std::string& optstr="");
 
+/**
+ * \brief Compare num1 and num2 as inexact values
+ * \details For floating point compoarisons, i.e. floats, doubles
+ * Current version based on 
+ * 		https://stackoverflow.com/a/15012792/2763915
+ * @param num1 - first number
+ * @param num2 - second number
+ * @param tol - relative tolerance for comparison
+ * @return true if equal within the tolerance
+ */
+template <typename T>
+bool float_equality(T, T, T);
+
 //
 // Implementation - templates
 //
@@ -126,6 +139,14 @@ inline void print_elements(const T& coll, const std::string& optstr)
 		std::cout << elem << ' ';
 	}
 	std::cout << std::endl;
+}
+
+// Compares two floating point numbers for approximate equality
+template <typename T>
+bool float_equality(T num1, T num2, T tol)
+{
+	T max_num_one = std::max({1.0, std::fabs(num1) , std::fabs(num2)});
+    return std::fabs(num1 - num2) <= tol*max_num_one;
 }
 
 #endif

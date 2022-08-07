@@ -127,6 +127,10 @@ public:
 	std::vector<double>& get_ux() { return ux; }
 	/// Reference to macroscopic y velocity component
 	std::vector<double>& get_uy() { return uy; }
+	/// Reference to equlibrium x velocity component
+	std::vector<double>& get_u_eq_x() { return u_eq_x; }
+	/// Reference to equilibrium y velocity component
+	std::vector<double>& get_u_eq_y() { return u_eq_y; }
 
 	/// x dimension
 	size_t get_Nx() const { return Nx; }
@@ -141,12 +145,20 @@ public:
     const std::vector<double>& get_f_dist() const { return f_dist; } 
 	/// Const reference to equilibrium density distribution, flat array of size Nx*Ny*9 
     const std::vector<double>& get_f_eq_dist() const { return f_eq_dist; }
+	/// Const reference to x component of the fluid-solid interaction force 
+	const std::vector<double>& get_fluid_solid_force_x() const { return F_solid_x; }
+	/// Const reference to y component of the fluid-solid interaction force 
+	const std::vector<double>& get_fluid_solid_force_y() const { return F_solid_y; }
 	/// Const reference to macroscopic density Nx*Ny
 	const std::vector<double>& get_rho() const { return rho; }
 	/// Const reference to macroscopic x velocity component
 	const std::vector<double>& get_ux() const { return ux; }
 	/// Const reference to macroscopic y velocity component
 	const std::vector<double>& get_uy() const { return uy; }
+	/// Const reference to equlibrium x velocity component
+	const std::vector<double>& get_u_eq_x() const { return u_eq_x; }
+	/// Const reference to equilibrium y velocity component
+	const std::vector<double>& get_u_eq_y() const { return u_eq_y; }
 
 	/// Density weights for computing the equilibrium distribution
 	std::vector<double> get_wrts() const { return {wrt0, wrt1, wrt2}; }  
@@ -239,6 +251,9 @@ private:
 	// Macroscopic velocity components
 	std::vector<double> ux;
 	std::vector<double> uy;
+	// Equilibrium velocity components
+	std::vector<double> u_eq_x;
+	std::vector<double> u_eq_y;
 
 	//
 	// Private methods

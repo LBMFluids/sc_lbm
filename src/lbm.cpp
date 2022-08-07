@@ -109,6 +109,72 @@ void LBM::compute_fluid_repulsive_interactions(const Geometry& geom, Fluid& flui
 	}
 }
 
+// Calculate the equilibrium velocities
+void LBM::compute_equilibrium_velocities(Geometry& geom, Fluid& fluid_1, Fluid& fluid_2)
+{
+	// Note --- assumes the macroscopic density is already computed
+	const double omega_1 = fluid_1.get_omega();
+	const double inv_omega_1 = 1.0/omega_1;
+	const std::vector<double>& rho_1 = fluid_1.get_rho();
+	const std::vector<double>& f_dist_1 = fluid_1.f_dist();
+	std::vector<double>& ux_1 = fluid_1.get_ux();	
+	std::vector<double>& uy_1 = fluid_1.get_uy();
+	std::vector<double>& u_eq_x_1 = fluid_1.get_u_eq_x();	
+	std::vector<double>& u_eq_y_1 = fluid_1.get_u_eq_y();
+	std::vector<double>& F_fr_x_1 = fluid_1.get_repulsive_force_x();
+	std::vector<double>& F_fr_y_1 = fluid_1.get_repulsive_force_y();
+	const std::vector<double>& Fs_x_1 = fluid_1.get_fluid_solid_force_x();
+	const std::vector<double>& Fs_y_1 = fluid_1.get_fluid_solid_force_y();
+
+	const double omega_2 = fluid_2.get_omega();
+	const double inv_omega_2 = 1.0/omega_2;
+	const std::vector<double>& rho_2 = fluid_2.get_rho();
+	const std::vector<double>& f_dist_2 = fluid_2.f_dist();
+	std::vector<double>& ux_2 = fluid_2.get_ux();	
+	std::vector<double>& uy_2 = fluid_2.get_uy();
+	std::vector<double>& u_eq_x_2 = fluid_2.get_u_eq_x();	
+	std::vector<double>& u_eq_y_2 = fluid_2.get_u_eq_y();
+	std::vector<double>& F_fr_x_2 = fluid_2.get_repulsive_force_x();
+	std::vector<double>& F_fr_y_2 = fluid_2.get_repulsive_force_y();
+	const std::vector<double>& Fs_x_2 = fluid_2.get_fluid_solid_force_x();
+	const std::vector<double>& Fs_y_2 = fluid_2.get_fluid_solid_force_y();
+
+	// For numeric comparisons
+	const double tol = 1e-8;
+
+	// Compute composite velocity
+	std::fill(ux_1.begin(), ux_1.end(), 0.0);
+	std::fill(uy_1.begin(), uy_1.end(), 0.0);
+	std::fill(ux_2.begin(), ux_2.end(), 0.0);
+	std::fill(uy_2.begin(), uy_2.end(), 0.0);
+
+	for (size_t i=0; i<Ntot; ++i) {
+		if (geom(i) == 1) {
+			// Unweighted (by density) macroscopic velocity
+			for (size_t j=0; j<Ndir; ++j) {
+				ux_1.at(i) += f_dist_1.at(j*Ntot+i)*Cx.at(j); 
+				uy_1.at(i) += f_dist_1.at(j*Ntot+i)*Cy.at(j);
+				ux_2.at(i) += f_dist_2.at(j*Ntot+i)*Cx.at(j); 
+				uy_2.at(i) += f_dist_2.at(j*Ntot+i)*Cy.at(j);
+			}
+
+			// Composite velocity
+			temp_uc_x.at(i) = (ux_1.at(i)*omega_1+ux_2.at(i)*omega_2)./(rho_1.at(i)*omega_1+rho_2.at(i)*omega_2);  
+			temp_uc_y.at(i) = (uy_1.at(i)*omega_1+uy_2.at(i)*omega_2)./(rho_1.at(i)*omega_1+rho_2.at(i)*omega_2);
+
+			// Equilibrium velocities
+			if (!float_equality(rho_1.at(i), 0.0, tol)) {	
+				u_eq_x_1.at(i) = temp_uc_x.at(i) + F_fr_x_1.at(i)*inv_omega_1/rho_1.at(i) + Fs_x_1*inv_omega_1;
+ 				u_eq_y_1.at(i) = temp_uc_y.at(i) + F_fr_y_1.at(i)*inv_omega_1/rho_1.at(i) + Fs_y_1*inv_omega_1;			
+			}
+			if (!float_equality(rho_2.at(i), 0.0, tol)) {	
+				u_eq_x_2.at(i) = temp_uc_x.at(i) + F_fr_x_2.at(i)*inv_omega_2/rho_2.at(i) + Fs_x_2*inv_omega_2;
+ 				u_eq_y_2.at(i) = temp_uc_y.at(i) + F_fr_y_2.at(i)*inv_omega_2/rho_2.at(i) + Fs_y_2*inv_omega_2;			
+			}
+		}
+	}
+}
+
 // Collision step for a single fluid
 void LBM::collide(const Geometry& geom, Fluid& fluid_1)
 {

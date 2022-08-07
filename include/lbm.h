@@ -31,6 +31,8 @@ public:
 	{	
 		Nx = geom.Nx(); Ny = geom.Ny(); Ntot = Nx*Ny; 
 		temp_f_dist.resize(Ntot*Ndir, 0.0); 
+		temp_uc_x.resize(Ntot, 0.0); 
+		temp_uc_y.resize(Ntot, 0.0); 
 	}  
 
 	/// Computes the force from fluid-solid interactions
@@ -41,13 +43,15 @@ public:
 	/// @details Stores it in the fluid objects 
 	void compute_fluid_repulsive_interactions(const Geometry&, Fluid&, Fluid&);
 
+	/// Calculate the macroscopic, composite, and equilibrium velocity
+	void compute_velocities(Geometry& geom, Fluid&, Fluid&);
+
 	/// Collision step for a single fluid
 	void collide(const Geometry& geom, Fluid&);
 
 	/// Add an external volume force to a single fluid (gravity, pressure drop)	
 	/// @details The force is specified for each lattice direction (check manual)
 	void add_volume_force(const Geometry&, Fluid&, const std::vector<double>&); 
-
 	/// Streaming step for a single fluid
 	void stream(const Geometry& geom, Fluid&);
 
@@ -70,7 +74,10 @@ private:
 	// Discerete velocities - y components
 	const std::vector<int> Cy = {0, 0, 1, 0, -1, 1, 1, -1, -1};
 	// Temporary container for streaming operations
-	std::vector<double> temp_f_dist; 
+	std::vector<double> temp_f_dist;
+ 	// Temporary containers for composite velocities
+	std::vector<double> temp_uc_x;
+	std::vector<double> temp_uc_y;
 };
 
 #endif
