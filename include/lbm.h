@@ -31,6 +31,7 @@ public:
 	{	
 		Nx = geom.Nx(); Ny = geom.Ny(); Ntot = Nx*Ny; 
 		temp_f_dist.resize(Ntot*Ndir, 0.0); 
+		temp_f_dist_spare.resize(Ntot*Ndir, 0.0);
 		temp_uc_x.resize(Ntot, 0.0); 
 		temp_uc_y.resize(Ntot, 0.0); 
 	}  
@@ -49,14 +50,22 @@ public:
 	/// Collision step for a single fluid
 	void collide(const Geometry& geom, Fluid&);
 
+	/// Collision step for a two fluids
+	void collide(Fluid&, Fluid&);
+
 	/// Add an external volume force to a single fluid (gravity, pressure drop)	
 	/// @details The force is specified for each lattice direction (check manual)
-	void add_volume_force(const Geometry&, Fluid&, const std::vector<double>&); 
-	/// Streaming step for a single fluid
-	void stream(const Geometry& geom, Fluid&);
+	void add_volume_force(const Geometry&, Fluid&, const std::vector<double>&);
 
-// stream(geom, fluid1, fluid2)
-// stream(geom, fluid1)
+	/// Add an external volume force to a two species - two fluid system (gravity, pressure drop)	
+	/// @details The force is specified for each lattice direction (check manual)
+	void add_volume_force(const Geometry&, Fluid&, Fluid&, const std::vector<double>&);
+ 
+	/// Streaming step for a single fluid
+	void stream(const Geometry&, Fluid&);
+
+	/// Streaming step for a two fluid species and two phases
+	void stream(const Geometry&, Fluid&, Fluid&);
 
 private:
 	// Number of directions (Ntot is Nx*Ny)
@@ -73,9 +82,10 @@ private:
 	const std::vector<int> Cx = {0, 1, 0, -1, 0, 1, -1, -1, 1};
 	// Discerete velocities - y components
 	const std::vector<int> Cy = {0, 0, 1, 0, -1, 1, 1, -1, -1};
-	// Temporary container for streaming operations
+	// Temporary containers for streaming operations
 	std::vector<double> temp_f_dist;
- 	// Temporary containers for composite velocities
+ 	std::vector<double> temp_f_dist_spare;
+	// Temporary containers for composite velocities
 	std::vector<double> temp_uc_x;
 	std::vector<double> temp_uc_y;
 };

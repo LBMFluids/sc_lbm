@@ -109,6 +109,9 @@ public:
 	/// Compute the equilibrium distribution function
 	void compute_f_equilibrium(const Geometry& geom);
 
+	/// Compute the equilibrium distribution function in a multicomponent - multiphase system
+	void compute_f_equilibrium();
+
 	//
 	// Getters 
 	//

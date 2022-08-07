@@ -167,6 +167,42 @@ void Fluid::compute_f_equilibrium(const Geometry& geom)
 	}			
 }
 
+// Compute the equilibrium distribution function in a multicomponent - multiphase system
+void Fluid::compute_f_equilibrium()
+{
+	double rt0 = 0.0, rt1 = 0.0, rt2 = 0.0;
+	double ueqxij = 0.0, ueqyij = 0.0, uxsq = 0.0, uysq = 0.0, uxuy5 = 0.0;
+	double uxuy6 = 0.0, uxuy7 = 0.0, uxuy8 = 0.0, usq = 0.0;
+
+	compute_density();
+	for (size_t ai = 0; ai < Ntot; ++ai) {
+
+		rt0 = wrt0*rho.at(ai);
+		rt1 = wrt1*rho.at(ai);
+	 	rt2 = wrt2*rho.at(ai);
+
+		ueqxij =  u_eq_x.at(ai);
+      	ueqyij =  u_eq_y.at(ai);
+	    uxsq   =  ueqxij * ueqxij;
+		uysq   =  ueqyij * ueqyij;
+		uxuy5  =  ueqxij +  ueqyij;
+		uxuy6  = -ueqxij +  ueqyij;
+		uxuy7  = -ueqxij - ueqyij;
+		uxuy8  =  ueqxij - ueqyij;
+		usq    =  uxsq + uysq;
+
+		f_eq_dist.at(ai) = rt0*(1.0 - feq3*usq);
+		f_eq_dist.at(ai + Ntot) = rt1*(1.0 + feq1*ueqxij + feq2*uxsq - feq3*usq);
+		f_eq_dist.at(ai + 2*Ntot) = rt1*(1.0 + feq1*ueqyij + feq2*uysq - feq3*usq);
+		f_eq_dist.at(ai + 3*Ntot) = rt1*(1.0 - feq1*ueqxij + feq2*uxsq - feq3*usq);
+		f_eq_dist.at(ai + 4*Ntot) = rt1*(1.0 - feq1*ueqyij + feq2*uysq - feq3*usq);
+		f_eq_dist.at(ai + 5*Ntot) = rt2*(1.0 + feq1*uxuy5 + feq2*uxuy5*uxuy5 - feq3*usq);
+		f_eq_dist.at(ai + 6*Ntot) = rt2*(1.0 + feq1*uxuy6 + feq2*uxuy6*uxuy6 - feq3*usq);
+		f_eq_dist.at(ai + 7*Ntot) = rt2*(1.0 + feq1*uxuy7 + feq2*uxuy7*uxuy7 - feq3*usq);
+		f_eq_dist.at(ai + 8*Ntot) = rt2*(1.0 + feq1*uxuy8 + feq2*uxuy8*uxuy8 - feq3*usq);
+	}			
+}
+
 //
 // I/O
 //
