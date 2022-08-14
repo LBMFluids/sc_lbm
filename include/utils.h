@@ -77,7 +77,7 @@ inline void print_elements(const T& coll, const std::string& optstr="");
  * @return true if equal within the tolerance
  */
 template <typename T>
-bool float_equality(T, T, T);
+bool equal_floats(T, T, T);
 
 //
 // Implementation - templates
@@ -143,7 +143,7 @@ inline void print_elements(const T& coll, const std::string& optstr)
 
 // Compares two floating point numbers for approximate equality
 template <typename T>
-bool float_equality(T num1, T num2, T tol)
+bool equal_floats(T num1, T num2, T tol)
 {
 	T max_num_one = std::max({1.0, std::fabs(num1) , std::fabs(num2)});
     return std::fabs(num1 - num2) <= tol*max_num_one;

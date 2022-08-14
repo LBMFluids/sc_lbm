@@ -45,7 +45,7 @@ public:
 	void compute_fluid_repulsive_interactions(const Geometry&, Fluid&, Fluid&);
 
 	/// Calculate the macroscopic, composite, and equilibrium velocity
-	void compute_velocities(Geometry& geom, Fluid&, Fluid&);
+	void compute_equilibrium_velocities(Geometry& geom, Fluid&, Fluid&);
 
 	/// Collision step for a single fluid
 	void collide(const Geometry& geom, Fluid&);
@@ -74,8 +74,11 @@ private:
 	bool xperiodic = true;
 	bool yperiodic = true;
 	// Weights for computing fluid-solid interactions
-	const std::vector<double> solid_weights = {0.0, 1./9, 1./9, 1./9, 1./9, ...
-							1./36, 1./36, 1./36, 1./36};
+	const std::vector<double> solid_weights = {0.0, 1.0/9, 1.0/9, 1.0/9, 1.0/9,
+							1.0/36, 1.0/36, 1.0/36, 1.0/36};
+	// Weights for computing repulsive fluid-fluid interactions
+	const std::vector<double> repulsion_weights = {0.0, 1.0/9, 1.0/9, 1.0/9, 1.0/9,
+							1.0/36, 1.0/36, 1.0/36, 1.0/36};
 	// Bounce-back direction conversions
 	const std::vector<int> bb_rules = {3, 4, 1, 2, 7, 8, 5, 6};
 	// Discerete velocities - x components

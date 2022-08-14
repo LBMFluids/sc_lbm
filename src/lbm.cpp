@@ -14,7 +14,7 @@ void LBM::compute_solid_surface_force(const Geometry& geom, Fluid& fluid_1, Flui
 	std::vector<double> Fxs(Ntot, 0.0);
 	std::vector<double> Fys(Ntot, 0.0);
 	int inei = 0, jnei = 0;
-	int xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0, ijk_ini = 0;
+	int xi = 0, yj =0;
 
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 		xi = ai%Nx; 
@@ -38,8 +38,8 @@ void LBM::compute_solid_surface_force(const Geometry& geom, Fluid& fluid_1, Flui
 			}
 			// Force is non-zero only if the neighbor is a solid node
 			if (geom(inei, jnei) == 0) {
-				Fxs(ai) += solid_weights(dj)*Cx(dj);
-				Fys(ai) += solid_weights(dj)*Cy(dj);				
+				Fxs.at(ai) += solid_weights.at(dj)*Cx.at(dj);
+				Fys.at(ai) += solid_weights.at(dj)*Cy.at(dj);				
 			} 		
 		}
 	}
@@ -67,8 +67,8 @@ void LBM::compute_fluid_repulsive_interactions(const Geometry& geom, Fluid& flui
 	const double Gf_1 = fluid_1.get_repulsive_g_fluid();
 	const double Gf_2 = fluid_2.get_repulsive_g_fluid();
 
-	int inei = 0, jnei = 0;
-	int xi = 0, yj =0, ijk_final = 0, bb_ijk_final = 0, ijk_ini = 0;
+	int inei = 0, jnei = 0, ij = 0;
+	int xi = 0, yj =0;
 
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 		xi = ai%Nx; 
@@ -97,15 +97,15 @@ void LBM::compute_fluid_repulsive_interactions(const Geometry& geom, Fluid& flui
 			// Back to linear index
 			ij = static_cast<size_t>(jnei*Nx + inei);
 			// Compute the forces and accumulate
-			Fx_1(ai) += repulsion_weights(dj)*Cx(dj)*psi_2(ij);
-			Fy_1(ai) += repulsion_weights(dj)*Cy(dj)*psi_2(ij);
-			Fx_2(ai) += repulsion_weights(dj)*Cx(dj)*psi_1(ij);
-			Fy_2(ai) += repulsion_weights(dj)*Cy(dj)*psi_1(ij);	
+			Fx_1.at(ai) += repulsion_weights.at(dj)*Cx.at(dj)*psi_2.at(ij);
+			Fy_1.at(ai) += repulsion_weights.at(dj)*Cy.at(dj)*psi_2.at(ij);
+			Fx_2.at(ai) += repulsion_weights.at(dj)*Cx.at(dj)*psi_1.at(ij);
+			Fy_2.at(ai) += repulsion_weights.at(dj)*Cy.at(dj)*psi_1.at(ij);	
 		}
-		Fx_1(ai) *= Gf_1*psi_1(ai);	
-		Fy_1(ai) *= Gf_1*psi_1(ai);
-		Fx_2(ai) *= Gf_2*psi_2(ai);	
-		Fy_2(ai) *= Gf_2*psi_2(ai);
+		Fx_1.at(ai) *= Gf_1*psi_1.at(ai);	
+		Fy_1.at(ai) *= Gf_1*psi_1.at(ai);
+		Fx_2.at(ai) *= Gf_2*psi_2.at(ai);	
+		Fy_2.at(ai) *= Gf_2*psi_2.at(ai);
 	}
 }
 
@@ -116,7 +116,7 @@ void LBM::compute_equilibrium_velocities(Geometry& geom, Fluid& fluid_1, Fluid& 
 	const double omega_1 = fluid_1.get_omega();
 	const double inv_omega_1 = 1.0/omega_1;
 	const std::vector<double>& rho_1 = fluid_1.get_rho();
-	const std::vector<double>& f_dist_1 = fluid_1.f_dist();
+	const std::vector<double>& f_dist_1 = fluid_1.get_f_dist();
 	std::vector<double>& ux_1 = fluid_1.get_ux();	
 	std::vector<double>& uy_1 = fluid_1.get_uy();
 	std::vector<double>& u_eq_x_1 = fluid_1.get_u_eq_x();	
@@ -129,7 +129,7 @@ void LBM::compute_equilibrium_velocities(Geometry& geom, Fluid& fluid_1, Fluid& 
 	const double omega_2 = fluid_2.get_omega();
 	const double inv_omega_2 = 1.0/omega_2;
 	const std::vector<double>& rho_2 = fluid_2.get_rho();
-	const std::vector<double>& f_dist_2 = fluid_2.f_dist();
+	const std::vector<double>& f_dist_2 = fluid_2.get_f_dist();
 	std::vector<double>& ux_2 = fluid_2.get_ux();	
 	std::vector<double>& uy_2 = fluid_2.get_uy();
 	std::vector<double>& u_eq_x_2 = fluid_2.get_u_eq_x();	
@@ -159,17 +159,17 @@ void LBM::compute_equilibrium_velocities(Geometry& geom, Fluid& fluid_1, Fluid& 
 			}
 
 			// Composite velocity
-			temp_uc_x.at(i) = (ux_1.at(i)*omega_1+ux_2.at(i)*omega_2)./(rho_1.at(i)*omega_1+rho_2.at(i)*omega_2);  
-			temp_uc_y.at(i) = (uy_1.at(i)*omega_1+uy_2.at(i)*omega_2)./(rho_1.at(i)*omega_1+rho_2.at(i)*omega_2);
+			temp_uc_x.at(i) = (ux_1.at(i)*omega_1+ux_2.at(i)*omega_2)/(rho_1.at(i)*omega_1+rho_2.at(i)*omega_2);  
+			temp_uc_y.at(i) = (uy_1.at(i)*omega_1+uy_2.at(i)*omega_2)/(rho_1.at(i)*omega_1+rho_2.at(i)*omega_2);
 
 			// Equilibrium velocities
-			if (!float_equality(rho_1.at(i), 0.0, tol)) {	
-				u_eq_x_1.at(i) = temp_uc_x.at(i) + F_fr_x_1.at(i)*inv_omega_1/rho_1.at(i) + Fs_x_1*inv_omega_1;
- 				u_eq_y_1.at(i) = temp_uc_y.at(i) + F_fr_y_1.at(i)*inv_omega_1/rho_1.at(i) + Fs_y_1*inv_omega_1;			
+			if (!equal_floats(rho_1.at(i), 0.0, tol)) {	
+				u_eq_x_1.at(i) = temp_uc_x.at(i) + F_fr_x_1.at(i)*inv_omega_1/rho_1.at(i) + Fs_x_1.at(i)*inv_omega_1;
+ 				u_eq_y_1.at(i) = temp_uc_y.at(i) + F_fr_y_1.at(i)*inv_omega_1/rho_1.at(i) + Fs_y_1.at(i)*inv_omega_1;			
 			}
-			if (!float_equality(rho_2.at(i), 0.0, tol)) {	
-				u_eq_x_2.at(i) = temp_uc_x.at(i) + F_fr_x_2.at(i)*inv_omega_2/rho_2.at(i) + Fs_x_2*inv_omega_2;
- 				u_eq_y_2.at(i) = temp_uc_y.at(i) + F_fr_y_2.at(i)*inv_omega_2/rho_2.at(i) + Fs_y_2*inv_omega_2;			
+			if (!equal_floats(rho_2.at(i), 0.0, tol)) {	
+				u_eq_x_2.at(i) = temp_uc_x.at(i) + F_fr_x_2.at(i)*inv_omega_2/rho_2.at(i) + Fs_x_2.at(i)*inv_omega_2;
+ 				u_eq_y_2.at(i) = temp_uc_y.at(i) + F_fr_y_2.at(i)*inv_omega_2/rho_2.at(i) + Fs_y_2.at(i)*inv_omega_2;			
 			}
 		}
 	}
@@ -218,7 +218,7 @@ void LBM::collide(Fluid& fluid_1, Fluid& fluid_2)
 // Add an external volume force to a single fluid (gravity, pressure drop)
 void LBM::add_volume_force(const Geometry& geom, Fluid& fluid_1, const std::vector<double>& force)
 {
-	std::vector<double>& f_dist_1 = fluid_1.get_f_dist();
+	std::vector<double>& f_dist = fluid_1.get_f_dist();
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 		if (geom(ai) == 1) {
 			for (size_t dj = 0; dj < Ndir; ++dj) {						

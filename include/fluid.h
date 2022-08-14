@@ -75,7 +75,6 @@ public:
 	/// @param rho_0 - initial density of this fluid, same everywhere
 	void simple_ini(const Geometry& geom, const double rho_0);
 
-
 	/** 
 	 * Assign fluid-solid interaction potential
 	 *	@param Gs - strength of fluid-solid interactions, negative value indicates attractive interactions, positive - repulsive
@@ -120,6 +119,10 @@ public:
 	std::vector<double>& get_f_dist() { return f_dist; } 
 	/// Reference to equilibrium density distribution, flat array of size Nx*Ny*9 
     std::vector<double>& get_f_eq_dist() { return f_eq_dist; }
+	/// Reference to x component of the fluid-solid interaction force 
+	std::vector<double>& get_fluid_solid_force_x() { return F_solid_x; }
+	/// Reference to y component of the fluid-solid interaction force 
+	std::vector<double>& get_fluid_solid_force_y() { return F_solid_y; }
 	/// Reference to x component of the repulsive fluid-fluid force 
 	std::vector<double>& get_repulsive_force_x() { return F_repulsive_x; }
 	/// Reference to y component of the repulsive fluid-fluid force 
