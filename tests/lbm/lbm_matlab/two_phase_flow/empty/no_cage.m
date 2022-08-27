@@ -1,56 +1,72 @@
-function empty_geometry(dPdL, output_file_name)
+function no_cage
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % Parallel Shan and Chen MCMP LBM v.3
 % -------------------------------------------------------------------------
-% Last modified: September  1st  2014
+% Last modified: December 10 2014
 % -------------------------------------------------------------------------
-% Two component, two phase LBM for flowing a droplet through another liquid
-% with no solid objects in the geometry
-% Flow driving force is determined by the input vector 
-% Periodic boundary conditions on top and bottom
-% Fluid 1 is the droplet, fluid 2 is the continuous phase
+% Two component, two phase laminar flow in LBM in a channel/domain with
+% obstacles
+% Periodic boundary conditions on top and bottom, no-slip wall 
+% boundaries on the sides; driven by a body force/pressure drop
+% x direction is horizontal (matrix columns), y is vertical (rows)
+% flow is in the y direction
+% Fluid 1 is the droplet/bubble, fluid 2 is the continuous phase
 % -------------------------------------------------------------------------
-% Based on standard Laplace law simulations:
-%   Sukop, M. C. "DT Thorne, Jr. Lattice Boltzmann 
-%           Modeling Lattice Boltzmann Modeling." (2006)
+% Program includes three forms of fluid-solid interaction 1) Standard form
+% with two-valued interactions 2) Random interaction values in a specified
+% range 3) Two-valued interactions with various degree of random
+% perturbation; Schemes 2) and 3) were used to introduce defects in the
+% solid material
+% -------------------------------------------------------------------------
+% This program concatenates domain with the droplet from bubble_ini_dev.m
+% with a larger - final domain. The domain from bubble_ini_dev.m is shorter
+% and appears before any interior geometry
+% The progam then installed the velocity/density fields for both fluids
+% previously developed with bubble_in_a_cage.m
+% It can be used to model the empty domain with no solid objects, and a
+% domain with posts or pillars defined in staggered_geom.m; choose in the
+% the geometry part of the program
+% -------------------------------------------------------------------------
 % Initial framework of this program was adapted from single phase LBM
 % serial program from MATLAB file exchange:
 %   https://www.mathworks.com/matlabcentral/fileexchange/6904-basic-lattice-boltzmann--lb--matlab-code
 % -------------------------------------------------------------------------
 % Runs on n processors (make sure the domain length is divisible by n+1)
 % Currently coded until 12 cores - to use more, add extra partition names
-% in the part_names structure
+% in part_names structure
 % -------------------------------------------------------------------------
 % Problem is solved in parallel on each partition, 
 % partitions communicate only density distributions f1 and f2 at halo 
 % nodes + one extra row. Every m iterations all f1/f2 values are send to 
 % processor 1 and saved. For efficiency, macroscopic properties computation
 % is skipped at this step and has to be made independently through 
-% velocities.m script after loading the saved data.
+% macro_vel_tot.m script after loading the saved data.
 % Values not enclosed in if(labindex=...)loops are visible to all the cores
 % Partitions (important): 1st row is the lower halo, last row is the 
 % upper halo changing this requires re-coding
 % -------------------------------------------------------------------------
-% User input: driving foce magnitude (see example), domain dimensions, 
-% initial droplet dimensions in the form of 
-% a rectagular or square domain immersed in the liquid, 
-% name of the file for saving data (naming template)
+% User input: .mat files from bubble_ini_dev.m and bubble_in_a_cage.m; 
+% this program enlarges the simulation domain by concatenating matrices
 % -------------------------------------------------------------------------
 % Output: saved .mat files every user determined number of steps
 % -------------------------------------------------------------------------
 % Functions used by the program:
-% all_ops_v2.m - all local operations without multiscale modeling part
+% One of the two following:
+% *** all_ops_v2.m - all local operations without multiscale modeling part
+% *** all_ops_v2_INT.m - all local operations with multiscale modeling part
+%                          this function needs changes in the interface
+%                          tracking parameters if different fluid densities
+%                          are used
 % stream_obstacles.m - streaming with arbitrarly positioned walls and
 % obtacles
 % solid_sum.m - summation term for solid objects (fluid/solid interactions); 
 % 		computed once before the time while loop
 % Fsum.m - fluid/fluid interactions (repulsive) used by all_ops_v2_INT.m
 % f_equilibrium.m - equilibrium distribution computation
-% -------------------------------------------------------------------------
-% Start MATLAB parallel environment as
-% pmode start Np
-% Np - number of cores
-% then run the program in the prallel command window
+% velocities - program that computes macroscopic densities and velocities
+% of the fluids
+% staggered_geom - program that sets up the geometry/architecture of the
+% domain if using solid posts
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 
 % % % % % % % % % % % % % % % % 
@@ -59,6 +75,21 @@ function empty_geometry(dPdL, output_file_name)
 %
 % % % % % % % % % % % % % % % %
 
+% Initial bubble/droplet
+% From bubble_ini_dev.mat
+% For initial, equilibrium density distribution
+load('developed_droplet_14.mat')
+rho_10=sum(f_1,3);
+rho_20=sum(f_2,3);
+
+% Developed flow field
+% From bubble_in_a_cage.mat
+load('trapped_droplet_4.mat')
+% Lower the bulk force if necessary
+% dPdL=0.3*dPdL;
+
+% Naming template for the output files
+output_file_name = 'empty_multiscale_';
 % Adjust the saving tag - this appeares when saving data during the
 % simulation; names of the datasets are of a format 
 % output_file_name_NUMBER.mat
@@ -66,7 +97,15 @@ function empty_geometry(dPdL, output_file_name)
 NUMBER=1;
 
 % Number of cores
-nCores=2;
+nCores=12;
+
+% --- FUNCTION FOR LOCAL OPERATIONS
+% Choose one
+% For domain with posts or pillars and empty domain with no multiscale
+% modeling
+% ops_function=@all_ops_v2;
+% For empty domain with multiscale modeling
+ops_function=@all_ops_v2_INT;
 
 % % % % % % % % % % % % % % % % 
 % 
@@ -75,27 +114,51 @@ nCores=2;
 % % % % % % % % % % % % % % % %
 
 % --- DOMAIN/CHANNEL SETUP 
-Len_Channel_2D=297; 
+Len_Channel_2D=299; 
+Channel_half_width=2.5*214; Width=Channel_half_width*2;
+% Fluid area
+Channel=ones(Len_Channel_2D,Width); 
+% Walls
+Channel(:,1)=0; Channel(:,end)=0; 
+[Nr Mc]=size(Channel);
+
+% --- CHOOSE INTERIOR GEOMETRY
+% -----------------------------------
+% --- FOR DOMAIN WITH POSTS OR PILLARS
+% staggered_geom
+% -----------------------------------
+% --- FOR EMPTY DOMAIN (WALLS BUT NO POSTS/PILLARS)
+Len_Channel_2D=1014*1.5; 
 Channel_2D_half_width=2.5*214; Width=Channel_2D_half_width*2;
 % Fluid area
 Channel2D=ones(Len_Channel_2D,Width);
-% Walls
-Channel2D(:,1)=0; Channel2D(:,end)=0; 
 [Nr Mc]=size(Channel2D);
+
+% --- CONCATENATE DOMAINS
+% Common for both domains - one from the bubble_ini_dev.m and the extension
+% Extra domain
+LongDomain=Channel2D(300:end,:);
+LongDomain(:,1)=0; LongDomain(:,end)=0;
+[Nri Mci]=size(Channel2D);
+% Concatenate channel geometry
+Channel2D=cat(1,Channel,LongDomain);
+[Nr Mc]=size(Channel2D);
+Channel2D(:,1)=0; Channel2D(:,end)=0; % Walls
 % Fluid locations (global)
 [iabw1 jabw1]=find(Channel2D==1);
 lena=length(iabw1);  
-ija= (jabw1-1)*Nr+iabw1; 
+ija=(jabw1-1)*Nr+iabw1; 
+% Computing new density distributions
+rho_1=sum(f_1,3);
+rho_2=sum(f_2,3);
 
-% --- BUBBLE/DROPLET INITIALIZATION
-density_1=zeros(Nr,Mc); density_2=zeros(Nr,Mc);
-% Bubble center with respect to x (horizontal/axial direction)
-bC=135; 
-density_1(90:210,bC-30:bC+30)=2; 
-density_2(find(density_1==0&Channel2D~=0))=2; 
-density_temp=density_1;
-density_1(find(density_2~=0&Channel2D~=0))=0.06;
-density_2(find(density_temp~=0&Channel2D~=0))=0.06;
+[iIn4 jIn4]=find((((rho_20-rho_10)<=0)&rho_10<=2&rho_10>6e-2));
+for jin=1:length(iIn4)
+        rho_1(iIn4(jin),jIn4(jin))=rho_10(iIn4(jin),jIn4(jin));
+        rho_2(iIn4(jin),jIn4(jin))=rho_20(iIn4(jin),jIn4(jin));
+        f_1(iIn4(jin),jIn4(jin),:)=rho_10(iIn4(jin),jIn4(jin))/9;
+        f_2(iIn4(jin),jIn4(jin),:)=rho_20(iIn4(jin),jIn4(jin))/9;
+end
 
 % % % % % % % % % % % % % % % % 
 % 
@@ -103,55 +166,33 @@ density_2(find(density_temp~=0&Channel2D~=0))=0.06;
 %
 % % % % % % % % % % % % % % % %
 
-% --- FLUID AND FLOW PROPERTIES, LBM CONSTANTS
-cs2=1/3; 
-tau1=1;
-tau2=1;
-omega_1=1/tau1;
-omega_2=1/tau2;
-omega=omega_1;
-% Magnitude of force that acts on the interface 
-% (sign by default opposite to the bulk force)
-Fmag=0;
-
-% --- INTERACTION POTENTIALS 
-% Interaction strength, these are repulsive interactions hence G > 0
-G=0.9; 
-% Interactions with solids, "-" is attractive, "+", repulsive
-Gs_2=0;
-Gs_1=-Gs_2;
+% --- INTERACTION POTENTIALS
+% Only solids - fluid-fluid defined in the droplet development stage
+% "-" is attractive, "+", repulsive
+Gs_2=-0.1421;
+Gs_1=-Gs_2; 
 
 % % % % % % % % % % % % % % % % 
 % 
-% OTHER SETTINGS
+% SIMULATION SETTINGS
 %
 % % % % % % % % % % % % % % % %
 
 % --- SIMULATION SETTINGS
+% Simulation settings
 % Maximum number of steps
-Max_Iter=40e3;
+Max_Iter=30e3;
 % Current step
 Cur_Iter=1;
 % Save this many steps
-save_every=10e3;
+save_every=100;
 % Flag for stopping the simulation
 StopFlag=false;
-
-% --- INITIALIZATION OF FLUID DENSITY DISTRIBUTIONS
-% Distribution matrix initialization, declarations
-Nc=9; N_c=Nc;
-f_1=zeros(Nr,Mc,N_c); 
-f_2=zeros(Nr,Mc,N_c);
-for ia=1:lena 
-    i=iabw1(ia); j=jabw1(ia); 
-    f_1(i,j,:)=density_1(i,j)/9; 
-    f_2(i,j,:)=density_2(i,j)/9;
-end
 
 % --- INITIALIZATION OF PARTITIONS FOR PARALLEL COMPUTING
 % Number of partitions
 Nprt=Nr/(nCores+1);
-% Generating partitions - modify only here if more cores are needed 
+% Generating partitions - modify only here if more cores are needed
 part_names={'partition_1' 'partition_2' 'partition_3'...
           'partition_4' 'partition_5' 'partition_6'...
           'partition_7' 'partition_8' 'partition_9'...
@@ -172,14 +213,21 @@ PARTITIONS.partition_1.f_1=f_1([nCores*Nprt:Nr, 1:Nprt],:,:);
 PARTITIONS.partition_1.f_2=f_2([nCores*Nprt:Nr, 1:Nprt],:,:);
 PARTITIONS.partition_1.Channel2D=Channel2D([nCores*Nprt:Nr, 1:Nprt],:);
 
-% Other density partitions + Channel2D
+% Other partitions + Channel2D
 for kCore=2:nCores
     PARTITIONS.(part_names{kCore}).f_1=f_1((kCore-1)*Nprt:kCore*Nprt,:,:);
     PARTITIONS.(part_names{kCore}).f_2=f_2((kCore-1)*Nprt:kCore*Nprt,:,:);
     PARTITIONS.(part_names{kCore}).Channel2D=Channel2D((kCore-1)*Nprt:kCore*Nprt,:);
 end
 
-% --- SOLID INTERACTIONS
+% % % % % % % % % % % % % % % % 
+% 
+% SOLID INTERACTIONS
+%
+% % % % % % % % % % % % % % % %
+% Choose an interaction scheme
+
+% --- REGULAR FLUID-SOLID INTERACTIONS
 % The same for both species
 [Fxs Fys]=solid_sum(lena,iabw1,jabw1, Channel2D,Nr,Mc);
 % This is due to the fact that psi=rho, so density term in the forcing term 
@@ -189,6 +237,68 @@ end
 % as tau_1*Fxs_1, no division by density, same for species 2
 Fxs_1=-Gs_1*Fxs; Fys_1=-Gs_1*Fys; 
 Fxs_2=-Gs_2*Fxs; Fys_2=-Gs_2*Fys;
+
+% --- RADOMIZED DISTRIBUTIONS OF THE FLUID-SOLID INTERACTIONS
+% -------------------------------------------------------------------------
+% -------------------------------------------------------------------------
+% --- Gs DISTRIBUTION FROM A RANDOM DISTRIBUTION
+% Size of matrices with solid interactions
+% [NGs,MGs]=size(Fxs);
+% % Max absolute Gs value
+% Gs_max=0.4365; 
+% % Random sign or 0 for Gs (matrix with -1, 0 or 1 entries)
+% Gs_Sign=randi([-1,1],NGs,MGs);
+% % Matrix of abosolute allowable values; rand from >0 to <1 entries 
+% Gs_Value=rand(NGs,MGs)*Gs_max; 
+% % (drawback - will never reach full wetting/non-wetting; 
+% % it will reach up to 0.99 of it, which is fine in real systems
+% % Final Gs distribution
+% Gs_dist=Gs_Value.*Gs_Sign; 
+% % Assign one to liquid (2) and opposite one to gas (1)
+% % Liquid
+% Gs_2=Gs_dist;
+% % Gas (opposite)
+% Gs_1=-Gs_2; 
+% % Distribute into final force matrices
+% Fxs_1=-Gs_1.*Fxs; Fys_1=-Gs_1.*Fys; 
+% Fxs_2=-Gs_2.*Fxs; Fys_2=-Gs_2.*Fys;
+% -------------------------------------------------------------------------
+% --- RANDOMLY PERTURBED Gs DISTRIBUTION
+% Size of matrices with solid interactions
+% [NGs,MGs]=size(Fxs);
+% % Desired Gs value for liquid
+% Gs_av=-0.1421; 
+% Gs_dist=ones(NGs,MGs)*Gs_av;
+% Gmax=-0.4365;
+% for igs=1:NGs
+%     for jgs=1:MGs
+%         % 0 for no change, 1 for change; the more *randi([0,1]) 
+%         % the less random changes
+%         yn=randi([0,1])*randi([0,1])*randi([0,1])*randi([0,1]); 
+%         if yn
+%             % Random sign or 0 for Gs; 1 indicates all inhomogeneities 
+%             % in favor of gas
+%             Gs_Sign=randi([-1,1]);
+%             % Rand from >0 to <1 entries 
+%             Gs_Value=rand(1,1)*Gmax;
+%             % Final Gs distribution entry 
+%             % (for liquid, for gas change Gs_av to 0.4365 for these systems)
+%             Gs_dist(igs,jgs)=Gs_Value.*Gs_Sign; 
+%         end
+%     end
+% end
+% %  Assign one to liquid (2) and opposite one to gas (1)
+% % Liquid
+% Gs_2=Gs_dist;
+% % Gas (opposite)
+% Gs_1=-Gs_2; 
+% % Distribute into final force matrices
+% Fxs_1=-Gs_1.*Fxs; Fys_1=-Gs_1.*Fys; 
+% Fxs_2=-Gs_2.*Fxs; Fys_2=-Gs_2.*Fys;
+% % For visualization:
+% % surf(Gs_2);
+
+% --- COMMON FOR ANY FLUID-SOLID INTERACTION SCHEME
 % Distribute into partitions
 % Separate partition 1
 PARTITIONS.partition_1.Fxs_1=Fxs_1([nCores*Nprt:Nr, 1:Nprt],:,:);
@@ -203,12 +313,39 @@ for kCore=2:nCores
     PARTITIONS.(part_names{kCore}).Fys_2=Fys_2((kCore-1)*Nprt:kCore*Nprt,:,:);
 end
 
+% % % % % % % % % % % % % % % % 
+% 
+% OTHER SETTINGS
+%
+% % % % % % % % % % % % % % % %
+
 % --- INTERFATIAL AND BODY FORCES
-% External (body) force
+% --- EXTERNAL BODY FORCES
 force=-dPdL*(1/6)*1*[0 -1 0 1 -1 -1 1 1 0]';
-% Force that acts on the interface (sign by default opposite to the bulk 
-% force)
-forceINT=Fmag*(1/6)*1*[0 -1 0 1 -1 -1 1 1 0]';
+% -------------------------------------------------------------------------
+% --- INTERFACIAL FORCE - MULTISCALE MODELING
+% Mgitude of interfacial force i.e. the coupling operator
+Fmag=2.35e-5;
+% To match the pillars area
+ForceDist=zeros(Nr,Mc);  
+ForceDist(351:1207,2:Mc-1)=ForceDist(351:1207,2:Mc-1)+Fmag*(1/6)*1;
+Cforce=[0 -1 0 1 -1 -1 1 1 0];
+% Distribute
+forceINT=zeros(Nr,Mc,N_c);
+for inc=1:N_c
+    for ips=1:Nr
+        for jps=1:Mc
+            forceINT(ips,jps,inc)=ForceDist(ips,jps)*Cforce(inc);
+        end
+    end
+end
+% Split interface force distribution into partitions
+% Separate partition 1
+PARTITIONS.partition_1.forceINT=forceINT([nCores*Nprt:Nr, 1:Nprt],:,:);
+% Other partitions
+for kCore=2:nCores
+    PARTITIONS.(part_names{kCore}).forceINT=forceINT((kCore-1)*Nprt:kCore*Nprt,:,:);
+end
 
 % ---- DENSITY BUFFERS FOR PARALLEL COMPUTING
 % Density buffers initialization - additional info needed for fluid/fluid 
@@ -217,12 +354,10 @@ forceINT=Fmag*(1/6)*1*[0 -1 0 1 -1 -1 1 1 0]';
 % below lower halos
 rho_1=sum(f_1,3);
 rho_2=sum(f_2,3);
-
 PARTITIONS.partition_1.Up_1=rho_1(nCores*Nprt-1,:);
 PARTITIONS.partition_1.Up_2=rho_2(nCores*Nprt-1,:);
 PARTITIONS.partition_1.Low_1=rho_1(Nprt+1,:);
 PARTITIONS.partition_1.Low_2=rho_2(Nprt+1,:);
-
 for kCore=2:nCores
     PARTITIONS.(part_names{kCore}).Up_1=rho_1(((kCore-1)*Nprt-1),:);
     PARTITIONS.(part_names{kCore}).Up_2=rho_2(((kCore-1)*Nprt-1),:);
@@ -237,7 +372,7 @@ end
 % % % % % % % % % % % % % % % %
 % --- No user input required in this part --------
 %
-tic
+tic 
 while (~StopFlag)
     Cur_Iter=Cur_Iter+1;
     
@@ -249,14 +384,14 @@ while (~StopFlag)
     
     % Processor 1
     if (labindex==1)
-        [PARTITIONS.partition_1.f_1,PARTITIONS.partition_1.f_2,BUp_1, BUp_2, BLW_1, BLW_2]=all_ops_v2(PARTITIONS.partition_1,G,omega,force,Cur_Iter);
+        [PARTITIONS.partition_1.f_1,PARTITIONS.partition_1.f_2,BUp_1, BUp_2, BLW_1, BLW_2]=ops_function(PARTITIONS.partition_1,G,omega_1,force,Cur_Iter);
         PARTITIONS.partition_1.f_1=stream_obstacles(PARTITIONS.partition_1.f_1,PARTITIONS.partition_1.Channel2D);
         PARTITIONS.partition_1.f_2=stream_obstacles(PARTITIONS.partition_1.f_2,PARTITIONS.partition_1.Channel2D);
     end
-    % All other processores
+     % All other processors
     for kCore=2:nCores
         if(labindex==kCore)
-            [PARTITIONS.(part_names{kCore}).f_1,PARTITIONS.(part_names{kCore}).f_2,BUp_1, BUp_2, BLW_1, BLW_2]=all_ops_v2(PARTITIONS.(part_names{kCore}),G,omega,force,Cur_Iter);
+            [PARTITIONS.(part_names{kCore}).f_1,PARTITIONS.(part_names{kCore}).f_2,BUp_1, BUp_2, BLW_1, BLW_2]=ops_function(PARTITIONS.(part_names{kCore}),G,omega_1,force,Cur_Iter);
             PARTITIONS.(part_names{kCore}).f_1=stream_obstacles(PARTITIONS.(part_names{kCore}).f_1,PARTITIONS.(part_names{kCore}).Channel2D);
             PARTITIONS.(part_names{kCore}).f_2=stream_obstacles(PARTITIONS.(part_names{kCore}).f_2,PARTITIONS.(part_names{kCore}).Channel2D);
         end
@@ -267,7 +402,7 @@ while (~StopFlag)
    % INTERPROCESSOR COMMUNICATION PART
    %
    % % % % % % % % % % % % % % % % % % %
-   % Updates of the data on every processor 
+   % Updates: send/receive
    % Upper halos (domain end) exchange 1,2,3,5, and 6
    % Lower halos (first row) - 4,7, and 8 
    % Also send out extra density rows for fluid/fluid interactions, 
@@ -437,7 +572,7 @@ while (~StopFlag)
     % --- SAVING
     % Every save_every iteration: send everything to processor 1, 
     % and save, also terminates if Max_Iter is reached
-    if (mod(Cur_Iter,save_every)==0)
+    if (mod(Cur_Iter,100)==0)
         f_1=zeros(Nr,Mc,Nc);
         f_2=zeros(Nr,Mc,Nc);
         
@@ -459,16 +594,18 @@ while (~StopFlag)
             
             f_2(1:(Nprt-1),:,:)=PARTITIONS.partition_1.f_2((Nprt+2):1:(end-1),:,:);
             f_2((nCores*Nprt+1):Nr,:,:)=PARTITIONS.partition_1.f_2(2:(Nprt+1),:,:);
-            
+
             save([output_file_name,num2str(NUMBER),'.mat'])
             NUMBER=NUMBER+1;
         end
-       % --- CHECK FOR TERMINATION 
-       if  (Cur_Iter > Max_Iter)
+        % --- CHECK FOR TERMINATION
+        if  (Cur_Iter > Max_Iter)
             StopFlag=true;
             break 
-       end  
+        end  
     end    
 end
+
 toc
 end
+

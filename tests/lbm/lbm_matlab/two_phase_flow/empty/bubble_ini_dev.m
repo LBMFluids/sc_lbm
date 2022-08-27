@@ -1,14 +1,14 @@
-function empty_geometry(dPdL, output_file_name)
+function bubble_ini_dev
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % Parallel Shan and Chen MCMP LBM v.3
 % -------------------------------------------------------------------------
 % Last modified: September  1st  2014
 % -------------------------------------------------------------------------
-% Two component, two phase LBM for flowing a droplet through another liquid
-% with no solid objects in the geometry
-% Flow driving force is determined by the input vector 
-% Periodic boundary conditions on top and bottom
-% Fluid 1 is the droplet, fluid 2 is the continuous phase
+% Two component, two phase LBM for development of a droplet/bubble 
+% at equilibrium
+% No flow, periodic boundary conditions on top and bottom, no-slip wall 
+% boundaries on the sides
+% Fluid 1 is the droplet/bubble, fluid 2 is the continuous phase
 % -------------------------------------------------------------------------
 % Based on standard Laplace law simulations:
 %   Sukop, M. C. "DT Thorne, Jr. Lattice Boltzmann 
@@ -16,6 +16,9 @@ function empty_geometry(dPdL, output_file_name)
 % Initial framework of this program was adapted from single phase LBM
 % serial program from MATLAB file exchange:
 %   https://www.mathworks.com/matlabcentral/fileexchange/6904-basic-lattice-boltzmann--lb--matlab-code
+% -------------------------------------------------------------------------
+% For efficiency reasons, the simulation domain is made shorter than the 
+% target domain for which the droplet is developed. Width is the same.  
 % -------------------------------------------------------------------------
 % Runs on n processors (make sure the domain length is divisible by n+1)
 % Currently coded until 12 cores - to use more, add extra partition names
@@ -31,10 +34,8 @@ function empty_geometry(dPdL, output_file_name)
 % Partitions (important): 1st row is the lower halo, last row is the 
 % upper halo changing this requires re-coding
 % -------------------------------------------------------------------------
-% User input: driving foce magnitude (see example), domain dimensions, 
-% initial droplet dimensions in the form of 
-% a rectagular or square domain immersed in the liquid, 
-% name of the file for saving data (naming template)
+% User input: domain dimensions, initial droplet dimensions in the form of 
+% a rectagular or square domain immersed in the liquid.
 % -------------------------------------------------------------------------
 % Output: saved .mat files every user determined number of steps
 % -------------------------------------------------------------------------
@@ -59,6 +60,9 @@ function empty_geometry(dPdL, output_file_name)
 %
 % % % % % % % % % % % % % % % %
 
+% Naming template for the output files
+output_file_name = 'developed_droplet_';
+
 % Adjust the saving tag - this appeares when saving data during the
 % simulation; names of the datasets are of a format 
 % output_file_name_NUMBER.mat
@@ -66,7 +70,7 @@ function empty_geometry(dPdL, output_file_name)
 NUMBER=1;
 
 % Number of cores
-nCores=2;
+nCores=12;
 
 % % % % % % % % % % % % % % % % 
 % 
@@ -75,7 +79,7 @@ nCores=2;
 % % % % % % % % % % % % % % % %
 
 % --- DOMAIN/CHANNEL SETUP 
-Len_Channel_2D=297; 
+Len_Channel_2D=299; 
 Channel_2D_half_width=2.5*214; Width=Channel_2D_half_width*2;
 % Fluid area
 Channel2D=ones(Len_Channel_2D,Width);
@@ -90,7 +94,7 @@ ija= (jabw1-1)*Nr+iabw1;
 % --- BUBBLE/DROPLET INITIALIZATION
 density_1=zeros(Nr,Mc); density_2=zeros(Nr,Mc);
 % Bubble center with respect to x (horizontal/axial direction)
-bC=135; 
+bC=535; 
 density_1(90:210,bC-30:bC+30)=2; 
 density_2(find(density_1==0&Channel2D~=0))=2; 
 density_temp=density_1;
@@ -110,6 +114,8 @@ tau2=1;
 omega_1=1/tau1;
 omega_2=1/tau2;
 omega=omega_1;
+% Pressure drop - body force
+dPdL=0;
 % Magnitude of force that acts on the interface 
 % (sign by default opposite to the bulk force)
 Fmag=0;
@@ -129,7 +135,7 @@ Gs_1=-Gs_2;
 
 % --- SIMULATION SETTINGS
 % Maximum number of steps
-Max_Iter=40e3;
+Max_Iter=150e3;
 % Current step
 Cur_Iter=1;
 % Save this many steps
