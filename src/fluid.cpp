@@ -40,7 +40,7 @@
 //
 
 // Initialization of density distributions, density and velocity arrays
-void Fluid::simple_ini(const Geometry& geom, const double rho_0)
+void Fluid::simple_ini(const Geometry& geom, const double rho_0, const bool mcmp)
 {
 	// Number of nodes in each direction
 	Nx = geom.Nx();		
@@ -53,6 +53,11 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0)
 	rho.resize(Nx*Ny, 0.0);
 	ux.resize(Nx*Ny, 0.0);
 	uy.resize(Nx*Ny, 0.0);
+	// Only for mcmp systems
+	if (mcmp) {
+		u_eq_x.resize(Nx*Ny, 0.0);
+		u_eq_y.resize(Nx*Ny, 0.0);
+	}
 	// Zero-initialized distribution function
 	f_dist.resize(Nx*Ny*Ndir, 0.0);
 	for (size_t i=0; i<Nx; ++i) {

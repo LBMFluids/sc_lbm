@@ -19,7 +19,11 @@ path_exe = '../../executables/'
 # Compile
 subprocess.call([py_version + ' compilation.py'], shell=True)
 
-# Test suite
+# SCSP 
 ut.msg('Fluid class tests', CYAN)
 subprocess.call([path_exe + 'fl_test'], shell=True)
+
+# MCMP
+ut.msg('Fluid class tests - two fluids', CYAN)
+subprocess.call([path_exe + 'mcmp_fl_test'], shell=True)
 

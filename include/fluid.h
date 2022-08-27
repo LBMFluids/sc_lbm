@@ -73,7 +73,8 @@ public:
 	/// Initialization of density distributions
 	/// @param geom - complete domain geometry
 	/// @param rho_0 - initial density of this fluid, same everywhere
-	void simple_ini(const Geometry& geom, const double rho_0);
+	/// @param mcmp - true if multicomponent - multiphase system
+	void simple_ini(const Geometry& geom, const double rho_0, const bool mcmp = false);
 
 	/** 
 	 * Assign fluid-solid interaction potential
