@@ -70,7 +70,7 @@ output_file_name = 'developed_droplet_';
 NUMBER=1;
 
 % Number of cores
-nCores=12;
+nCores=8;
 
 % % % % % % % % % % % % % % % % 
 % 
@@ -79,7 +79,7 @@ nCores=12;
 % % % % % % % % % % % % % % % %
 
 % --- DOMAIN/CHANNEL SETUP 
-Len_Channel_2D=299; 
+Len_Channel_2D=297; 
 Channel_2D_half_width=2.5*214; Width=Channel_2D_half_width*2;
 % Fluid area
 Channel2D=ones(Len_Channel_2D,Width);
@@ -135,7 +135,7 @@ Gs_1=-Gs_2;
 
 % --- SIMULATION SETTINGS
 % Maximum number of steps
-Max_Iter=150e3;
+Max_Iter=30e3;
 % Current step
 Cur_Iter=1;
 % Save this many steps

@@ -78,13 +78,13 @@ function no_cage
 % Initial bubble/droplet
 % From bubble_ini_dev.mat
 % For initial, equilibrium density distribution
-load('developed_droplet_14.mat')
+load('developed_droplet_4.mat')
 rho_10=sum(f_1,3);
 rho_20=sum(f_2,3);
 
 % Developed flow field
 % From bubble_in_a_cage.mat
-load('trapped_droplet_4.mat')
+load('trapped_droplet_5.mat')
 % Lower the bulk force if necessary
 % dPdL=0.3*dPdL;
 
@@ -97,7 +97,7 @@ output_file_name = 'pillars_';
 NUMBER=1;
 
 % Number of cores
-nCores=12;
+nCores=8;
 
 % --- FUNCTION FOR LOCAL OPERATIONS
 % Choose one
@@ -114,8 +114,8 @@ ops_function=@all_ops_v2;
 % % % % % % % % % % % % % % % %
 
 % --- DOMAIN/CHANNEL SETUP 
-Len_Channel_2D=299; 
-Channel_half_width=2.5*214; Width=Channel_half_width*2;
+Len_Channel_2D=297; 
+Channel_2D_half_width=2.5*214; Width=Channel_2D_half_width*2;
 % Fluid area
 Channel=ones(Len_Channel_2D,Width); 
 % Walls
@@ -136,7 +136,7 @@ staggered_geom
 % --- CONCATENATE DOMAINS
 % Common for both domains - one from the bubble_ini_dev.m and the extension
 % Extra domain
-LongDomain=Channel2D(300:end,:);
+LongDomain=Channel2D(298:end,:);
 LongDomain(:,1)=0; LongDomain(:,end)=0;
 [Nri Mci]=size(Channel2D);
 % Concatenate channel geometry
@@ -184,7 +184,7 @@ Max_Iter=30e3;
 % Current step
 Cur_Iter=1;
 % Save this many steps
-save_every=100;
+save_every=10e3;
 % Flag for stopping the simulation
 StopFlag=false;
 
@@ -324,10 +324,10 @@ force=-dPdL*(1/6)*1*[0 -1 0 1 -1 -1 1 1 0]';
 % -------------------------------------------------------------------------
 % --- INTERFACIAL FORCE - MULTISCALE MODELING
 % Mgitude of interfacial force i.e. the coupling operator
-Fmag=2.35e-5;
+Fmag=0.0;
 % To match the pillars area
 ForceDist=zeros(Nr,Mc);  
-ForceDist(351:1207,2:Mc-1)=ForceDist(351:1207,2:Mc-1)+Fmag*(1/6)*1;
+ForceDist(351:end,2:Mc-1)=ForceDist(351:end,2:Mc-1)+Fmag*(1/6)*1;
 Cforce=[0 -1 0 1 -1 -1 1 1 0];
 % Distribute
 forceINT=zeros(Nr,Mc,N_c);
@@ -571,7 +571,7 @@ while (~StopFlag)
     % --- SAVING
     % Every save_every iteration: send everything to processor 1, 
     % and save, also terminates if Max_Iter is reached
-    if (mod(Cur_Iter,100)==0)
+    if (mod(Cur_Iter,save_every)==0)
         f_1=zeros(Nr,Mc,Nc);
         f_2=zeros(Nr,Mc,Nc);
         

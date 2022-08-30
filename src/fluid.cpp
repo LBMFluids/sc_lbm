@@ -39,6 +39,25 @@
 // Initialization
 //
 
+// Initialization of all simulation variables and zero densities 
+void Fluid::zero_density_ini(const Geometry& geom)
+{
+	// Number of nodes in each direction
+	Nx = geom.Nx();		
+	Ny = geom.Ny();
+	Ntot = Nx*Ny;
+	// Zero initialize all the macroscopic and intermediate variables
+	rho.resize(Nx*Ny, 0.0);
+	ux.resize(Nx*Ny, 0.0);
+	uy.resize(Nx*Ny, 0.0);
+	u_eq_x.resize(Nx*Ny, 0.0);
+	u_eq_y.resize(Nx*Ny, 0.0);
+	// Zero-initialized distribution function
+	f_dist.resize(Nx*Ny*Ndir, 0.0);
+	// Zero-initialized equilibrium distribution function
+	f_eq_dist.resize(Nx*Ny*Ndir, 0.0);
+}
+
 // Initialization of density distributions, density and velocity arrays
 void Fluid::simple_ini(const Geometry& geom, const double rho_0, const bool mcmp)
 {

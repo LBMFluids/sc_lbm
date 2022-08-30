@@ -70,6 +70,14 @@ public:
 	// Initialization
 	//
 
+	/** 
+	 * Initialization of all simulation variables and zero densities
+	 * 
+	 * @details This is to be used with some subsequent proper density field initialization
+	 * @details For example: placing a droplet of one fluid inside of another, intended, generally for multicomponent and/or multiphase systems   
+	 */
+	void zero_density_ini(const Geometry& geom);
+
 	/// Initialization of density distributions
 	/// @param geom - complete domain geometry
 	/// @param rho_0 - initial density of this fluid, same everywhere

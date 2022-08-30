@@ -36,6 +36,25 @@ public:
 		temp_uc_y.resize(Ntot, 0.0); 
 	}  
 
+	/** 
+	 * Initializes a droplet of one fluid in the other fluid
+	 * @details This initialization will not put fluid nodes inside a solid
+	 * @details The droplet is initialized as a circle (not a square)	
+	 * 
+	 * @param geom - geometry object
+	 * @param bulk - continuous fluid
+ 	 * @param droplet - dispersed phase (the droplet)
+	 * @param rho_b_in_d - density of the continuous fluid inside the droplet
+	 * @param rho_d_in_b - density of the droplet inside the continuous fluid
+	 * @param xc - droplet center, x coordinate 
+	 * @param yc - droplet center, y corrdinate
+	 * @param radius - droplet radius
+	 */ 
+	void initialize_droplet(const Geometry& geom, Fluid& bulk, Fluid& droplet, 
+								const double rho_bulk, const double rho_droplet,
+								const double rho_b_in_d, const double rho_d_in_b, 
+								const double xc, const double yc, const double radius);
+
 	/// Computes the force from fluid-solid interactions
 	/// @details Stores it in the fluid objects  
 	void compute_solid_surface_force(const Geometry&, Fluid&, Fluid&);

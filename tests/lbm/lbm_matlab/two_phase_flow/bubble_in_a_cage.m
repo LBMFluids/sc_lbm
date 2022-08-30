@@ -64,7 +64,7 @@ function bubble_in_a_cage
 % % % % % % % % % % % % % % % %
 
 % Initial bubble/droplet
-load('developed_droplet_14.mat')
+load('developed_droplet_4.mat')
 % Compute the macroscopic densities and velocities
 % likely acts as macro subsititution - turn into a function in the future
 velocities
@@ -78,7 +78,7 @@ output_file_name = 'trapped_droplet_';
 NUMBER=1;
 
 % Number of cores
-nCores=12;
+nCores=8;
 
 % % % % % % % % % % % % % % % % 
 % 
@@ -87,7 +87,7 @@ nCores=12;
 % % % % % % % % % % % % % % % %
 
 % --- DOMAIN/CHANNEL SETUP 
-Len_Channel_2D=299; 
+Len_Channel_2D=297; 
 Channel_2D_half_width=2.5*214; Width=Channel_2D_half_width*2;
 % Fluid area
 Channel=ones(Len_Channel_2D,Width);
@@ -113,12 +113,13 @@ staggered_geom
 % --- CONCATENATE DOMAINS
 % Common for both domains - one from the bubble_ini_dev.m and the extension
 % Extra domain
-LongDomain=Channel2D(300:end,:);
+LongDomain=Channel2D(298:end,:);
 LongDomain(:,1)=0; LongDomain(:,end)=0;
 [Nri Mci]=size(Channel2D);
 % Concatenate channel geometry
 Channel2D=cat(1,Channel,LongDomain);
 [Nr Mc]=size(Channel2D);
+
 % Concatenate fluids
 LongDensity_1=0.06*ones(Nri,Mci);
 LongDensity_2=2*ones(Nri,Mci);

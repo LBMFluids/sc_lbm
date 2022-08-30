@@ -13,7 +13,7 @@
 
 % --- INITIALIZATION OF THE DOMAIN
 % Domain with walls and no posts
-Len_Channel_2D=1014*1.5; 
+Len_Channel_2D=756;%1014*1.5; 
 Channel_2D_half_width=2.5*214; Width=Channel_2D_half_width*2;
 % Fluid nodes
 Channel2D=ones(Len_Channel_2D,Width);
@@ -108,5 +108,8 @@ end
 % --- ADD SIDE WALLS
 Channel2D(298:335,2:Mc-1)=1;
 
+% Trim to fit (sloppy - just for testing)
+Channel2D = Channel2D(1:Len_Channel_2D,:);
+
 % --- UNCOMMENT FOR VISUALIZATION
-% spy(Channel2D==0)
+spy(Channel2D==0)

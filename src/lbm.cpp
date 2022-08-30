@@ -7,6 +7,45 @@
  *
  ******************************************************/
 
+// Initializes a droplet of one fluid in the other fluid 
+void LBM::initialize_droplet(const Geometry& geom, Fluid& bulk, Fluid& droplet, 
+								const double rho_bulk, const double rho_droplet,
+								const double rho_b_in_d, const double rho_d_in_b, 
+								const double xc, const double yc, const double radius)
+{
+	// Initialize directly through density distributions
+	std::vector<double>& f_dist_bulk = bulk.get_f_dist();
+	std::vector<double>& f_dist_droplet = droplet.get_f_dist();
+
+	int xi = 0, yj =0;
+	for (size_t ai = 0; ai < Ntot; ++ai) {
+		xi = ai%Nx; 
+		yj = ((ai-xi)/Nx)%Ny;
+		
+		// Skip solid nodes 
+		if (geom(ai) == 0) {
+			continue;
+		}
+
+		// If the point is in the droplet - initialize it with the droplet density set 
+		if (((static_cast<double>(xi) - xc)*(static_cast<double>(xi) - xc) + (static_cast<double>(yj) - yc)*(static_cast<double>(yj) - yc)) <= radius*radius) {
+			for (size_t dj = 0; dj < Ndir; ++dj) {
+				// Dissolved density of the bulk fluid inside the droplet					
+				f_dist_bulk.at(ai + dj*Ntot) = rho_b_in_d/Ndir;			
+				// Nominal density of the droplet fluid
+				f_dist_droplet.at(ai + dj*Ntot) = rho_droplet/Ndir;
+			}		
+		} else {
+			for (size_t dj = 0; dj < Ndir; ++dj) {
+				// Nominal density of the bulk fluid					
+				f_dist_bulk.at(ai + dj*Ntot) = rho_bulk/Ndir;			
+				// Dissolved density of the droplet fluid inside the bulk
+				f_dist_droplet.at(ai + dj*Ntot) = rho_d_in_b/Ndir;
+			}
+		} 
+	}
+}
+
 // Computes the force from fluid-solid interactions
 void LBM::compute_solid_surface_force(const Geometry& geom, Fluid& fluid_1, Fluid& fluid_2)
 {
