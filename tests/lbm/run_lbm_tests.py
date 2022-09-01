@@ -23,13 +23,18 @@ subprocess.call([py_version + ' compilation.py'], shell=True)
 ut.msg('LBM class tests', CYAN)
 
 # No force test suite
-ut.msg('Tests without a driving force', RED)
-subprocess.call([path_exe + 'lbm_tst_nof'], shell=True)
+#ut.msg('Tests without a driving force', RED)
+#subprocess.call([path_exe + 'lbm_tst_nof'], shell=True)
 
 # Unidirectional force test suite
-ut.msg('Tests with a unidirectional driving force', RED)
-subprocess.call([path_exe + 'lbm_tst_uni'], shell=True)
+#ut.msg('Tests with a unidirectional driving force', RED)
+#subprocess.call([path_exe + 'lbm_tst_uni'], shell=True)
 
 # Multidirectional force test suite
-ut.msg('Tests with a multidirectional driving force', RED)
-subprocess.call([path_exe + 'lbm_tst_multi'], shell=True)
+#ut.msg('Tests with a multidirectional driving force', RED)
+#subprocess.call([path_exe + 'lbm_tst_multi'], shell=True)
+
+# Two-phase test suite - stationary droplet immersed in a
+#	continuous liquid 
+ut.msg('Stationary droplet immersed in a continuous liquid', RED)
+subprocess.call([path_exe + 'lbm_tst_st_drop'], shell=True)

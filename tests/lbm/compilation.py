@@ -57,4 +57,13 @@ compile_com = ' '.join([cx, std, opt, other, full_test, '-o', exe_name, spec_fil
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
+## Two-phase flow - stationary droplet 
+# Name of the executable
+exe_name = 'lbm_tst_st_drop'
+# Files needed only for this build
+spec_files = 'droplet_test.cpp '
+compile_com = ' '.join([cx, std, opt, other, full_test, '-o', exe_name, spec_files, tst_files, src_files])
+subprocess.call([compile_com], shell=True)
+subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+
 

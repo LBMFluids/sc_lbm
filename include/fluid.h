@@ -107,7 +107,7 @@ public:
 	/// Compute macroscopic velocities
 	void compute_velocities(const Geometry& geom);
 
-	// Compute density and x and y velocity components
+	/// Compute density and x and y velocity components
 	void compute_macroscopic(const Geometry& geom);
 
 	//
@@ -185,9 +185,6 @@ public:
 	//
 	// I/O
 	//
-
-	/// Outputs fluid properties to the screen or a log	
-	//void print_properties() const;
 
 	/// Save macroscopic density to file
 	void write_density(const std::string& fname)
