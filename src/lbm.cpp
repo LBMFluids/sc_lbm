@@ -28,7 +28,8 @@ void LBM::initialize_droplet(const Geometry& geom, Fluid& bulk, Fluid& droplet,
 		}
 
 		// If the point is in the droplet - initialize it with the droplet density set 
-		if (((static_cast<double>(xi) - xc)*(static_cast<double>(xi) - xc) + (static_cast<double>(yj) - yc)*(static_cast<double>(yj) - yc)) <= radius*radius) {
+		if (((static_cast<double>(xi) - xc)*(static_cast<double>(xi) - xc) 
+				+ (static_cast<double>(yj) - yc)*(static_cast<double>(yj) - yc)) <= radius*radius) {
 			for (size_t dj = 0; dj < Ndir; ++dj) {
 				// Dissolved density of the bulk fluid inside the droplet					
 				f_dist_bulk.at(ai + dj*Ntot) = rho_b_in_d/Ndir;			
@@ -42,6 +43,57 @@ void LBM::initialize_droplet(const Geometry& geom, Fluid& bulk, Fluid& droplet,
 				// Dissolved density of the droplet fluid inside the bulk
 				f_dist_droplet.at(ai + dj*Ntot) = rho_d_in_b/Ndir;
 			}
+		} 
+	}
+}
+
+// Initializes a rectangular area of one fluid in the other fluid 
+void LBM::initialize_fluid_rectangle(const Geometry& geom, Fluid& bulk, Fluid& droplet, 
+								const double rho_bulk, const double rho_droplet,
+								const double rho_b_in_d, const double rho_d_in_b, 
+								const double xc, const double yc,
+								const double half_Lx, const double half_Ly)
+{
+	// Initialize directly through density distributions
+	std::vector<double>& f_dist_bulk = bulk.get_f_dist();
+	std::vector<double>& f_dist_droplet = droplet.get_f_dist();
+
+	// First initialize the continuous fluid	
+	for (size_t ai = 0; ai < Ntot; ++ai) {
+		// Skip solid nodes 
+		if (geom(ai) == 0) {
+			continue;
+		}
+		for (size_t dj = 0; dj < Ndir; ++dj) {
+			// Nominal density of the bulk fluid					
+			f_dist_bulk.at(ai + dj*Ntot) = rho_bulk/Ndir;			
+			// Dissolved density of the droplet fluid inside the bulk
+			f_dist_droplet.at(ai + dj*Ntot) = rho_d_in_b/Ndir;
+		}
+	 
+	}
+
+	// Then initialize the droplet in a form of a rectangle	
+	// x and y boundaries of the rectangular region
+	int x0 = xc - half_Lx + 1;
+	int xf = xc + half_Lx - 1;	
+	int y0 = yc - half_Ly + 1;
+	int yf = yc + half_Ly - 1;
+	int ijk = 0;
+	for (int xi = x0; xi <= xf; ++xi) {
+		for (int yj = y0; yj <= yf; ++yj) {
+			// Skip solid nodes 
+			if (geom(xi, yj) == 0) {
+				continue;
+			}
+			for (size_t dj = 0; dj < Ndir; ++dj) {
+				ijk = static_cast<size_t>(dj*Ntot + yj*Nx + xi);
+				// Dissolved density of the bulk fluid inside the droplet					
+				f_dist_bulk.at(ijk) = rho_b_in_d/Ndir;			
+				// Nominal density of the droplet fluid
+				f_dist_droplet.at(ijk) = rho_droplet/Ndir;
+			}
+
 		} 
 	}
 }

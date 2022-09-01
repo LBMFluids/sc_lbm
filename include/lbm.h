@@ -55,6 +55,28 @@ public:
 								const double rho_b_in_d, const double rho_d_in_b, 
 								const double xc, const double yc, const double radius);
 
+	/** 
+	 * Initializes a rectangular area of one fluid in the other fluid
+	 * @details This initialization will not put fluid nodes inside a solid
+	 * @details The droplet is initialized as a circle (not a square)	
+	 * 
+	 * @param geom - geometry object
+	 * @param bulk - continuous fluid
+ 	 * @param droplet - dispersed phase (the droplet)
+	 * @param rho_b_in_d - density of the continuous fluid inside the droplet
+	 * @param rho_d_in_b - density of the droplet inside the continuous fluid
+	 * @param xc - rectangle center, x coordinate 
+	 * @param yc - rectangle center, y corrdinate
+	 * @param half_Lx - half the number of nodes that make up the x length of the rectangle
+	 * @param half_Ly - half the number of nodes that make up the y length of the rectangle
+	 */ 
+	void initialize_fluid_rectangle(const Geometry& geom, Fluid& bulk, Fluid& droplet, 
+								const double rho_bulk, const double rho_droplet,
+								const double rho_b_in_d, const double rho_d_in_b, 
+								const double xc, const double yc,
+								const double half_Lx, const double half_Ly);
+
+
 	/// Computes the force from fluid-solid interactions
 	/// @details Stores it in the fluid objects  
 	void compute_solid_surface_force(const Geometry&, Fluid&, Fluid&);
