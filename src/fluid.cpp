@@ -52,6 +52,8 @@ void Fluid::zero_density_ini(const Geometry& geom)
 	uy.resize(Nx*Ny, 0.0);
 	u_eq_x.resize(Nx*Ny, 0.0);
 	u_eq_y.resize(Nx*Ny, 0.0);
+	F_repulsive_x.resize(Nx*Ny, 0.0);
+	F_repulsive_y.resize(Nx*Ny, 0.0);
 	// Zero-initialized distribution function
 	f_dist.resize(Nx*Ny*Ndir, 0.0);
 	// Zero-initialized equilibrium distribution function
@@ -76,6 +78,8 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0, const bool mcmp
 	if (mcmp) {
 		u_eq_x.resize(Nx*Ny, 0.0);
 		u_eq_y.resize(Nx*Ny, 0.0);
+		F_repulsive_x.resize(Nx*Ny, 0.0);
+		F_repulsive_y.resize(Nx*Ny, 0.0);
 	}
 	// Zero-initialized distribution function
 	f_dist.resize(Nx*Ny*Ndir, 0.0);
