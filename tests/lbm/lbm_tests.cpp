@@ -94,6 +94,17 @@ void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string&
 	fluid_1.write_f(path + fname_f);
 }
 
+// Compute macroscopic properties, save to files along wiht density distributions - wo the equilibrium distribution
+void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string& fname,
+						const std::string& fname_f, const std::string& path)
+{
+	// Density distribution functions are already computed and stored
+	fluid_1.compute_macroscopic(geom);
+	fluid_1.write_density(path + fname + "_density.txt");
+	fluid_1.write_ux(path + fname + "_ux.txt", geom);
+	fluid_1.write_uy(path + fname + "_uy.txt", geom);
+	fluid_1.write_f(path + fname_f);
+}
 
 // Compare C++ generated file and the correct solution (from MATLAB)  
 bool compare_with_correct(const std::vector<std::string>&& file_list, const std::string& path)
@@ -112,6 +123,26 @@ bool compare_with_correct(const std::vector<std::string>&& file_list, const std:
 			return false;
 		}
 		if (!check_distributions(fname, path, "_feq_", "equilibrium density distributions")) {
+			return false;
+		}
+	}
+	return true;
+}
+
+// Compare C++ generated file and the correct solution (from MATLAB) with special name for density distribution and no equilibrium density distribution 
+bool compare_with_correct(const std::vector<std::string>&& file_list, const std::string& path, const std::string& f_extension)
+{
+	for (const auto& fname : file_list) {
+		if (!check_macroscopic(fname, path, "_density.txt", "densities")) {
+			return false;
+		}
+		if (!check_macroscopic(fname, path, "_ux.txt", "x velocity components")) {
+			return false;
+		}
+		if (!check_macroscopic(fname, path, "_uy.txt", "y velocity components")) {
+			return false;
+		}
+		if (!check_distributions(fname, path, f_extension, "density distributions")) {
 			return false;
 		}
 	}

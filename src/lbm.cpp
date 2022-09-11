@@ -148,6 +148,11 @@ void LBM::compute_fluid_repulsive_interactions(const Geometry& geom, Fluid& flui
 	std::vector<double>& Fy_1 = fluid_1.get_repulsive_force_y();
 	std::vector<double>& Fx_2 = fluid_2.get_repulsive_force_x();
 	std::vector<double>& Fy_2 = fluid_2.get_repulsive_force_y();
+	// Reset the forces first
+	std::fill(Fx_1.begin(), Fx_1.end(), 0.0);
+	std::fill(Fy_1.begin(), Fy_1.end(), 0.0);
+	std::fill(Fx_2.begin(), Fx_2.end(), 0.0);
+	std::fill(Fy_2.begin(), Fy_2.end(), 0.0);
 
 	// Assuming the potential is equal to density and the density
 	// is precomputed
@@ -155,8 +160,8 @@ void LBM::compute_fluid_repulsive_interactions(const Geometry& geom, Fluid& flui
     const std::vector<double>& psi_2 = fluid_2.get_rho();
 
 	// Interaction potentials
-	const double Gf_1 = fluid_1.get_repulsive_g_fluid();
-	const double Gf_2 = fluid_2.get_repulsive_g_fluid();
+	const double Gf_1 = -1.0*fluid_1.get_repulsive_g_fluid();
+	const double Gf_2 = -1.0*fluid_2.get_repulsive_g_fluid();
 
 	int inei = 0, jnei = 0, ij = 0;
 	int xi = 0, yj =0;

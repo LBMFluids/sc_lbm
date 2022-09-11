@@ -38,6 +38,7 @@ int main()
 	const std::string path("test_data/");
 	const std::string bulk_prefix("stationary_droplet_bulk");
 	const std::string droplet_prefix("stationary_droplet_droplet");
+	std::vector<std::string> saved_steps;
 
 	//
 	// Simulation settings
@@ -109,19 +110,14 @@ int main()
 	// Verification of the initial state
 	//	
 	
-	/*compute_and_write_values(geom, bulk_fluid, bulk_prefix, 
-						bulk_prefix + "_f", bulk_prefix + "_f_eq", path);	
+	compute_and_write_values(geom, bulk_fluid, bulk_prefix, 
+						bulk_prefix + "_f", path);	
 	compute_and_write_values(geom, droplet_fluid, droplet_prefix, 
-						droplet_prefix + "_f", droplet_prefix + "_f_eq", path);
-	*/
+						droplet_prefix + "_f", path);
 
 	//
 	// Simulation
 	//
-
-	// Compute macroscopic densities (later computed as part of collision step)
-	bulk_fluid.compute_density();
-	droplet_fluid.compute_density();
 
     // To measure the simulation time 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -130,6 +126,8 @@ int main()
 	for (int step_i = 2; step_i <= max_steps + 1; ++step_i) {
 		
 		// Simulation steps  	
+		bulk_fluid.compute_density();
+		droplet_fluid.compute_density();
 		lbm.compute_fluid_repulsive_interactions(geom, bulk_fluid, droplet_fluid);
 		lbm.compute_equilibrium_velocities(geom, bulk_fluid, droplet_fluid);
 		lbm.collide(bulk_fluid, droplet_fluid);
@@ -140,19 +138,25 @@ int main()
 			std::cout << "Reached simulation step " << step_i << " --- saving " << std::endl;
 			compute_and_write_values(geom, bulk_fluid, 
 						bulk_prefix + "_step_" + std::to_string(step_i),
-						bulk_prefix + "_f_step_" + std::to_string(step_i),
-						bulk_prefix + "_f_eq_step_" + std::to_string(step_i), path);	
+						bulk_prefix + "_f_step_" + std::to_string(step_i), path);	
 			compute_and_write_values(geom, droplet_fluid, 
 						droplet_prefix + "_step_" + std::to_string(step_i),
-						droplet_prefix + "_f_step_" + std::to_string(step_i),
-						droplet_prefix + "_f_eq_step_" + std::to_string(step_i), path);
-		}
+						droplet_prefix + "_f_step_" + std::to_string(step_i), path);
+			saved_steps.push_back(std::to_string(step_i));
+		 }
 	}
 
 	// Simulation time
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::cout << "Simulation time (main loop only) = " << std::chrono::duration_cast<std::chrono::seconds> (end - begin).count() << "[s]" << std::endl;
 
+	// Comparison
+	for (const auto& si : saved_steps) {
+		if (!compare_with_correct({bulk_prefix + "_step_" + si, droplet_prefix + "_" + si}, path, "_f_step_" + si + "_")) {
+			std::cerr << "Mismatch with MATLAB solution" << std::endl;
+			return false;
+		}
+	}
 }
 
 

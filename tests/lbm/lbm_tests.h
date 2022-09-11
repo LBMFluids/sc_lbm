@@ -58,6 +58,20 @@ void run_and_collect(const std::string& gfile, const double rho_ini,
 void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string& fname,
 						const std::string& fname_f, const std::string& fname_feq, const std::string& path);
 
+/** 
+ * Compute macroscopic properties, save to files along wiht density distributions - wo the equilibrium distribution
+ *
+ * @param geom - geometry object
+ * @param fluid_1 - fluid which properties are being saved
+ * @param fname - file name extension for the macroscopic properties
+ * @param fname_f - file name extension for the the density distribution
+ * @param path - common path to all the files
+ **/
+void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string& fname,
+						const std::string& fname_f, const std::string& path);
+
+
+
 /**
  * Compare C++ generated file and the correct solution (from MATLAB) 
  * 
@@ -66,6 +80,16 @@ void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string&
  **/
 bool compare_with_correct(const std::vector<std::string>&& file_list,
  							const std::string& path);
+
+/**
+ * Compare C++ generated file and the correct solution (from MATLAB) with special name for density distribution and no equilibrium density distribution 
+ * 
+ * @param file_list - each string is one file template to check 
+ * @param path - common path to all the files
+ * @param f_extension - special name extension for density distribution
+ **/
+bool compare_with_correct(const std::vector<std::string>&& file_list,
+ 							const std::string& path, const std::string& f_extension);
 
 /**
  * Perform the actual comparisong between files  

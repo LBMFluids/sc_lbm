@@ -202,7 +202,6 @@ void Fluid::compute_f_equilibrium()
 	double ueqxij = 0.0, ueqyij = 0.0, uxsq = 0.0, uysq = 0.0, uxuy5 = 0.0;
 	double uxuy6 = 0.0, uxuy7 = 0.0, uxuy8 = 0.0, usq = 0.0;
 
-	compute_density();
 	for (size_t ai = 0; ai < Ntot; ++ai) {
 
 		rt0 = wrt0*rho.at(ai);
