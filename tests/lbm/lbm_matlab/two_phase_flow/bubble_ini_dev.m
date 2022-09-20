@@ -70,7 +70,7 @@ output_file_name = 'developed_droplet_';
 NUMBER=1;
 
 % Number of cores
-nCores=8;
+nCores=2;
 
 % % % % % % % % % % % % % % % % 
 % 
@@ -135,11 +135,11 @@ Gs_1=-Gs_2;
 
 % --- SIMULATION SETTINGS
 % Maximum number of steps
-Max_Iter=30e3;
+Max_Iter=50;
 % Current step
 Cur_Iter=1;
 % Save this many steps
-save_every=10e3;
+save_every=1;
 % Flag for stopping the simulation
 StopFlag=false;
 
@@ -444,6 +444,14 @@ while (~StopFlag)
     % Every save_every iteration: send everything to processor 1, 
     % and save, also terminates if Max_Iter is reached
     if (mod(Cur_Iter,save_every)==0)
+
+        if(labindex==6)
+            if (Cur_Iter == 2000)
+                PARTITIONS.(part_names{6}).f_2(29,535,9)
+            end
+        end
+
+
         f_1=zeros(Nr,Mc,Nc);
         f_2=zeros(Nr,Mc,Nc);
         
@@ -469,12 +477,12 @@ while (~StopFlag)
             save([output_file_name,num2str(NUMBER),'.mat'])
             NUMBER=NUMBER+1;
         end
-       % --- CHECK FOR TERMINATION 
-       if  (Cur_Iter > Max_Iter)
-            StopFlag=true;
-            break 
-       end  
     end    
+    % --- CHECK FOR TERMINATION 
+    if  (Cur_Iter > Max_Iter)
+        StopFlag=true;
+        break 
+    end  
 end
 toc
 end

@@ -13,8 +13,8 @@ function [Fx Fy]=Fsum(Nr,Mc,iabw,jabw,lena,psi,Up,Low)
     % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
     N_c=9;
     Nc=N_c;
-    F_x=zeros(Nr,Mc,N_c);
-    F_y=zeros(Nr,Mc,N_c);
+    F_x=zeros(Nr,Mc);
+    F_y=zeros(Nr,Mc);
 
     C_x=[1 0 -1 0 1 -1 -1 1 0];
     C_y=[0 1 0 -1 1 1 -1 -1 0];
@@ -26,17 +26,20 @@ function [Fx Fy]=Fsum(Nr,Mc,iabw,jabw,lena,psi,Up,Low)
             i=iabw(ia); j=jabw(ia);
             i2 = i+C_y(ic); j2 = j+C_x(ic); 
             if(i2<1)
-                F_x(i,j,ic)=Wpsi(ic)*Up(j2)*C_x(ic);
-                F_y(i,j,ic)=Wpsi(ic)*Up(j2)*C_y(ic);
+                F_x(i,j)= F_x(i,j) + Wpsi(ic)*Up(j2)*C_x(ic);
+                F_y(i,j)= F_y(i,j) + Wpsi(ic)*Up(j2)*C_y(ic);
             elseif(i2>Nr)
-                F_x(i,j,ic)=Wpsi(ic)*Low(j2)*C_x(ic);
-                F_y(i,j,ic)=Wpsi(ic)*Low(j2)*C_y(ic);
+                F_x(i,j)= F_x(i,j) + Wpsi(ic)*Low(j2)*C_x(ic);
+                F_y(i,j)=F_y(i,j) + Wpsi(ic)*Low(j2)*C_y(ic);
             else
-                F_x(i,j,ic)=Wpsi(ic)*psi(i2,j2)*C_x(ic);
-                F_y(i,j,ic)=Wpsi(ic)*psi(i2,j2)*C_y(ic);
+                F_x(i,j)=F_x(i,j) + Wpsi(ic)*psi(i2,j2)*C_x(ic);
+                F_y(i,j)=F_y(i,j) + Wpsi(ic)*psi(i2,j2)*C_y(ic);
             end
         end
     end
-    Fx=sum(F_x(:,:,1:8),3);
-    Fy=sum(F_y(:,:,1:8),3);
+%     Fx=sum(F_x(:,:,1:8),3);
+%     Fy=sum(F_y(:,:,1:8),3);
+    Fx = F_x;
+    Fy = F_y;
+
 end

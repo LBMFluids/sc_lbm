@@ -62,6 +62,14 @@ function [f_1,f_2,BUp_1, BUp_2, BLW_1, BLW_2]=all_ops_v2(partition,G,omega,force
 	% Interaction forces, final form
     Fx_1=-G*psi_1.*Fxtemp_2; Fx_2=-G*psi_2.*Fxtemp_1;
     Fy_1=-G*psi_1.*Fytemp_2; Fy_2=-G*psi_2.*Fytemp_1;
+
+%     if(labindex==6)
+%         fileID = fopen('temp.txt','a');
+%         fprintf(fileID, 'Densities: %f, %f\n', rho_1(29,535), rho_2(29,535));
+%         fprintf(fileID, 'Density distributions: %f, %f\n', f_1(29,535,9), f_2(29,535,9));
+%         fprintf(fileID, 'Forces: %e, %e, %e, %e\n', Fx_1(29,535), Fx_2(29,535), Fy_1(29,535), Fy_2(29,535));
+%         fclose(fileID);
+%     end
     
     % --- MACROSCOPIC, COMPOSITE, AND EQUILIBRIUM VELOCITIES
 	% Velocity
@@ -99,12 +107,12 @@ function [f_1,f_2,BUp_1, BUp_2, BLW_1, BLW_2]=all_ops_v2(partition,G,omega,force
     f_2=(1.-omega_2).*f_2+omega_2.*feq_2;
     
     % --- VOLUME/BODY FORCE
-    for ic=1:N_c;
-        for ia=1:lena
-            i=iabw1(ia); j=jabw1(ia);
-            f_1(i,j,ic)=f_1(i,j,ic)+force(ic);
-			f_2(i,j,ic)=f_2(i,j,ic)+force(ic);
-        end
-    end
+%     for ic=1:N_c;
+%         for ia=1:lena
+%             i=iabw1(ia); j=jabw1(ia);
+%             f_1(i,j,ic)=f_1(i,j,ic)+force(ic);
+% 			f_2(i,j,ic)=f_2(i,j,ic)+force(ic);
+%         end
+%     end
         
 end

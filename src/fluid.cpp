@@ -128,9 +128,9 @@ void Fluid::initialize_fluid_repulsion(const double Gf)
 void Fluid::compute_density()
 {
 	std::fill(rho.begin(), rho.end(), 0.0);
-	for (size_t i=0; i<Nx*Ny; ++i) {
+	for (size_t i=0; i<Ntot; ++i) {
 		for (size_t j=0; j<Ndir; ++j) {
-			rho.at(i) += f_dist.at(j*Nx*Ny+i);
+			rho.at(i) += f_dist.at(j*Ntot+i);
 		}
 	}
 }

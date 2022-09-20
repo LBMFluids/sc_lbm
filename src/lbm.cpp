@@ -236,7 +236,7 @@ void LBM::compute_equilibrium_velocities(Geometry& geom, Fluid& fluid_1, Fluid& 
 	const std::vector<double>& Fs_y_2 = fluid_2.get_fluid_solid_force_y();
 
 	// For numeric comparisons
-	const double tol = 1e-8;
+	const double tol = 1e-16;
 
 	// Compute composite velocity
 	std::fill(ux_1.begin(), ux_1.end(), 0.0);

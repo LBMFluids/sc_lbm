@@ -45,9 +45,9 @@ int main()
 	//
 
 	// Total number of iterations
-	const int max_steps = 30000;
+	const int max_steps = 50;
 	// Save variables this many steps
-	const int save_every = 10000;
+	const int save_every = 1;
 
 	//
 	// Geometry - fluid and walls spanning y direction
