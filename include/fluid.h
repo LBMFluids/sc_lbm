@@ -182,6 +182,13 @@ public:
 	// Setters
 	//
 
+	/// Restore state from file (restart) 
+	/// @details Reads and restores the density distribution function from a file
+	/// @details WARNING: this assumes that user executes fitting initialization function
+	/// @details The naming convention and file structure is the same as when writing (rows are y and columns are x values, one direction per file) 
+	/// @param fname - file name template
+	void restart_from_file(const std::string& fname);
+
 	//
 	// I/O
 	//

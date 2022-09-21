@@ -231,6 +231,28 @@ void Fluid::compute_f_equilibrium()
 }
 
 //
+// Setters
+//
+
+// Restore state from file (restart) 
+void Fluid::restart_from_file(const std::string& fname)
+{
+	std::vector<std::vector<double>> temp_2D;
+	std::string delim{" "};
+	bool single_file = true; 
+	std::vector<size_t> dims = {Ny,Nx,0};
+	// Each row is a set of x values for that one y value
+	// Load for every direction, fname_id.txt
+	for (size_t id = 0; id < Ndir; ++id) {
+		LbmIO lbm_io(fname + "_" + std::to_string(id) + ".txt", delim, single_file, dims);
+		temp_2D = lbm_io.read_vector<double>();
+		for (size_t yj = 0; yj < Ny; ++yj) {	
+			std::copy(temp_2D.at(yj).cbegin(), temp_2D.at(yj).cend(), f_dist.begin() + (id*Ntot + yj*Nx));
+		}
+ 	}
+}
+
+//
 // I/O
 //
 

@@ -36,5 +36,8 @@ ut.msg('LBM class tests', CYAN)
 
 # Two-phase test suite - stationary droplet immersed in a
 #	continuous liquid 
-ut.msg('Stationary droplet immersed in a continuous liquid', RED)
-subprocess.call([path_exe + 'lbm_tst_st_drop'], shell=True)
+#ut.msg('Stationary droplet immersed in a continuous liquid', RED)
+#subprocess.call([path_exe + 'lbm_tst_st_drop'], shell=True)
+
+ut.msg('Restart test', RED)
+subprocess.call([path_exe + 'lbm_rt'], shell=True)
