@@ -34,10 +34,10 @@ ut.msg('LBM class tests', CYAN)
 #ut.msg('Tests with a multidirectional driving force', RED)
 #subprocess.call([path_exe + 'lbm_tst_multi'], shell=True)
 
-# Two-phase test suite - stationary droplet immersed in a
-#	continuous liquid 
-#ut.msg('Stationary droplet immersed in a continuous liquid', RED)
-#subprocess.call([path_exe + 'lbm_tst_st_drop'], shell=True)
+# Two-phase test suite - droplet immersed in a
+#	continuous liquid in a semi-periodic domain with walls
+ut.msg('Droplet immersed in a continuous liquid', RED)
+subprocess.call([path_exe + 'lbm_tst_drop'], shell=True)
 
-ut.msg('Restart test', RED)
-subprocess.call([path_exe + 'lbm_rt'], shell=True)
+#ut.msg('Restart test', RED)
+#subprocess.call([path_exe + 'lbm_rt'], shell=True)

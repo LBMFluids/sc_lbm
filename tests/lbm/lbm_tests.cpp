@@ -81,6 +81,70 @@ void run_and_collect(const std::string& gfile, const double rho_ini,
 		fname_stream + "_f", fname_stream + "_feq", path);
 }
 
+// One step run and very detailed check for two-phase flows
+void run_and_collect(std::map<std::string, double>& parameters,  
+			const std::string& gfile, const std::string& path, 
+			const std::string& bulk_prefix, const std::string& droplet_prefix,
+			const std::vector<double>& vol_force)
+{
+	// Geometry
+	Geometry geom;
+	geom.read(path + gfile);
+
+	// Simulation interface
+	LBM lbm(geom);
+
+	// Initialize fluids and interactions
+	Fluid bulk_fluid("water");
+	Fluid droplet_fluid("oil");
+
+	// Initialize all variables to zero, including densities
+	bulk_fluid.zero_density_ini(geom);
+	droplet_fluid.zero_density_ini(geom);
+
+	// Repulsive inter-fluid forces
+	bulk_fluid.initialize_fluid_repulsion(parameters.at("G_repulsive"));
+	droplet_fluid.initialize_fluid_repulsion(parameters.at("G_repulsive"));
+
+	// Initialize the continuous and dispersed phases
+	// The dispersed phase - droplet - is initialized as a 
+	// rectangular area immersed in the continuous fluid (bulk)	
+	lbm.initialize_fluid_rectangle(geom, bulk_fluid, 
+				droplet_fluid, parameters.at("rho_bulk"), parameters.at("rho_droplet"), 
+				parameters.at("rho_b_in_d"), parameters.at("rho_d_in_b"), 
+				parameters.at("xc"), parameters.at("yc"), parameters.at("half_Lx"), 
+				parameters.at("half_Ly"));
+
+	// Compute interactions with solids (valid for the entire run) 
+	bulk_fluid.set_multicomponent_interactions(parameters.at("G_solids_bulk"));
+	droplet_fluid.set_multicomponent_interactions(parameters.at("G_solids_droplet"));
+	lbm.compute_solid_surface_force(geom, bulk_fluid, droplet_fluid);
+
+	// Verification of the initial state
+	compute_and_write_values(geom, bulk_fluid, bulk_prefix, 
+						bulk_prefix + "_f", path);	
+	compute_and_write_values(geom, droplet_fluid, droplet_prefix, 
+						droplet_prefix + "_f", path);
+
+	// One simulation step
+	int step_i = 1;
+	bulk_fluid.compute_density();
+	droplet_fluid.compute_density();
+	lbm.compute_fluid_repulsive_interactions(geom, bulk_fluid, droplet_fluid);
+	lbm.compute_equilibrium_velocities(geom, bulk_fluid, droplet_fluid);
+	lbm.collide(bulk_fluid, droplet_fluid);
+	lbm.add_volume_force(geom, bulk_fluid, droplet_fluid, vol_force);
+	lbm.stream(geom, bulk_fluid, droplet_fluid);
+
+	// Save new values
+	compute_and_write_values(geom, bulk_fluid, 
+				bulk_prefix + "_step_" + std::to_string(step_i),
+				bulk_prefix + "_f_step_" + std::to_string(step_i), path);	
+	compute_and_write_values(geom, droplet_fluid, 
+				droplet_prefix + "_step_" + std::to_string(step_i),
+				droplet_prefix + "_f_step_" + std::to_string(step_i), path);
+}
+
 // Compute macroscopic properties, save to files along wiht density distributions
 void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string& fname,
 						const std::string& fname_f, const std::string& fname_feq, const std::string& path)

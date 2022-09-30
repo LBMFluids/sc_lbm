@@ -2,6 +2,7 @@
 #define LBM_TESTS_H
 
 #include <string>
+#include <map>
 #include "../../include/lbm.h"
 
 /***************************************************** 
@@ -44,6 +45,22 @@ void run_and_collect(const std::string& gfile, const double rho_ini,
 			const int max_iter, const std::vector<double>& vol_force, 
 			const std::string& path, const std::string& fname_ini, 
 			const std::string& fname_stream);
+
+/** 
+ * One step run and very detailed check for two-phase flows
+ *
+ * @param parameters - map with parameters needed for the simulation 
+ * @param gfile - file with the geometry 
+ * @param path - directory with all files and data
+ * @param bulk_prefix - file name extension for the droplet  
+ * @param droplet_prefix - file name extension for the fluid 
+ * @param vol_force - volume force 
+ *
+ **/
+void run_and_collect(std::map<std::string, double>& parameters,  
+			const std::string& gfile, const std::string& path, 
+			const std::string& bulk_prefix, const std::string& droplet_prefix,
+			const std::vector<double>& vol_force);
 
 /** 
  * Compute macroscopic properties, save to files along wiht density distributions

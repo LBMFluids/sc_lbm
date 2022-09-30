@@ -57,28 +57,25 @@ compile_com = ' '.join([cx, std, opt, other, full_test, '-o', exe_name, spec_fil
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
-## The following code is compiled with maximum optimizations
-# Reason: these are regression tests that run for quite a bit
-opt = '-O3'
-## Two-phase flow - stationary droplet 
+## Two-phase flows 
 # Name of the executable
-exe_name = 'lbm_tst_st_drop'
+exe_name = 'lbm_tst_drop'
 # Files needed only for this build
-spec_files = 'droplet_test.cpp '
+spec_files = 'droplet_tests.cpp '
 compile_com = ' '.join([cx, std, opt, other, full_test, '-o', exe_name, spec_files, tst_files, src_files])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
-## The following code is compiled with maximum optimizations
-# Reason: these are regression tests that run for quite a bit
-opt = '-O0'
-## Two-phase flow - stationary droplet 
-# Name of the executable
-exe_name = 'lbm_rt'
-# Files needed only for this build
-spec_files = 'restart_tests.cpp '
-compile_com = ' '.join([cx, std, opt, other, full_test, '-o', exe_name, spec_files, tst_files, src_files])
-subprocess.call([compile_com], shell=True)
-subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
+### The following code is compiled with maximum optimizations
+## Reason: these are regression tests that run for quite a bit
+#opt = '-O0'
+### Two-phase flow - stationary droplet 
+## Name of the executable
+#exe_name = 'lbm_rt'
+## Files needed only for this build
+#spec_files = 'restart_tests.cpp '
+#compile_com = ' '.join([cx, std, opt, other, full_test, '-o', exe_name, spec_files, tst_files, src_files])
+#subprocess.call([compile_com], shell=True)
+#subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)
 
 
