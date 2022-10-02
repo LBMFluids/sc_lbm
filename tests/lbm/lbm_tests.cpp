@@ -137,15 +137,15 @@ void run_and_collect(std::map<std::string, double>& parameters,
 	lbm.stream(geom, bulk_fluid, droplet_fluid);
 
 	// Save new values
-	compute_and_write_values(geom, bulk_fluid, 
+	compute_and_write_values_multiphase(geom, bulk_fluid, 
 				bulk_prefix + "_step_" + std::to_string(step_i),
-				bulk_prefix + "_f_step_" + std::to_string(step_i), path);	
-	compute_and_write_values(geom, droplet_fluid, 
+				bulk_prefix + "_f_step_" + std::to_string(step_i), bulk_prefix + "_f_eq_step_" + std::to_string(step_i), path);	
+	compute_and_write_values_multiphase(geom, droplet_fluid, 
 				droplet_prefix + "_step_" + std::to_string(step_i),
-				droplet_prefix + "_f_step_" + std::to_string(step_i), path);
+				droplet_prefix + "_f_step_" + std::to_string(step_i), droplet_prefix + "_f_eq_step_" + std::to_string(step_i), path);
 }
 
-// Compute macroscopic properties, save to files along wiht density distributions
+// Compute macroscopic properties, save to files along with density distributions
 void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string& fname,
 						const std::string& fname_f, const std::string& fname_feq, const std::string& path)
 {
@@ -158,7 +158,7 @@ void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string&
 	fluid_1.write_f(path + fname_f);
 }
 
-// Compute macroscopic properties, save to files along wiht density distributions - wo the equilibrium distribution
+// Compute macroscopic properties, save to files along with density distributions - wo the equilibrium distribution
 void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string& fname,
 						const std::string& fname_f, const std::string& path)
 {
@@ -168,6 +168,21 @@ void compute_and_write_values(Geometry& geom, Fluid& fluid_1, const std::string&
 	fluid_1.write_ux(path + fname + "_ux.txt", geom);
 	fluid_1.write_uy(path + fname + "_uy.txt", geom);
 	fluid_1.write_f(path + fname_f);
+}
+
+// Compute macroscopic properties, save to files - main variables in multiphase flow
+void compute_and_write_values_multiphase(Geometry& geom, Fluid& fluid_1, const std::string& fname,
+						const std::string& fname_f, const std::string& fname_feq, 
+						const std::string& path)
+{
+	fluid_1.compute_macroscopic(geom);
+	fluid_1.write_density(path + fname + "_density.txt");
+	fluid_1.write_ux(path + fname + "_ux.txt", geom);
+	fluid_1.write_uy(path + fname + "_uy.txt", geom);
+	fluid_1.write_feq(path + fname_feq);
+	fluid_1.write_f(path + fname_f);
+	fluid_1.write_F_repulsive_x(path + fname + "_Fx.txt");
+	fluid_1.write_F_repulsive_y(path + fname + "_Fy.txt");
 }
 
 // Compare C++ generated file and the correct solution (from MATLAB)  

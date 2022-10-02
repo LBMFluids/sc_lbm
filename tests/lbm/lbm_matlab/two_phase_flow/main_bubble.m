@@ -61,7 +61,7 @@ function main_bubble
 % % % % % % % % % % % % % % % %
 
 % Naming template for the output files
-output_file_name = 'Gs_NZ_dPdL_0_';
+output_file_name = 'Gs_0_dPdL_0_';
 
 % Adjust the saving tag - this appeares when saving data during the
 % simulation; names of the datasets are of a format 
@@ -126,7 +126,7 @@ Fmag=0;
 % Exagerated to create a strong difference
 G=109.0; 
 % Interactions with solids, "-" is attractive, "+", repulsive
-Gs_2=20.3;
+Gs_2=0.0;
 Gs_1=-Gs_2;
 
 % % % % % % % % % % % % % % % % 
@@ -257,14 +257,38 @@ while (~StopFlag)
     
     % Processor 1
     if (labindex==1)
-        [PARTITIONS.partition_1.f_1,PARTITIONS.partition_1.f_2,BUp_1, BUp_2, BLW_1, BLW_2, PARTITIONS.partition_1]=all_ops_v2(PARTITIONS.partition_1,G,omega,force,Cur_Iter);
+        [PARTITIONS.partition_1.f_1,PARTITIONS.partition_1.f_2,BUp_1, BUp_2, BLW_1, BLW_2, temp]=all_ops_v2(PARTITIONS.partition_1,G,omega,force,Cur_Iter);
+        %
+        PARTITIONS.partition_1.Fx_1 = temp.Fx_1;
+        PARTITIONS.partition_1.Fx_2 = temp.Fx_2;
+        PARTITIONS.partition_1.Fy_1 = temp.Fy_1;
+        PARTITIONS.partition_1.Fy_2 = temp.Fy_2;
+        PARTITIONS.partition_1.ucx_1 = temp.ucx_1;
+        PARTITIONS.partition_1.ucx_2 = temp.ucx_2;
+        PARTITIONS.partition_1.ucy_1 = temp.ucy_1;
+        PARTITIONS.partition_1.ucy_2 = temp.ucy_2;
+        PARTITIONS.partition_1.feq_1 = temp.feq_1;
+        PARTITIONS.partition_1.feq_2 = temp.feq_2;
+        %
         PARTITIONS.partition_1.f_1=stream_obstacles(PARTITIONS.partition_1.f_1,PARTITIONS.partition_1.Channel2D);
         PARTITIONS.partition_1.f_2=stream_obstacles(PARTITIONS.partition_1.f_2,PARTITIONS.partition_1.Channel2D);
     end
     % All other processores
     for kCore=2:nCores
         if(labindex==kCore)
-            [PARTITIONS.(part_names{kCore}).f_1,PARTITIONS.(part_names{kCore}).f_2,BUp_1, BUp_2, BLW_1, BLW_2, PARTITIONS.(part_names{kCore})]=all_ops_v2(PARTITIONS.(part_names{kCore}),G,omega,force,Cur_Iter);
+            [PARTITIONS.(part_names{kCore}).f_1,PARTITIONS.(part_names{kCore}).f_2,BUp_1, BUp_2, BLW_1, BLW_2, temp]=all_ops_v2(PARTITIONS.(part_names{kCore}),G,omega,force,Cur_Iter);
+            %
+            PARTITIONS.(part_names{kCore}).Fx_1 = temp.Fx_1;
+            PARTITIONS.(part_names{kCore}).Fx_2 = temp.Fx_2;
+            PARTITIONS.(part_names{kCore}).Fy_1 = temp.Fy_1;
+            PARTITIONS.(part_names{kCore}).Fy_2 = temp.Fy_2;
+            PARTITIONS.(part_names{kCore}).ucx_1 = temp.ucx_1;
+            PARTITIONS.(part_names{kCore}).ucx_2 = temp.ucx_2;
+            PARTITIONS.(part_names{kCore}).ucy_1 = temp.ucy_1;
+            PARTITIONS.(part_names{kCore}).ucy_2 = temp.ucy_2;
+            PARTITIONS.(part_names{kCore}).feq_1 = temp.feq_1;
+            PARTITIONS.(part_names{kCore}).feq_2 = temp.feq_2;
+            % 
             PARTITIONS.(part_names{kCore}).f_1=stream_obstacles(PARTITIONS.(part_names{kCore}).f_1,PARTITIONS.(part_names{kCore}).Channel2D);
             PARTITIONS.(part_names{kCore}).f_2=stream_obstacles(PARTITIONS.(part_names{kCore}).f_2,PARTITIONS.(part_names{kCore}).Channel2D);
         end
@@ -531,6 +555,8 @@ while (~StopFlag)
             ucy_1((nCores*Nprt+1):Nr,:,:)=PARTITIONS.partition_1.ucy_1(2:(Nprt+1),:,:);
             ucy_2(1:(Nprt-1),:,:)=PARTITIONS.partition_1.ucy_2((Nprt+2):1:(end-1),:,:);
             ucy_2((nCores*Nprt+1):Nr,:,:)=PARTITIONS.partition_1.ucy_2(2:(Nprt+1),:,:);
+    
+            clear temp
 
             save([output_file_name,num2str(NUMBER),'.mat'])
             NUMBER=NUMBER+1;

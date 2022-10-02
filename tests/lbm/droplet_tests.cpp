@@ -69,7 +69,7 @@ int main()
 	parameters["rho_b_in_d"] = 0.6; 
 	parameters["rho_d_in_b"] = 0.6;
 	// Potential for repulsive interactions between fluids
-	parameters["G_repulsive"] = 0.9;
+	parameters["G_repulsive"] = 109.0;
 	// Potential for interactions with solids
 	parameters["G_solids_bulk"] = 0.0;
 	parameters["G_solids_droplet"] = -1.0*parameters.at("G_solids_bulk");
@@ -84,12 +84,11 @@ int main()
 	run_and_collect(parameters, gfile, path, bulk_prefix, droplet_prefix, vol_force);
 
 	// Comparison
-/*	for (const auto& si : saved_steps) {
-		if (!compare_with_correct({bulk_prefix + "_step_" + si, droplet_prefix + "_" + si}, path, "_f_step_" + si + "_")) {
-			std::cerr << "Mismatch with MATLAB solution" << std::endl;
-			return false;
-		}
-	}*/
+	if (!compare_with_correct({bulk_prefix, droplet_prefix}, path, "_f_step_1_")) {
+		std::cerr << "Mismatch with MATLAB solution" << std::endl;
+		return false;
+	}
+
 }
 
 

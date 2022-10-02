@@ -1,4 +1,4 @@
-function [f_1,f_2,BUp_1, BUp_2, BLW_1, BLW_2, partition]=all_ops_v2(partition,G,omega,force,Cur_Iter)
+function [f_1,f_2,BUp_1, BUp_2, BLW_1, BLW_2, temp_partition]=all_ops_v2(partition,G,omega,force,Cur_Iter)
     % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
     % Function for performing all local MCMP SC LBM operations before the
     % streaming portion of the algorithm
@@ -64,10 +64,10 @@ function [f_1,f_2,BUp_1, BUp_2, BLW_1, BLW_2, partition]=all_ops_v2(partition,G,
     Fy_1=-G*psi_1.*Fytemp_2; Fy_2=-G*psi_2.*Fytemp_1;
 
     % For saving and comparison
-    partition.Fx_1 = Fx_1;
-    partition.Fx_2 = Fx_2;
-    partition.Fy_1 = Fy_1;
-    partition.Fy_2 = Fy_2;
+    temp_partition.Fx_1 = Fx_1;
+    temp_partition.Fx_2 = Fx_2;
+    temp_partition.Fy_1 = Fy_1;
+    temp_partition.Fy_2 = Fy_2;
 
     % --- MACROSCOPIC, COMPOSITE, AND EQUILIBRIUM VELOCITIES
 	% Velocity
@@ -97,23 +97,23 @@ function [f_1,f_2,BUp_1, BUp_2, BLW_1, BLW_2, partition]=all_ops_v2(partition,G,
     end
 
     % For saving and comparison
-    partition.ucx_1 = ux_1;
-    partition.ucx_2 = ux_2;
-    partition.ucy_1 = uy_1;
-    partition.ucy_2 = uy_2;
+    temp_partition.ucx_1 = ux_1;
+    temp_partition.ucx_2 = ux_2;
+    temp_partition.ucy_1 = uy_1;
+    temp_partition.ucy_2 = uy_2;
 
     % --- EQUILIBRIUM DENSITY DISTRIBUTIONS
     feq_1=f_eqilibrium(ux_1,uy_1,rho_1,ija,NxM,Nr,Mc,N_c);
     feq_2=f_eqilibrium(ux_2,uy_2,rho_2,ija,NxM,Nr,Mc,N_c);
     
     % For saving and comparison
-    partition.feq_1 = feq_1;
-    partition.feq_2 = feq_2;
+    temp_partition.feq_1 = feq_1;
+    temp_partition.feq_2 = feq_2;
 
     % --- COLLISIONS
     f_1=(1.-omega_1).*f_1+omega_1.*feq_1;
     f_2=(1.-omega_2).*f_2+omega_2.*feq_2;
-    
+
     % --- VOLUME/BODY FORCE
     for ic=1:N_c;
         for ia=1:lena

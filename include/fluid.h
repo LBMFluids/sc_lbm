@@ -202,6 +202,12 @@ public:
 	/// Save macroscopic y velocity component to file
 	void write_uy(const std::string& fname, const Geometry& geom)
 			{ compute_velocities(geom); write_var(uy, fname); }
+	/// Save repulsive force - x component to file
+	void write_F_repulsive_x(const std::string& fname)
+			{ write_var(F_repulsive_x, fname); }
+	/// Save repulsive force - y component to file
+	void write_F_repulsive_y(const std::string& fname)
+			{ write_var(F_repulsive_y, fname); }
 	/// Save the equilibrium density distribution to file
 	/// @details This produces a sequence of numbered files fname_dir, where 
 	/// 	dir is an integer that represents the direction (0 to 8);

@@ -5,9 +5,9 @@
 clear; close all
 
 % Stationary droplet in a semi-periodic domain of bulk liquid
-% mat_name = 'Gs_0_dPdL_0_';
-% comp_name = '../../test_data/matlab_stationary_droplet_';
-% save_data(mat_name, comp_name);
+mat_name = 'Gs_0_dPdL_0_';
+comp_name = '../../test_data/matlab_stationary_droplet_';
+save_data(mat_name, comp_name);
 
 % Moving droplet in a semi-periodic domain of bulk liquid
 % mat_name = 'Gs_0_dPdL_NZ_';
@@ -15,9 +15,9 @@ clear; close all
 % save_data(mat_name, comp_name);
 
 % Stationary droplet in a semi-periodic domain of bulk liquid
-mat_name = 'Gs_NZ_dPdL_0_';
-comp_name = '../../test_data/matlab_stationary_droplet_with_solid_';
-save_data(mat_name, comp_name);
+% mat_name = 'Gs_NZ_dPdL_0_';
+% comp_name = '../../test_data/matlab_stationary_droplet_with_solid_';
+% save_data(mat_name, comp_name);
 
 % Moving droplet in a semi-periodic domain of bulk liquid with non-zero
 % solid interactions
