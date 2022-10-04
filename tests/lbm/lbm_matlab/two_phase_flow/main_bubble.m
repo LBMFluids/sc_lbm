@@ -61,7 +61,7 @@ function main_bubble
 % % % % % % % % % % % % % % % %
 
 % Naming template for the output files
-output_file_name = 'Gs_0_dPdL_0_';
+output_file_name = 'Gs_0_dPdL_NZ_';
 
 % Adjust the saving tag - this appeares when saving data during the
 % simulation; names of the datasets are of a format 
@@ -116,7 +116,7 @@ omega_1=1/tau1;
 omega_2=1/tau2;
 omega=omega_1;
 % Pressure drop - body force
-dPdL=0.0;
+dPdL=10.5;
 % Magnitude of force that acts on the interface 
 % (sign by default opposite to the bulk force)
 Fmag=0;
@@ -126,7 +126,7 @@ Fmag=0;
 % Exagerated to create a strong difference
 G=109.0; 
 % Interactions with solids, "-" is attractive, "+", repulsive
-Gs_2=0.0;
+Gs_2=20.3*0.0;
 Gs_1=-Gs_2;
 
 % % % % % % % % % % % % % % % % 
@@ -155,6 +155,9 @@ for ia=1:lena
     f_1(i,j,:)=density_1(i,j)/9; 
     f_2(i,j,:)=density_2(i,j)/9;
 end
+
+% For initial comparison
+save('initial_droplet')
 
 % --- INITIALIZATION OF PARTITIONS FOR PARALLEL COMPUTING
 % Number of partitions

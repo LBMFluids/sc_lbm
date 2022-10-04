@@ -183,6 +183,8 @@ void compute_and_write_values_multiphase(Geometry& geom, Fluid& fluid_1, const s
 	fluid_1.write_f(path + fname_f);
 	fluid_1.write_F_repulsive_x(path + fname + "_Fx.txt");
 	fluid_1.write_F_repulsive_y(path + fname + "_Fy.txt");
+	fluid_1.write_u_eq_x(path + fname + "_ucx.txt");
+	fluid_1.write_u_eq_y(path + fname + "_ucy.txt");
 }
 
 // Compare C++ generated file and the correct solution (from MATLAB)  
@@ -222,6 +224,41 @@ bool compare_with_correct(const std::vector<std::string>&& file_list, const std:
 			return false;
 		}
 		if (!check_distributions(fname, path, f_extension, "density distributions")) {
+			return false;
+		}
+	}
+	return true;
+}
+
+// Compare C++ generated file and the correct solution (from MATLAB) with special name for density distribution and no equilibrium density distribution 
+bool compare_with_correct(const std::vector<std::string>&& file_list, const std::string& extra_prefix, const std::string& path, const std::string& f_extension, const std::string& f_eq_extension)
+{
+	for (const auto& fname : file_list) {
+		if (!check_macroscopic(fname + extra_prefix, path, "_density.txt", "densities")) {
+			return false;
+		}
+		if (!check_macroscopic(fname + extra_prefix, path, "_ux.txt", "x velocity components")) {
+			return false;
+		}
+		if (!check_macroscopic(fname + extra_prefix, path, "_uy.txt", "y velocity components")) {
+			return false;
+		}
+		if (!check_macroscopic(fname + extra_prefix, path, "_ucx.txt", "x equilibrium velocity components")) {
+			return false;
+		}
+		if (!check_macroscopic(fname + extra_prefix, path, "_ucy.txt", "y equilibrium velocity components")) {
+			return false;
+		}
+		if (!check_macroscopic(fname + extra_prefix, path, "_Fx.txt", "repulsive force x component")) {
+			return false;
+		}
+		if (!check_macroscopic(fname + extra_prefix, path, "_Fy.txt", "repulsive force y component")) {
+			return false;
+		}
+		if (!check_distributions(fname, path, f_extension, "density distributions")) {
+			return false;
+		}
+		if (!check_distributions(fname, path, f_eq_extension, "equilibrium density distributions")) {
 			return false;
 		}
 	}
@@ -270,7 +307,7 @@ bool check_distributions(const std::string& fname, const std::string& path,
 	 	res = res_lbm.read_vector<double>(); 
 	
 		// Expected solution
-		exp_name = path +"matlab_" + fname + file_extension + std::to_string(i) + ".txt";
+		exp_name = path + "matlab_" + fname + file_extension + std::to_string(i) + ".txt";
 		LbmIO exp_lbm(exp_name, " ", true, {0, 0, 0});	
 	 	exp = exp_lbm.read_vector<double>();
 	

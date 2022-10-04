@@ -26,14 +26,19 @@ function [rho_1, rho_2, ux_1, ux_2, uy_1, uy_2] = macroscopic_properties(f_1, f_
             ux_2=ux_2+C_x(ic).*f_2(:,:,ic);
             uy_2=uy_2+C_y(ic).*f_2(:,:,ic);
         end
+    else
+       ux_1=zeros(Nr,Mc);uy_1=zeros(Nr,Mc); ux_2=zeros(Nr,Mc);uy_2=zeros(Nr,Mc);
     end
     % Avoid NaNs on solid nodes (can be done with isnan and indexing)
     for nzr=1:lena
-        if rho_1(ija(nzr))>0
+        % Normally, ~= 0 is equivalent to > 0 but since this is an
+        % amplified example with physically impossible values there are
+        % negative densities and it needs to be compared ~= 0 instead
+        if rho_1(ija(nzr)) ~= 0
             ux_1(ija(nzr))=ux_1(ija(nzr))/rho_1(ija(nzr));
             uy_1(ija(nzr))=uy_1(ija(nzr))/rho_1(ija(nzr));
         end
-        if rho_2(ija(nzr))>0
+        if rho_2(ija(nzr)) ~= 0
             ux_2(ija(nzr))=ux_2(ija(nzr))/rho_2(ija(nzr));
             uy_2(ija(nzr))=uy_2(ija(nzr))/rho_2(ija(nzr));
         end

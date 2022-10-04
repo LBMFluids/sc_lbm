@@ -122,6 +122,18 @@ bool compare_with_correct(const std::vector<std::string>&& file_list,
  							const std::string& path, const std::string& f_extension);
 
 /**
+ * Compare C++ generated file and the correct solution (from MATLAB) with special name for density distribution and no equilibrium density distribution 
+ * 
+ * @param file_list - each string is one file template to check 
+ * @param path - common path to all the files
+ * @param f_extension - special name extension for density distribution
+ **/
+bool compare_with_correct(const std::vector<std::string>&& file_list,
+							const std::string& extra_prefix,
+ 							const std::string& path, const std::string& f_extension, 
+							const std::string& f_eq_extension);
+
+/**
  * Perform the actual comparisong between files  
  *
  * @param fname - each string is one file template to check 

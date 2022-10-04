@@ -30,34 +30,157 @@
  *
  *****************************************************/
 
+//
+// Test suite 
+//
+
+bool zero_solid_interactions_zero_flow();
+bool zero_solid_interactions_with_flow();
+bool with_solid_interactions_zero_flow();
+
+//
+// Supporting functions
+//
+
+// Constructs and fetches a map of default values, most of them
+// constant across the tests
+std::map<std::string, double> get_default_parameters(const size_t Nx, const size_t Ny, 
+														const size_t dh);
+// Geometry setup common for most of the tests 
+Geometry make_geometry_multiphase(const size_t Nx, const size_t Ny, const size_t dh);
+
 int main()
 {
+	test_pass(zero_solid_interactions_zero_flow(), "No solid interactions and no flow");
+	test_pass(zero_solid_interactions_with_flow(), "No solid interactions and flow");
+	test_pass(with_solid_interactions_zero_flow(), "With solid interactions and no flow");
+}
 
-	//
+bool zero_solid_interactions_zero_flow()
+{
 	// Data collection
-	//
-
 	const std::string path("test_data/");
 	const std::string gfile("mcmp_geom.txt");
 	const std::string bulk_prefix("stationary_droplet_bulk");
 	const std::string droplet_prefix("stationary_droplet_droplet");
 
-	// All parameters (converted to const double)
-	std::map<std::string, double> parameters;
+	// Geometric parameters
+	size_t Nx = 200, Ny = 99;
+	size_t dh = 1;
+
+	// Geometry - fluid and walls spanning y direction
+	Geometry geom = make_geometry_multiphase(Nx, Ny, dh);
+	geom.write(path + gfile);
+
+	// All parameters (converted to const double) - default values
+	std::map<std::string, double> parameters = get_default_parameters(Nx, Ny, dh);
 
 	// Driving force
 	std::vector<double> vol_force{0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-	//
-	// Geometry - fluid and walls spanning y direction
-	// 
+	// Simulation
+	run_and_collect(parameters, gfile, path, bulk_prefix, droplet_prefix, vol_force);
 
+	// Comparison of the initial state
+	if (!compare_with_correct({bulk_prefix, droplet_prefix}, path, "_f_")) {
+		std::cerr << "Mismatch with MATLAB solution - initial state" << std::endl;
+		return false;
+	}
+
+	// Comparison of the final (step 1) step
+	int step_no = 1;
+	if (!compare_with_correct({bulk_prefix,	droplet_prefix}, 
+							"_step_" + std::to_string(step_no),		
+							path, "_f_step_1_", "_f_eq_step_1_")) {
+		std::cerr << "Mismatch with MATLAB solution" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool zero_solid_interactions_with_flow()
+{
+	// Data collection
+	const std::string path("test_data/");
+	const std::string gfile("mcmp_geom.txt");
+	const std::string bulk_prefix("moving_droplet_bulk");
+	const std::string droplet_prefix("moving_droplet_droplet");
+
+	// Geometric parameters
 	size_t Nx = 200, Ny = 99;
 	size_t dh = 1;
-	Geometry geom(Nx, Ny);
-	geom.add_walls(dh, "y");
+
+	// Geometry - fluid and walls spanning y direction
+	Geometry geom = make_geometry_multiphase(Nx, Ny, dh);
 	geom.write(path + gfile);
 
+	// All parameters (converted to const double) - default values
+	std::map<std::string, double> parameters = get_default_parameters(Nx, Ny, dh);
+
+	// Driving force
+	std::vector<double> vol_force{0, 0, -1, 0, 1, -1, -1, 1, 1};
+	std::transform(vol_force.begin(), vol_force.end(), vol_force.begin(), [](double el) { return -1.0/6.0*el; });
+
+	// Simulation
+	run_and_collect(parameters, gfile, path, bulk_prefix, droplet_prefix, vol_force);
+
+	// Comparison of the final (step 1) step
+	int step_no = 1;
+	if (!compare_with_correct({bulk_prefix,	droplet_prefix}, 
+							"_step_" + std::to_string(step_no),		
+							path, "_f_step_1_", "_f_eq_step_1_")) {
+		std::cerr << "Mismatch with MATLAB solution" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool with_solid_interactions_zero_flow()
+{
+	// Data collection
+	const std::string path("test_data/");
+	const std::string gfile("mcmp_geom.txt");
+	const std::string bulk_prefix("stationary_droplet_with_solid_bulk");
+	const std::string droplet_prefix("stationary_droplet_with_solid_droplet");
+
+	// Geometric parameters
+	size_t Nx = 200, Ny = 99;
+	size_t dh = 1;
+
+	// Geometry - fluid and walls spanning y direction
+	Geometry geom = make_geometry_multiphase(Nx, Ny, dh);
+	geom.write(path + gfile);
+
+	// All parameters (converted to const double) - default values
+	std::map<std::string, double> parameters = get_default_parameters(Nx, Ny, dh);
+	// Potential for interactions with solids
+	parameters["G_solids_bulk"] = 20.3;
+	parameters["G_solids_droplet"] = -1.0*parameters.at("G_solids_bulk");
+
+	// Driving force
+	std::vector<double> vol_force{0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+	// Simulation
+	run_and_collect(parameters, gfile, path, bulk_prefix, droplet_prefix, vol_force);
+
+	// Comparison of the final (step 1) step
+	int step_no = 1;
+	if (!compare_with_correct({bulk_prefix,	droplet_prefix}, 
+							"_step_" + std::to_string(step_no),		
+							path, "_f_step_1_", "_f_eq_step_1_")) {
+		std::cerr << "Mismatch with MATLAB solution" << std::endl;
+		return false;
+	}
+	return true;
+}
+// Constructs and fetches a map of default values, most of them
+// constant across the tests
+std::map<std::string, double> get_default_parameters(const size_t Nx, const size_t Ny, 
+														const size_t dh)
+{	
+	std::map<std::string, double> parameters; 
+
+	// Geometric parameters
 	parameters["Nx"] = Nx;
 	parameters["Ny"] = Ny;
 	parameters["dh"] = dh;
@@ -81,15 +204,14 @@ int main()
 	parameters["half_Lx"] = 21; 
  	parameters["half_Ly"] = 21;
 
-	run_and_collect(parameters, gfile, path, bulk_prefix, droplet_prefix, vol_force);
-
-	// Comparison
-	if (!compare_with_correct({bulk_prefix, droplet_prefix}, path, "_f_step_1_")) {
-		std::cerr << "Mismatch with MATLAB solution" << std::endl;
-		return false;
-	}
-
+	return parameters;
 }
 
+// Geometry setup common for most of the tests
+Geometry make_geometry_multiphase(const size_t Nx, const size_t Ny, const size_t dh)
+{
+	Geometry geom(Nx, Ny);
+	geom.add_walls(dh, "y");
 
-
+	return geom;
+}

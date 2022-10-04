@@ -208,6 +208,12 @@ public:
 	/// Save repulsive force - y component to file
 	void write_F_repulsive_y(const std::string& fname)
 			{ write_var(F_repulsive_y, fname); }
+	/// Save equilibrium velocities - x component to file
+	void write_u_eq_x(const std::string& fname)
+			{ write_var(u_eq_x, fname); }
+	/// Save equilibrium velocities - y component to file
+	void write_u_eq_y(const std::string& fname)
+			{ write_var(u_eq_y, fname); }
 	/// Save the equilibrium density distribution to file
 	/// @details This produces a sequence of numbered files fname_dir, where 
 	/// 	dir is an integer that represents the direction (0 to 8);
