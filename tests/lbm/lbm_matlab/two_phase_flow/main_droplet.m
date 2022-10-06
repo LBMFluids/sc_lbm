@@ -61,7 +61,7 @@ function main_bubble
 % % % % % % % % % % % % % % % %
 
 % Naming template for the output files
-output_file_name = 'Gs_0_dPdL_NZ_';
+output_file_name = 'Gs_NZ_dPdL_NZ_';
 
 % Adjust the saving tag - this appeares when saving data during the
 % simulation; names of the datasets are of a format 
@@ -126,7 +126,7 @@ Fmag=0;
 % Exagerated to create a strong difference
 G=109.0; 
 % Interactions with solids, "-" is attractive, "+", repulsive
-Gs_2=20.3*0.0;
+Gs_2=20.3;
 Gs_1=-Gs_2;
 
 % % % % % % % % % % % % % % % % 

@@ -37,6 +37,7 @@
 bool zero_solid_interactions_zero_flow();
 bool zero_solid_interactions_with_flow();
 bool with_solid_interactions_zero_flow();
+bool with_solid_interactions_with_flow();
 
 //
 // Supporting functions
@@ -54,6 +55,7 @@ int main()
 	test_pass(zero_solid_interactions_zero_flow(), "No solid interactions and no flow");
 	test_pass(zero_solid_interactions_with_flow(), "No solid interactions and flow");
 	test_pass(with_solid_interactions_zero_flow(), "With solid interactions and no flow");
+	test_pass(with_solid_interactions_with_flow(), "With solid interactions and with flow");
 }
 
 bool zero_solid_interactions_zero_flow()
@@ -119,7 +121,8 @@ bool zero_solid_interactions_with_flow()
 
 	// Driving force
 	std::vector<double> vol_force{0, 0, -1, 0, 1, -1, -1, 1, 1};
-	std::transform(vol_force.begin(), vol_force.end(), vol_force.begin(), [](double el) { return -1.0/6.0*el; });
+	const double dPdL = -10.5/6.0;
+	std::transform(vol_force.begin(), vol_force.end(), vol_force.begin(), [dPdL](double el) { return dPdL*el; });
 
 	// Simulation
 	run_and_collect(parameters, gfile, path, bulk_prefix, droplet_prefix, vol_force);
@@ -173,6 +176,47 @@ bool with_solid_interactions_zero_flow()
 	}
 	return true;
 }
+
+bool with_solid_interactions_with_flow()
+{
+	// Data collection
+	const std::string path("test_data/");
+	const std::string gfile("mcmp_geom.txt");
+	const std::string bulk_prefix("moving_droplet_with_solid_bulk");
+	const std::string droplet_prefix("moving_droplet_with_solid_droplet");
+
+	// Geometric parameters
+	size_t Nx = 200, Ny = 99;
+	size_t dh = 1;
+
+	// Geometry - fluid and walls spanning y direction
+	Geometry geom = make_geometry_multiphase(Nx, Ny, dh);
+	geom.write(path + gfile);
+
+	// All parameters (converted to const double) - default values
+	std::map<std::string, double> parameters = get_default_parameters(Nx, Ny, dh);
+	// Potential for interactions with solids
+	parameters["G_solids_bulk"] = 20.3;
+	parameters["G_solids_droplet"] = -1.0*parameters.at("G_solids_bulk");
+
+	// Driving force
+	std::vector<double> vol_force{0, 0, -1, 0, 1, -1, -1, 1, 1};
+	const double dPdL = -10.5/6.0;
+	std::transform(vol_force.begin(), vol_force.end(), vol_force.begin(), [dPdL](double el) { return dPdL*el; });
+
+	// Simulation
+	run_and_collect(parameters, gfile, path, bulk_prefix, droplet_prefix, vol_force);
+
+	// Comparison of the final (step 1) step
+	int step_no = 1;
+	if (!compare_with_correct({bulk_prefix,	droplet_prefix}, "_step_" + std::to_string(step_no),		
+							path, "_f_step_1_", "_f_eq_step_1_")) {
+		std::cerr << "Mismatch with MATLAB solution" << std::endl;
+		return false;
+	}
+	return true;
+}
+
 // Constructs and fetches a map of default values, most of them
 // constant across the tests
 std::map<std::string, double> get_default_parameters(const size_t Nx, const size_t Ny, 
