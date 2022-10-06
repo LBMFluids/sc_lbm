@@ -1,4 +1,5 @@
 *.txt
+*.pyc
 *.object
 *.swp
 *__pycache__*
