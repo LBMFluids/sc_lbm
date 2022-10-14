@@ -4,11 +4,14 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <random>
+
 #include "geometry.h"
 #include "lbm.h"
 #include "logger.h"
 #include "common.h"
 #include "utils.h"
+#include "rng.h"
 #include "./io_operations/lbm_io.h"
 
 /***************************************************** 
@@ -83,6 +86,11 @@ public:
 	/// @param rho_0 - initial density of this fluid, same everywhere
 	/// @param mcmp - true if multicomponent - multiphase system
 	void simple_ini(const Geometry& geom, const double rho_0, const bool mcmp = false);
+
+	/// Initialization of randomly perturbed density distributions 
+	/// @param rho_0 - initial nominal density of this fluid, same everywhere
+	/// @param gen - random number generator that will apply max 1/1000 density perturbation
+	void initialize_randomly_perturbed_density(const Geometry& geom, const double rho_0, RNG& gen, const bool mcmp = false);
 
 	/** 
 	 * Assign fluid-solid interaction potential

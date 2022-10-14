@@ -103,6 +103,53 @@ void Fluid::simple_ini(const Geometry& geom, const double rho_0, const bool mcmp
 	f_eq_dist.resize(Nx*Ny*Ndir, 0.0);
 }
 
+// Initialization of randomly perturbed density distributions
+void Fluid::initialize_randomly_perturbed_density(const Geometry& geom, const double rho_0, RNG& gen, const bool mcmp)
+{
+	// Number of nodes in each direction 
+	Nx = geom.Nx();		
+	Ny = geom.Ny();
+	Ntot = Nx*Ny;
+	const double rho_factor = static_cast<double>(Ndir);
+	// Coordinates
+	size_t xi = 0, yi = 0, ind_fi = 0, yfi = 0, dir_i = 0;
+	// Random density
+	double rho_rand = 0.0;
+	double rand_max = rho_0/1000.0;
+	// Just so they are of the right size
+	rho.resize(Nx*Ny, 0.0);
+	ux.resize(Nx*Ny, 0.0);
+	uy.resize(Nx*Ny, 0.0);
+	// Only for mcmp systems
+	if (mcmp) {
+		u_eq_x.resize(Nx*Ny, 0.0);
+		u_eq_y.resize(Nx*Ny, 0.0);
+		F_repulsive_x.resize(Nx*Ny, 0.0);
+		F_repulsive_y.resize(Nx*Ny, 0.0);
+	}
+	// Zero-initialized distribution function
+	f_dist.resize(Nx*Ny*Ndir, 0.0);
+	for (size_t i=0; i<Nx; ++i) {
+		for (size_t j=0; j<Ny; ++j) {
+			xi = i;
+			yi = j;
+			// If a fluid node, fill out the value in all directions
+			if (geom(xi,yi) == 1) {
+				rho_rand = rho_0 + gen.get_random(0.0, rand_max);
+				for (size_t k=0; k<Ndir; ++k) {
+					dir_i = k;
+					// Size of a row is Nx (and there are Ny rows)
+					yfi = dir_i*Nx*Ny + yi*Nx;
+					ind_fi = yfi + xi;
+					f_dist.at(ind_fi) = rho_rand/rho_factor;
+				}			
+			} 		
+		}
+	}
+	// Zero-initialized equilibrium distribution function
+	f_eq_dist.resize(Nx*Ny*Ndir, 0.0);
+}
+
 // Compute and store the force components stemming from interactions with solids
 void Fluid::add_surface_forces(const std::vector<double> Fxs, const std::vector<double> Fys)
 {
