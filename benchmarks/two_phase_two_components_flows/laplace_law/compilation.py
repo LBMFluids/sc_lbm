@@ -1,4 +1,4 @@
-# Script for compiling the benchmarks
+# Script for compiling the benchmarks 
 
 import subprocess, glob, os
 
@@ -23,9 +23,9 @@ src_files += ' ' + path + 'arrays/regular_array.cpp'
 src_files += ' ' + path + 'utils.cpp'
 
 # Name of the executable
-exe_name = 'ph_sep'
+exe_name = 'llaw'
 # Files needed only for this build
-spec_files = 'phase_separation.cpp '
+spec_files = 'laplace_law.cpp '
 compile_com = ' '.join([cx, std, opt, other, '-o', exe_name, spec_files, src_files])
 subprocess.call([compile_com], shell=True)
 subprocess.call(['mv ' + exe_name + ' ' + path_exe], shell=True)

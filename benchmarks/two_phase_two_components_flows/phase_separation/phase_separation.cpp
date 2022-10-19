@@ -15,6 +15,7 @@ class RNG;
  * - Simulates three different mass fractions of fluids
  * - Saves five intermediate results at the begining
  * 		of the simulations and then the final one
+ * - They do run for up to several hours each
  *
  *****************************************************/
 
