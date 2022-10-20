@@ -28,14 +28,14 @@ int main()
 {
 	// Initializes the droplet as a suare
 	// The side is roughly twice the radius
-	const std::vector<int> square_sides{160, 140, 120, 100, 80, 60, 40};
+	const std::vector<int> square_sides{80, 70, 60, 50, 40, 30, 20};
 
 	// Common file name prefix
 	const std::string fname{"laplace_law_diameter"};
 	
 	// Run the simulation for each square side
 	for (const auto& side : square_sides) {
-		if (side != 100) {
+		if (side != 30) {
 			droplet_equilibration(side, fname + "_" + std::to_string(side));
 		} else {
 			droplet_equilibration(side, fname + "_" + std::to_string(side), true);
