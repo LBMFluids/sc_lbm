@@ -25,12 +25,12 @@ Nx = 400
 Ny = 306
 
 # Dispersed and bulk densities
-rho_bulk = 1.9
+rho_bulk = 2.0
 rho_disp = 0.06
 
 # In the following numpy indexing, [0] is y and [1] is x 
 for cname in cases:
-	file_list = list(glob.iglob('output/*' + cname + '*.txt'))
+	file_list = list(glob.iglob('output/*_' + cname + '*.txt'))
 	print(file_list)
 
 	# Should just be two of them
@@ -43,11 +43,12 @@ for cname in cases:
 			raise ValueError(fname + ' should not be a part of this dataset')
 
 	# Find the interface
-	interface = np.where(np.logical_and(rho_d - rho_b < 0, rho_b <= rho_bulk, rho_d > rho_disp))
+	interface = np.where((rho_b - rho_d <= 0) & (rho_d <= rho_bulk) & (rho_b > rho_disp))
+
 	# Find the minimum left point on the interface w.r.t solid
-	ind_left_min = np.argmin(interface[1])
-	x_left_min = interface[1][ind_left_min]  
+	ind_left_min = np.argmin(interface[0])
 	y_left_min = interface[0][ind_left_min]
+	x_left_min = interface[1][np.argwhere(interface[0] == y_left_min)]  
 
 	# Node row above the minimum
 	y_above_left_min = y_left_min + 1
@@ -69,17 +70,13 @@ for cname in cases:
 	yR2 = np.amax(y_left_min)
 
 	yL = np.amin(interface[0]) - 0.5 
-	yR = np.amin(interface[0])-0.5;
+	yR = np.amin(interface[0]) - 0.5;
 
 	if xL1 == xL2:
 		xL1 = xL1 - 1
 	
 	if xR1 == xR2:
 		xR1 = xR1 - 1
-
-	print(x_left_min, y_left_min)
-	print(xL1, xL2, xR1, xR2)
-	print(yL1, yL2, yR1, yR2)
 
 	# Linear interpolation
 	slopeL = (yL1-yL2)/(xL1-xL2)
@@ -111,3 +108,4 @@ for cname in cases:
 	print(theta[0])
 
 	vis.plot_3D_flat(Nx, Ny, rho_d)
+
