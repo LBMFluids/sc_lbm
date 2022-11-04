@@ -5,67 +5,62 @@
 
 /***************************************************** 
  *
- * Simulations for computation of surface tension
- *	with the Laplace law 
+ * Simulations for computation of contact angles 
+ *	with different solid affinities
  *  
- * - Simulates seven different radiuses of droplets
+ * - Droplet with a fixed radius positioned on a 
+ *		solid "shelf" 
  * - Saves the densities of both fluids at the end		
- * - Saves densities for intermediate steps as part 
- *    of a convergence study for one case 
  *
  *****************************************************/
 
 // Sets up the simulation in which a droplet is initialized 
-// as a square with side "side" and let equilibrate. All in
-// a periodic domain with no flow. The program saves the
-// densities at the end but can also save intermediate 
-// results if save_intermediate is set to true. The saved 
-// items have a common name defined as a function argument.
-void droplet_equilibration(const int, const std::string&, 
-							bool save_intermediate = false);
+// as a square on a solid rectangle and let equilibrate. 
+// As the affinity of both fluids changes with different 
+// solid-liquid interaction parameter, different contact
+// angles between the droplet and the solid surface arise.
+// This is a periodic domain with no flow. The program 
+// saves the densities at the end The saved items have a 
+// common name that is hardcoded.
+void droplet_on_a_solid(const double);
 
 int main()
 {
-	// Initializes the droplet as a suare
-	// The side is roughly twice the radius
-	const std::vector<int> square_sides{80, 70, 60, 50, 40, 30, 20};
+	// Liquid-solid interaction parameters for a droplet
+ 	// The parameter for the surrounding liquid is a negative of this value  
+	const std::vector<double> Gs_droplet{-0.4, -0.3, -0.2, -0.1, 0.1, 0.2, 0.3, 0.4};
 
-	// Common file name prefix
-	const std::string fname{"laplace_law_diameter"};
-	
-	// Run the simulation for each square side
-	for (const auto& side : square_sides) {
-		if (side != 30) {
-			droplet_equilibration(side, fname + "_" + std::to_string(side));
-		} else {
-			droplet_equilibration(side, fname + "_" + std::to_string(side), true);
-		}
+	// Run the simulation for each liquid-solid interaction parameter
+	for (const auto& Gsd : Gs_droplet) {
+		droplet_on_a_solid(Gsd);
 	}
 }
 
-void droplet_equilibration(const int droplet_side, const std::string& fname, 
-			bool save_intermediate)
+void droplet_on_a_solid(const double Gs_droplet)
 {
 	//
 	// Data collection
 	//
 
-	const std::string path("output/");
-	const int save_every = 1000;
+	const std::string fname("output/contact_angle");
 
 	//
 	// Simulation settings
 	//
 
 	// Total number of iterations
-	const int max_steps = 40000;
+	const int max_steps = 30000;
 
 	//
 	// Geometry
 	//
 
-	size_t Nx = 400, Ny = 400;
+	size_t Nx = 400, Ny = 306;
 	Geometry geom(Nx, Ny);
+	
+	// Rectangular solid
+	const double rec_dx = 341, rec_dy = 20, rec_xc = 199, rec_yc = 152;
+	geom.add_rectangle(rec_dx, rec_dy, rec_xc, rec_yc);
 
 	//
 	// Simulation interface
@@ -84,13 +79,13 @@ void droplet_equilibration(const int droplet_side, const std::string& fname,
 	// Potential for repulsive interactions between fluids
 	const double G_repulsive = 0.9;
 	// Potential for interactions with solids
-	const double G_solids_bulk = 0.0;
-	const double G_solids_droplet = -1.0*G_solids_bulk;
+	const double G_solids_bulk = -1.0*Gs_droplet;
+	const double G_solids_droplet = Gs_droplet;
 	// Properties of the initial droplet
 	// Coordinates of droplet center
-	const double xc = 200, yc = 200;
+	const double xc = 199, yc = 192;
 	// x and y half-widths
-	const double half_Lx = droplet_side, half_Ly = droplet_side;
+	const double half_Lx = 30, half_Ly = 30;
 
 	Fluid bulk_fluid("water");
 	Fluid droplet_fluid("oil");
@@ -131,12 +126,6 @@ void droplet_equilibration(const int droplet_side, const std::string& fname,
 		lbm.collide(bulk_fluid, droplet_fluid);
 		lbm.stream(geom, bulk_fluid, droplet_fluid);
 
-		// Update and save
-		if ((save_intermediate) && !(step_i % save_every)) {
-			std::cout << "Reached simulation step " << step_i << " --- saving " << std::endl;
-			bulk_fluid.write_density(path + fname + "_bulk_fluid_" + std::to_string(step_i) + ".txt");	
-			droplet_fluid.write_density(path + fname + "_droplet_fluid_" + std::to_string(step_i) + ".txt");
-		 }
 	}
 
 	// Simulation time
@@ -144,6 +133,6 @@ void droplet_equilibration(const int droplet_side, const std::string& fname,
     std::cout << "Simulation time (main loop only) = " << std::chrono::duration_cast<std::chrono::seconds> (t_end - t_begin).count() << "[s]" << std::endl;
 
 	// Save end results
-	bulk_fluid.write_density(path + fname + "_bulk_fluid_final.txt");	
-	droplet_fluid.write_density(path + fname + "_droplet_fluid_final.txt");
+	bulk_fluid.write_density(fname + "_bulk_fluid_final_" + std::to_string(Gs_droplet) + ".txt");	
+	droplet_fluid.write_density(fname + "_droplet_fluid_final_" + std::to_string(Gs_droplet) + ".txt");
 }

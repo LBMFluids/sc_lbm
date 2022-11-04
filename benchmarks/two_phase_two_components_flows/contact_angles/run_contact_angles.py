@@ -13,13 +13,13 @@ py_version = 'python3'
 path_exe = '../../../executables/'
 
 #
-# Compile and run all the Laplace law simulations
+# Compile and run all the contact angle simulations
 #
 
 # Compile
 subprocess.call([py_version + ' compilation.py'], shell = True)
 
 # Run
-subprocess.call([path_exe + 'llaw'], shell = True)
+subprocess.call([path_exe + 'cang'], shell = True)
 
 
