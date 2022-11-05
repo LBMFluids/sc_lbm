@@ -71,7 +71,7 @@ for ind in range(0, len(file_list)-1, 2):
 	p_final.append(p_tot[p_in[0], p_in[1]] - p_tot[p_out[0], p_out[1]])
 	
 	# Radius (approximate)
-	select_indices = np.where(np.logical_and(rho_d - rho_b < 0, rho_b <= rho_bulk, rho_d > rho_disp))
+	select_indices = np.where((rho_d - rho_b < 0) & (rho_b <= rho_bulk) & (rho_b > rho_disp))
 	Rx = (np.amax(select_indices[0]) - np.amin(select_indices[0]))/2.0	
 	Ry = (np.amax(select_indices[1]) - np.amin(select_indices[1]))/2.0
 	R_final.append(0.5*(Rx + Ry)) 
