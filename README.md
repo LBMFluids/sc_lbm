@@ -1,11 +1,12 @@
 # sc_lbm
 Shan and Chen 2D lattice Boltzmann method in C++
 
-The code has full functionality to simulate single component - single phase (SC-SP) flow. User manual and a documentation are under way. Automatic documentation can be generated using [Doxygen](https://doxygen.nl/). `benchmarks` directory is a good starting resource.
+Author: [Agnieszka Truszkowska](https://scholar.google.com/citations?user=jP83uecAAAAJ&hl=en), Ph.D., assistant professor at the University of Alabama in Huntsville
 
-Two component - two phase version is currently under development. This process should not break the existing SC-SP functionality. 
+The code has full functionality to simulate single component - single phase flow as well as two-component - two-phase flows. User manual and a documentation are under way. Automatic documentation can be generated using [Doxygen](https://doxygen.nl/). `benchmarks` directory is a good starting resource.
 
-The users are encourages to report any issues or bugs. Improvement ideas are welcome!
+The users are encourages to report any issues or bugs. Improvement ideas and extensions are welcome!
 
+Contact information is available [here](https://www.uah.edu/eng/faculty-staff/agnieszka-truszkowska).
 
 
