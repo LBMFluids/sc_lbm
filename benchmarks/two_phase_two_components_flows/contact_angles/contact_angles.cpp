@@ -26,7 +26,7 @@ void droplet_on_a_solid(const double);
 
 int main()
 {
-	// Liquid-solid interaction parameters for a droplet
+	// Liquid-solid interaction parameters for the droplet
  	// The parameter for the surrounding liquid is a negative of this value  
 	const std::vector<double> Gs_droplet{-0.4, -0.3, -0.2, -0.1, 0.1, 0.2, 0.3, 0.4};
 
