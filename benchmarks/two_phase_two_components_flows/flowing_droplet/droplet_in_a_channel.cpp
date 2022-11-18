@@ -160,7 +160,12 @@ void flowing_droplet(const double dPdL_in, const double G_solids_bulk,
     std::cout << "Simulation time (main loop only) = " << std::chrono::duration_cast<std::chrono::seconds> (t_end - t_begin).count() << "[s]" << std::endl;
 
 	// Save end results
-	bulk_fluid.write_density(fname + "_bulk_fluid_final_" + std::to_string(dPdL_in) + "_" + std::to_string(G_solids_bulk) + ".txt");	
-	droplet_fluid.write_density(fname + "_droplet_fluid_final_" + std::to_string(dPdL_in) + "_" + std::to_string(G_solids_bulk) + ".txt");
+	std::string extension{std::to_string(dPdL_in) + "_" + std::to_string(G_solids_bulk) + ".txt"};	
+	bulk_fluid.save_state(fname + "_bulk_fluid_final_density_" + extension, 
+							fname + "_bulk_fluid_final_ux_" + extension, 
+							fname + "_bulk_fluid_final_uy_" + extension, max_steps, geom);	
 
+	droplet_fluid.save_state(fname + "_droplet_fluid_final_density_" + extension, 
+							fname + "_droplet_fluid_final_ux_" + extension, 
+							fname + "_droplet_fluid_final_uy_" + extension, max_steps, geom);
 }
