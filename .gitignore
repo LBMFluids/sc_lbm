@@ -5,6 +5,7 @@
 *__pycache__*
 *.asv
 *.mat
+slurm-*.out
 tests/geometry/test_data/array_type*
 test_data/*.txt
 executables

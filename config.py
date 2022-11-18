@@ -26,7 +26,10 @@ for dir_i in dir_list:
 
 # Make directories for benchmarking
 os.chdir('../benchmarks/')
-make_dirs = ['output']
+make_dirs = ['output', 'two_phase_two_components_flows/contact_angles/output', 
+ 		'two_phase_two_components_flows/flowing_droplet/output',
+		'two_phase_two_components_flows/laplace_law/output',
+		'two_phase_two_components_flows/phase_separation/output']
 
 for dir_i in make_dirs:
 	path_i = Path(dir_i)
@@ -35,3 +38,5 @@ for dir_i in make_dirs:
 		subprocess.call(['mkdir ' + path_i.name], shell=True)
 
 os.chdir('../')
+
+
