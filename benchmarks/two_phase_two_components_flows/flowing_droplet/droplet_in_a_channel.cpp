@@ -34,19 +34,19 @@ void flowing_droplet(const double dPdL, const double Gs_bulk,
 int main()
 {
 	// Pressure drops (driving forces)
-	const std::vector<double> dPdL{1e-6, 1e-5};
+	const std::vector<double> dPdL{1e-6, 5e-6, 7.5e-6, 1e-5};
 
 	// Liquid-solid interaction parameters for the bulk liquid
  	// The parameter for the droplet is a negative of this value  
 	// Negative value signifies hydrophilic and positivei (attractive),
 	// hydrophobic (repulsive) interactions with the solid
-	const std::vector<double> Gs_bulk{-0.4, 0.4};
+	const std::vector<double> Gs_bulk{-0.294, -0.11};
 
 	// Channel height
-	const std::vector<size_t> Ny{100, 200};
+	const std::vector<size_t> Ny{318, 318};
 
-	// Height of the initial droplet (wall thickness is 1 node)
-	const std::vector<double> h_drop{97, 191};
+	// Height of the initial droplet (wall thickness is 1 node on both sides)
+	const std::vector<double> h_drop{316, 312};
 
 	// Run the simulation for specific combinations of parameters 
 	for (const auto& dr_force : dPdL) {
@@ -70,7 +70,7 @@ void flowing_droplet(const double dPdL_in, const double G_solids_bulk,
 	//
 
 	// Total number of iterations
-	const int max_steps = 300;
+	const int max_steps = 25000;
 
 	// External forcing term
 	const double beta = 1.0/6.0;
@@ -82,7 +82,7 @@ void flowing_droplet(const double dPdL_in, const double G_solids_bulk,
 	// Geometry
 	//
 
-	size_t Nx = 400;
+	size_t Nx = 4.0*318;
 	size_t dh = 1;
 	Geometry geom(Nx, Ny);
 
