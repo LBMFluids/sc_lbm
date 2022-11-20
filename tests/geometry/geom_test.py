@@ -11,7 +11,6 @@ from utils import *
 import numpy as np
 import visualization as vis
 
-# ------> This needs some comparison with expected number of nodes
 class rectangle(object):
 	''' Class for defining correctness of a rectangular object '''
 	def __init__(self, dx, dy, x0, y0):
@@ -47,7 +46,16 @@ class rectangle(object):
 				if not np.isclose((A1 + A2 + A3 + A4), A_obj):
 					msg(self.name + ' - solid point outside the object area', MAGENTA)
 					return False
+	
 		# Compare the node count to expected
+		# Correct node number following the implementation
+		if dx%2 == 0:
+			dx -= 1
+		if dy%2 == 0:
+			dy -= 1
+		if not (count == int(dx*dy)):
+			msg('Number of nodes not equal for ' + self.name, MAGENTA)
+			return False
 		if (count == 0) and ((np.int_(self.dx) != 0) or (np.int_(self.dy) != 0)):
 			msg('No ' + self.name + ' at all!', MAGENTA)
 			return False		
@@ -79,7 +87,33 @@ class ellipse(object):
 				if ir > self.dx*self.dx*self.dy*self.dy/16.0:
 					msg(self.name + ' - solid point outside the object area', MAGENTA)
 					return False
+
+		# Count hypothetical nodes (assuming an object with center 0,0)
+		dx = self.dx
+		dy = self.dy
+		hypo_node_count = 0
+		# Correct node number following the implementation
+		if dx%2 == 0:
+			dx -= 1
+		if dy%2 == 0:
+			dy -= 1
+		x0 = int(self.x0 - dx/2)
+		y0 = int(self.y0 - dy/2)
+		xf = int(self.x0 + dx/2)
+		yf = int(self.y0 + dy/2)	
+		for ix in range(x0, xf+1):
+			for iy in range(y0, yf+1):
+				ir = (ix - self.x0)*(ix - self.x0)*dy*dy/4.0 + \
+						(iy - self.y0)*(iy - self.y0)*dx*dx/4.0
+
+				if ir <= dx*dx*dy*dy/16:
+					hypo_node_count += 1
+
 		# Compare the node count to expected
+		if not (count == hypo_node_count):
+			msg('Number of nodes not equal for ' + self.name, MAGENTA)
+			return False
+
 		if (count == 0) and ((np.int_(self.dx) != 0) or (np.int_(self.dy) != 0)):
 			msg('No ' + self.name + ' at all!', MAGENTA)
 			return False
@@ -177,9 +211,8 @@ class obj_array:
 		obj_xf = np.max(bounds[1])
 		obj_y0 = np.min(bounds[0])
 		obj_yf = np.max(bounds[0])
-		#
-		# Recreates the array and compares
-		# directly, something better in the future
+		
+		# Recreates the array and compares directly
 		x_shift = obj_xf - obj_x0 + self.dx + 1
 		y_shift = obj_yf - obj_y0 + self.dy + 1
 		
