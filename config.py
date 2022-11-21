@@ -1,5 +1,8 @@
 #
-# Sets up components needed for using the code
+# Sets up most of the components needed to use this software
+#	The exception is the data needed for running the tests
+#	and benchmarks. The user should refer to the README for 
+# 	complete information. 
 #
 
 import subprocess, os
