@@ -5,7 +5,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
 import sys
-py_src_path = '../scripts/'
+py_src_path = '../../scripts/'
 sys.path.insert(0, py_src_path)
 
 import utils as ut

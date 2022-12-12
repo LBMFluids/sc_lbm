@@ -74,7 +74,7 @@ void flowing_droplet(const double dPdL_in, const double G_solids_bulk,
 
 	// External forcing term
 	const double beta = 1.0/6.0;
-	const double dPdL_fin = 1e-4*beta*dPdL_in;
+	const double dPdL_fin = beta*dPdL_in;
 	std::vector<double> vol_force{0, 1, 0, -1, 0, 1, -1, -1, 1};
 	std::for_each(vol_force.begin(), vol_force.end(), [&dPdL_fin](double& el) { el *= dPdL_fin; });
 

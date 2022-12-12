@@ -17,8 +17,8 @@ other = '-Wall'
 # Partial compares only density distributions, 
 # velocities, and densities after last streaming
 # Uncomment this for full
-#full_test = '-DFULL_TEST'
-full_test = ''
+full_test = '-DFULL_TEST'
+#full_test = ''
 
 # Common source files
 src_files = path + 'geometry.cpp' + ' ' + path + 'misc_checks.cpp '

@@ -4,9 +4,9 @@ import subprocess, glob, os
 
 ### Input 
 # Path to the main directory
-path = '../src/'
+path = '../../src/'
 # Path to executables 
-path_exe = '../executables/'
+path_exe = '../../executables/'
 # Compiler options
 cx = 'g++'
 std = '-std=c++11'

@@ -8,6 +8,11 @@
 import subprocess, os
 from pathlib import Path
 
+# Make a directory to store the documentation (if it doesn't already exist) 
+doc_dir = 'documentation'
+if not os.path.isdir(doc_dir):
+	subprocess.call(['mkdir ' + doc_dir], shell=True)
+
 # Make a directory to store executables (if it doesn't already exists)
 exe_dir = 'executables'
 if not os.path.isdir(exe_dir):
