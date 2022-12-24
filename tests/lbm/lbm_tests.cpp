@@ -21,10 +21,8 @@ void run_and_collect_all(const std::string& gfile, const double rho_ini,
 	test_fluid.simple_ini(geom, rho_ini);
 	test_fluid.compute_f_equilibrium(geom);
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_ini, 
 					fname_ini + "_f", fname_ini + "_feq", path);
-#endif
 
 	// Simulation setup
 	LBM lbm(geom);
@@ -32,17 +30,13 @@ void run_and_collect_all(const std::string& gfile, const double rho_ini,
 	// Simulation
 	lbm.collide(geom, test_fluid);	
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_col, 
 					fname_col + "_f", fname_col + "_feq", path);
-#endif
 
 	lbm.add_volume_force(geom, test_fluid, vol_force);		
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_force, 
 					fname_force + "_f", fname_force + "_feq", path);
-#endif
 
 	lbm.stream(geom, test_fluid);
 	compute_and_write_values(geom, test_fluid, fname_stream, 
@@ -62,10 +56,8 @@ void run_and_collect(const std::string& gfile, const double rho_ini,
 	test_fluid.simple_ini(geom, rho_ini);
 	test_fluid.compute_f_equilibrium(geom);
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_ini, 
 					fname_ini + "_f", fname_ini + "_feq", path);
-#endif
 
 	// Simulation setup
 	LBM lbm(geom);
