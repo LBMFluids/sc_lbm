@@ -94,9 +94,9 @@ void run_and_collect(std::map<std::string, double>& parameters,
 	bulk_fluid.zero_density_ini(geom);
 	droplet_fluid.zero_density_ini(geom);
 
-	// Repulsive inter-fluid forces
-	bulk_fluid.initialize_fluid_repulsion(parameters.at("G_repulsive"));
-	droplet_fluid.initialize_fluid_repulsion(parameters.at("G_repulsive"));
+	// Initialize fluid-solid and fluid-fluid interactions
+	bulk_fluid.initialize_interactions(parameters.at("G_solids_bulk"), parameters.at("G_repulsive"));
+	droplet_fluid.initialize_interactions(parameters.at("G_solids_droplet"), parameters.at("G_repulsive"));
 
 	// Initialize the continuous and dispersed phases
 	// The dispersed phase - droplet - is initialized as a 
@@ -108,8 +108,6 @@ void run_and_collect(std::map<std::string, double>& parameters,
 				parameters.at("half_Ly"));
 
 	// Compute interactions with solids (valid for the entire run) 
-	bulk_fluid.set_multicomponent_interactions(parameters.at("G_solids_bulk"));
-	droplet_fluid.set_multicomponent_interactions(parameters.at("G_solids_droplet"));
 	lbm.compute_solid_surface_force(geom, bulk_fluid, droplet_fluid);
 
 	// Verification of the initial state
