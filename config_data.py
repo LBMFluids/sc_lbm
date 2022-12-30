@@ -23,7 +23,7 @@ import os
 
 # Location of the data directory (absolute)
 # 	--- With a / at the end
-data_path = # Absolute path goes here 
+data_path = '/home/agnieszka/programming/test/lbm_data/data_for_sc_lbm/' # Absolute path goes here 
 
 #
 # Configuration 

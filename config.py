@@ -34,7 +34,7 @@ for dir_i in dir_list:
 
 # Make directories for benchmarking
 os.chdir('../benchmarks/')
-make_dirs = ['output', 'two_phase_two_components_flows/contact_angles/output', 
+make_dirs = ['single_phase_one_component_flows/output', 'two_phase_two_components_flows/contact_angles/output', 
  		'two_phase_two_components_flows/flowing_droplet/output',
 		'two_phase_two_components_flows/laplace_law/output',
 		'two_phase_two_components_flows/phase_separation/output']
