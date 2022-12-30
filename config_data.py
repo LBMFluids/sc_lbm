@@ -23,6 +23,7 @@ import os
 
 # Location of the data directory (absolute)
 # 	--- With a / at the end
+# This is a common source of errors
 data_path = # Absolute path goes here 
 
 #
@@ -65,6 +66,7 @@ def link_data_dirs(data_to_link, inner_name):
 	
 		# Link to correct directory in lbm_data
 		print('Linking ', dir_i)
+		print(data_path + dir_i + inner_name + '/')
 		os.symlink(data_path + dir_i + inner_name + '/', inner_name)
 	
 		# Go back
