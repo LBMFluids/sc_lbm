@@ -34,7 +34,7 @@ void flowing_droplet(const double dPdL, const double Gs_bulk,
 int main()
 {
 	// Pressure drops (driving forces)
-	const std::vector<double> dPdL{1e-6, 5e-6, 7.5e-6, 1e-5};
+	const std::vector<double> dPdL{5e-8, 1e-7, 3e-7, 4e-7};
 
 	// Liquid-solid interaction parameters for the bulk liquid
  	// The parameter for the droplet is a negative of this value  
@@ -74,7 +74,7 @@ void flowing_droplet(const double dPdL_in, const double G_solids_bulk,
 
 	// External forcing term
 	const double beta = 1.0/6.0;
-	const double dPdL_fin = 1e-4*beta*dPdL_in;
+	const double dPdL_fin = beta*dPdL_in;
 	std::vector<double> vol_force{0, 1, 0, -1, 0, 1, -1, -1, 1};
 	std::for_each(vol_force.begin(), vol_force.end(), [&dPdL_fin](double& el) { el *= dPdL_fin; });
 
@@ -156,11 +156,11 @@ void flowing_droplet(const double dPdL_in, const double G_solids_bulk,
 	}
 
 	// Simulation time
-    std::chrono::steady_clock::time_point t_end = std::chrono::steady_clock::now();
-    std::cout << "Simulation time (main loop only) = " << std::chrono::duration_cast<std::chrono::seconds> (t_end - t_begin).count() << "[s]" << std::endl;
-
+    	std::chrono::steady_clock::time_point t_end = std::chrono::steady_clock::now();
+    	std::cout << "Simulation time (main loop only) = " << std::chrono::duration_cast<std::chrono::seconds> (t_end - t_begin).count() << "[s]" << std::endl;
+	
 	// Save end results
-	std::string extension{std::to_string(dPdL_in) + "_" + std::to_string(G_solids_bulk) + ".txt"};	
+	std::string extension{std::to_string(dPdL_in/1e-7) + "_" + std::to_string(G_solids_bulk)};	
 	bulk_fluid.save_state(fname + "_bulk_fluid_final_density_" + extension, 
 							fname + "_bulk_fluid_final_ux_" + extension, 
 							fname + "_bulk_fluid_final_uy_" + extension, max_steps, geom);	

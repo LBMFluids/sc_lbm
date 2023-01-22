@@ -13,7 +13,7 @@ import benchmark_utils as bu
 import glob
 
 # Case prefixes
-dPdLs = ['_0.000001_', '_0.000005_', '_0.000008_', '_0.000010_']
+dPdLs = ['_0.00000005_', '_0.0000001_', '_0.0000003_', '_0.0000004_']
 Gs = ['-0.294', '-0.11']
 cases = [x + y for x in dPdLs for y in Gs]
 
@@ -39,7 +39,9 @@ rho_disp = 0.06
 # In the following numpy indexing, [0] is y and [1] is x 
 for cname in cases:
 	file_list = list(glob.iglob('output/*' + cname + '*.txt'))
-	print(file_list)
+	
+	print(cname)
+	#print(file_list)
 
 	# Should just be two of them
 	for fname in file_list:
@@ -59,7 +61,7 @@ for cname in cases:
 
 	# Find the droplet 
 	droplet_interior = np.where(rho_d >= rho_bulk)
-	print('Number of droplet interior nodes detected: ' + str(len(droplet_interior[0])))
+	#print('Number of droplet interior nodes detected: ' + str(len(droplet_interior[0])))
 
 	# Compute average velocity magnitude of the droplet
 	u_d_ave = np.mean(bu.vel_mag(ux_d[droplet_interior], uy_d[droplet_interior])); 
