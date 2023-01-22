@@ -70,7 +70,7 @@ void flowing_droplet(const double dPdL_in, const double G_solids_bulk,
 	//
 
 	// Total number of iterations
-	const int max_steps = 25000;
+	const int max_steps = 500000;
 
 	// External forcing term
 	const double beta = 1.0/6.0;

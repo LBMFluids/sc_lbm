@@ -41,7 +41,7 @@ for cname in cases:
 	file_list = list(glob.iglob('output/*' + cname + '*.txt'))
 
 	print(cname)
-	print(file_list)
+#	print(file_list)
 
 	# Should just be two of them
 	for fname in file_list:
@@ -68,5 +68,5 @@ for cname in cases:
 	print('Average droplet velocity magnitude [lu/ts]: ' + str(u_d_ave))
 	print('Average droplet velocity magnitude [cm/s]: ' + str(u_d_ave*lu2cm/ts2s))
 
-	vis.plot_3D_flat(Nx, Ny, rho_d)
+#	vis.plot_3D_flat(Nx, Ny, rho_d)
 
