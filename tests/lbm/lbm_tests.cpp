@@ -21,10 +21,8 @@ void run_and_collect_all(const std::string& gfile, const double rho_ini,
 	test_fluid.simple_ini(geom, rho_ini);
 	test_fluid.compute_f_equilibrium(geom);
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_ini, 
 					fname_ini + "_f", fname_ini + "_feq", path);
-#endif
 
 	// Simulation setup
 	LBM lbm(geom);
@@ -32,17 +30,13 @@ void run_and_collect_all(const std::string& gfile, const double rho_ini,
 	// Simulation
 	lbm.collide(geom, test_fluid);	
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_col, 
 					fname_col + "_f", fname_col + "_feq", path);
-#endif
 
 	lbm.add_volume_force(geom, test_fluid, vol_force);		
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_force, 
 					fname_force + "_f", fname_force + "_feq", path);
-#endif
 
 	lbm.stream(geom, test_fluid);
 	compute_and_write_values(geom, test_fluid, fname_stream, 
@@ -62,10 +56,8 @@ void run_and_collect(const std::string& gfile, const double rho_ini,
 	test_fluid.simple_ini(geom, rho_ini);
 	test_fluid.compute_f_equilibrium(geom);
 
-#ifdef FULL_TEST
 	compute_and_write_values(geom, test_fluid, fname_ini, 
 					fname_ini + "_f", fname_ini + "_feq", path);
-#endif
 
 	// Simulation setup
 	LBM lbm(geom);
@@ -102,9 +94,9 @@ void run_and_collect(std::map<std::string, double>& parameters,
 	bulk_fluid.zero_density_ini(geom);
 	droplet_fluid.zero_density_ini(geom);
 
-	// Repulsive inter-fluid forces
-	bulk_fluid.initialize_fluid_repulsion(parameters.at("G_repulsive"));
-	droplet_fluid.initialize_fluid_repulsion(parameters.at("G_repulsive"));
+	// Initialize fluid-solid and fluid-fluid interactions
+	bulk_fluid.initialize_interactions(parameters.at("G_solids_bulk"), parameters.at("G_repulsive"));
+	droplet_fluid.initialize_interactions(parameters.at("G_solids_droplet"), parameters.at("G_repulsive"));
 
 	// Initialize the continuous and dispersed phases
 	// The dispersed phase - droplet - is initialized as a 
@@ -116,8 +108,6 @@ void run_and_collect(std::map<std::string, double>& parameters,
 				parameters.at("half_Ly"));
 
 	// Compute interactions with solids (valid for the entire run) 
-	bulk_fluid.set_multicomponent_interactions(parameters.at("G_solids_bulk"));
-	droplet_fluid.set_multicomponent_interactions(parameters.at("G_solids_droplet"));
 	lbm.compute_solid_surface_force(geom, bulk_fluid, droplet_fluid);
 
 	// Verification of the initial state

@@ -50,19 +50,15 @@ bool single_phase_empty_test()
 
 	// Check
 
-#ifdef FULL_TEST
 	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for empty domain" << std::endl;
 		return false;
 	}
-#endif
 
-#ifndef FULL_TEST
 	if (!compare_with_correct({fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for empty domain" << std::endl;
 		return false;
 	}
-#endif
 
 	return true;	
 }
@@ -90,19 +86,15 @@ bool single_phase_x_walls_test()
 
 	// Check
 
-#ifdef FULL_TEST
 	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with x walls" << std::endl;
 		return false;
 	}	
-#endif
 
-#ifndef FULL_TEST
 	if (!compare_with_correct({fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with x walls" << std::endl;
 		return false;
 	}	
-#endif
 
 	return true;	
 }
@@ -129,19 +121,15 @@ bool single_phase_y_walls_test()
 
 	// Check
 
-#ifdef FULL_TEST
 	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with y walls" << std::endl;
 		return false;
 	}
-#endif
 
-#ifndef FULL_TEST
 	if (!compare_with_correct({fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with y walls" << std::endl;
 		return false;
 	}
-#endif
 	return true;	
 }
 
@@ -168,19 +156,15 @@ bool single_phase_array_no_walls_test()
 
 	// Check
 
-#ifdef FULL_TEST
 	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and no walls" << std::endl;
 		return false;
 	}
-#endif
 
-#ifndef FULL_TEST
 	if (!compare_with_correct({fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and no walls" << std::endl;
 		return false;
 	}
-#endif
 
 	return true;	
 }
@@ -206,19 +190,16 @@ bool single_phase_array_x_walls_test()
 	// Check
 	run_and_collect(gfile, rho_ini, max_iter, multi_force, path, 
 				fname_ini, fname_stream);
-#ifdef FULL_TEST
+
 	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and x walls" << std::endl;
 		return false;
 	}
-#endif
 
-#ifndef FULL_TEST
 	if (!compare_with_correct({fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and x walls" << std::endl;
 		return false;
 	}
-#endif
 
 	return true;	
 }
@@ -246,19 +227,15 @@ bool single_phase_array_y_walls_test()
 
 	// Check
 
-#ifdef FULL_TEST
 	if (!compare_with_correct({fname_ini, fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and y walls" << std::endl;
 		return false;
 	}	
-#endif
 
-#ifndef FULL_TEST
 	if (!compare_with_correct({fname_stream}, path)) {
 		std::cerr << "Mismatch with expected for domain with an array and y walls" << std::endl;
 		return false;
 	}	
-#endif
 
 	return true;	
 }

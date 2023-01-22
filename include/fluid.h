@@ -97,7 +97,21 @@ public:
 	 *	@param Gs - strength of fluid-solid interactions, negative value indicates attractive interactions, positive - repulsive
 	 */
 	void set_multicomponent_interactions(const double Gs)
-		{ Gsolid = Gs; }
+	{ 	
+		std::cout << "This function is depracted and will be removed in future releases" << std::endl; 
+		Gsolid = Gs; 
+	}
+
+	/** 
+	 *  Assign fluid-solid interaction potential and initialize repulsive fluid-fluid interactions
+	 *	@param Gs - strength of fluid-solid interactions, negative value indicates attractive interactions, positive - repulsive
+	 *  @param Gf - repulsive fluid-fluid interaction potential
+	 */
+	void initialize_interactions(const double Gs, const double Gf)
+	{ 	
+		Gsolid = Gs;
+ 		initialize_fluid_repulsion(Gf);
+	}
 
 	/// Compute and store the force components stemming from interactions with solids
 	void add_surface_forces(const std::vector<double>, const std::vector<double>);

@@ -39,9 +39,9 @@ rho_disp = 0.06
 # In the following numpy indexing, [0] is y and [1] is x 
 for cname in cases:
 	file_list = list(glob.iglob('output/*' + cname + '*.txt'))
-	
+
 	print(cname)
-	#print(file_list)
+	print(file_list)
 
 	# Should just be two of them
 	for fname in file_list:
