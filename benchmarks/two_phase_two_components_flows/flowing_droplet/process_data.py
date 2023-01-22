@@ -13,7 +13,7 @@ import benchmark_utils as bu
 import glob
 
 # Case prefixes
-dPdLs = ['_0.00000005_', '_0.0000001_', '_0.0000003_', '_0.0000004_']
+dPdLs = ['_0.500000_', '_1.000000_', '_3.000000_', '_4.000000_']
 Gs = ['-0.294', '-0.11']
 cases = [x + y for x in dPdLs for y in Gs]
 
