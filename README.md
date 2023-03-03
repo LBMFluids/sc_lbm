@@ -27,11 +27,11 @@ The new approach will create symbolic links to the data in the data repo. The ol
 
   https://github.com/LBMFluids/lbm_data
  
-2. Insert the path to the data repository in 1 in the ```data_path``` variable 
+2. Insert the path to the data repository/data_for_sc_lbm/ in 1 in the ```data_path``` variable 
 
 https://github.com/LBMFluids/sc_lbm/blob/d10122ac70f01eb519c0c64f66383a10185634b1/config_data.py#L25
 
-The path must be absolute.
+The path must be absolute, so it will look something like '/home/username/LBM/lbm_data/data_for_sc_lbm/'
 
 3. Run the ```confing.py``` script 
 

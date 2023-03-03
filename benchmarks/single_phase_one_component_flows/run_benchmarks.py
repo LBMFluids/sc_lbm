@@ -30,11 +30,11 @@ subprocess.call([path_exe + 'lam_x'], shell=True)
 ut.msg('Laminar flow in y direction', RED)
 subprocess.call([path_exe + 'lam_y'], shell=True)
 
- Flow past a step (in x) 
+# Flow past a step (in x) 
 ut.msg('Flow past a step (wall)', RED)
 subprocess.call([path_exe + 'stp'], shell=True)
 
- Flow past a cylinder (in x) - low Re
+# Flow past a cylinder (in x) - low Re
 dPdL = 1e-6
 fname = 'cylinder_slow_results'
 ut.msg('Flow past a cylinder - low Re', RED)
